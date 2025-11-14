@@ -51,7 +51,7 @@ int main() {
 
 	glViewport(0, 0, w, h);
 
-	Shader shaderProgram{ "defualt.vert", "default.frag" };
+	Shader shaderProgram{ "default.vert", "default.frag" };
 
 	vao vao1;
 	vao1.bind();
@@ -69,9 +69,7 @@ int main() {
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shaderProgram.activate();
-		vao1.bind();
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		vao1.bind(); //				 COUNT OF INDICES.
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
