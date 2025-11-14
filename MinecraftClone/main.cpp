@@ -3,5 +3,7 @@
 #include <GLFW/glfw3.h>
 
 int main() {
+	std::cout << "Hello world" << std::endl;
+	std::cin.get();
 	return 0;
 }

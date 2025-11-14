@@ -78,6 +78,14 @@
     <IncludePath>C:\Users\Dan-Mechanics\Development\GITHUB\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Dan-Mechanics\Development\GITHUB\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -88,6 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,6 +124,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
