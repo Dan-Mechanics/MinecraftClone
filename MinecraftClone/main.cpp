@@ -4,20 +4,28 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "shaderClass.h"
+#include "vbo.h"
+#include "vao.h"
+#include "ebo.h"
 
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+// WE ARE MAKING A TRIANGLE.
+// LET'S FUCKING GOOOO !!
+GLfloat vertices[] = {
+	-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+	0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+	0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
 
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-"}\n\0";
+	-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
+	0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
+	0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+};
+
+GLuint indices[] = {
+	0, 3, 5,
+	3, 2, 4,
+	5, 4, 1
+};
 
 int main() {
 	if (!glfwInit())
@@ -43,71 +51,25 @@ int main() {
 
 	glViewport(0, 0, w, h);
 
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
+	Shader shaderProgram{ "defualt.vert", "default.frag" };
 
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
+	vao vao1;
+	vao1.bind();
+	
+	vbo vbo1{ vertices, sizeof(vertices) };
+	ebo ebo1{ indices, sizeof(indices) };
 
-	GLuint shaderProgram = glCreateProgram();
-
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-
-	glLinkProgram(shaderProgram);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	// WE ARE MAKING A TRIANGLE.
-	// LET'S FUCKING GOOOO !!
-	GLfloat vertices[] = {
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
-
-		-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
-		0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
-		0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-	};
-
-	GLuint indices[] = {
-		0, 3, 5,
-		3, 2, 4,
-		5, 4, 1
-	};
-
-	// VERTEX BUFFER OBJECT.
-	GLuint vao, vbo, ebo;
-
-	glGenVertexArrays(1, &vao); // VAO BEFOER VBO
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
-
-
-	glBindVertexArray(vao); // THIS WAS MISSING
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	vao1.linkVbo(vbo1, 0);
+	vao1.unbind();
+	vbo1.unbind();
+	ebo1.unbind();
 
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(shaderProgram);
-		glBindVertexArray(vao);
+		shaderProgram.activate();
+		vao1.bind();
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
@@ -117,10 +79,10 @@ int main() {
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
-	glDeleteBuffers(1, &ebo);
-	glDeleteProgram(shaderProgram);
+	vao1.free();
+	vbo1.free();
+	ebo1.free();
+	shaderProgram.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
