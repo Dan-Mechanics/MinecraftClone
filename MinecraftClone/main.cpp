@@ -65,14 +65,8 @@ int main() {
 	ebo1.unbind();
 
 	while (!glfwWindowShouldClose(window)) {
-		// BACKGROUND COLOR
-		
-		int r = 16;
-		int g = 20;
-		int b = 41;
-		
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClearColor(r / static_cast<GLfloat>(255), g / static_cast<GLfloat>(255), b / static_cast<GLfloat>(255), 1.0f);
+		// BACKGROUND COLOR	
+		glClearColor(0.06f, 0.07f, 0.16f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shaderProgram.activate();
 		vao1.bind(); //				 COUNT OF INDICES.
