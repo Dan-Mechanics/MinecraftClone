@@ -11,9 +11,9 @@ void vbo::bind() const {
 }
 
 void vbo::unbind() const {
-	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void vbo::free() const {
-	glDeleteBuffers(GL_ARRAY_BUFFER, &id);
+	glDeleteBuffers(1, &id);
 }
