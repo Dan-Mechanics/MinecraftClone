@@ -1,26 +1,43 @@
+// https://youtu.be/z03LXhRBLGI?si=kGOiI6dm8b5YW3Lo
+
+#include <iostream>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 int main() {
-    GLFWwindow* window;
-    if (!glfwInit())
-        return -1;
+	if (!glfwInit())
+		return -1;
 
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-        return -1;
-    }
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	
+	const auto w = 800;
+	const auto h = 800; //									    FULLSCREEN
+	GLFWwindow* window = glfwCreateWindow(w, h, "Minecraft Clone", NULL, NULL);
 
-    glfwMakeContextCurrent(window);
+	if (window == NULL) {
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
 
-    while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+	glfwMakeContextCurrent(window);
 
-        glfwSwapBuffers(window);
+	gladLoadGL();
 
-        glfwPollEvents();
-    }
+	glViewport(0, 0, w, h);
 
-    glfwTerminate();
-    return 0;
+	// "NICE" BLUE.
+	glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glfwSwapBuffers(window);
+
+	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+	}
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
 }
