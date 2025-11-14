@@ -64,26 +64,43 @@ int main() {
 	// WE ARE MAKING A TRIANGLE.
 	// LET'S FUCKING GOOOO !!
 	GLfloat vertices[] = {
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // x 
-		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // y
-		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // z
+		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
+
+		-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
+		0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
+		0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+	};
+
+	GLuint indices[] = {
+		0, 3, 5,
+		3, 2, 4,
+		5, 4, 1
 	};
 
 	// VERTEX BUFFER OBJECT.
-	GLuint vao, vbo;
+	GLuint vao, vbo, ebo;
 
 	glGenVertexArrays(1, &vao); // VAO BEFOER VBO
 	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
+
+
 	glBindVertexArray(vao); // THIS WAS MISSING
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR
@@ -91,8 +108,10 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
@@ -100,6 +119,7 @@ int main() {
 
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
 	glDeleteProgram(shaderProgram);
 
 	glfwDestroyWindow(window);
