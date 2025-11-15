@@ -148,6 +148,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
   </ItemGroup>
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="ebo.h" />
     <ClInclude Include="shaderClass.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="vao.h" />
     <ClInclude Include="vbo.h" />
   </ItemGroup>

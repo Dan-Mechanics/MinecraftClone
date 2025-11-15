@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
 
+#include "Texture.h"
 #include "shaderClass.h"
 #include "vbo.h"
 #include "vao.h"
@@ -67,37 +68,16 @@ int main() {
 
 	GLuint uniformId = glGetUniformLocation(shaderProgram.id, "scale");
 
-	int widthImg, heightImg, numColorChannels;
-	unsigned char* bytes = stbi_load("texture.png", &widthImg, &heightImg, &numColorChannels, 0);
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	stbi_image_free(bytes);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	GLuint tex0uni = glGetUniformLocation(shaderProgram.id, "tex0");
-	shaderProgram.activate();
-	glUniform1f(tex0uni, 0);
+	Texture bluebells("texture.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	bluebells.setTextureUnit(shaderProgram, "tex0", 0);
 
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR	
-		glClearColor(0.06f, 0.07f, 0.16f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shaderProgram.activate();
 		glUniform1f(uniformId, 0.5f);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		bluebells.bind();
 		vao1.bind(); //				 COUNT OF INDICES.
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -109,7 +89,7 @@ int main() {
 	vao1.free();
 	vbo1.free();
 	ebo1.free();
-	glDeleteTextures(1, &texture);
+	bluebells.free();
 	shaderProgram.free();
 
 	glfwDestroyWindow(window);
