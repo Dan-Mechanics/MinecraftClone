@@ -17,6 +17,9 @@ public:
 
 	void activate() const;
 	void free() const;
+
+private:
+	void compileErrors(unsigned int shader, const char* type);
 };
 
 #endif
