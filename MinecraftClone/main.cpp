@@ -12,16 +12,18 @@
 
 // WE ARE MAKING A TRIANGLE.
 // LET'S FUCKING GOOOO !!
-GLfloat vertices[] = {
-	-0.5f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	0.0f, 0.0f, 
-	-0.5f,  0.5f, 0.0f,		0.0f, 1.0f, 0.02f,	0.0f, 0.0f,
-	 0.5f,  0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f,
-	 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f,	0.0f, 0.0f
+GLfloat vertices[] =
+{ 
+	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	0.0f, 0.0f, 
+	-0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 
+	 0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,	1.0f, 1.0f, 
+	 0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,	1.0f, 0.0f  
 };
 
-GLuint indices[] = {
-	0, 2, 1,
-	0, 3, 2,
+GLuint indices[] =
+{
+	0, 2, 1, 
+	0, 3, 2 
 };
 
 int main() {
@@ -58,7 +60,7 @@ int main() {
 
 	vao1.linkAttribute(vbo1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
 	vao1.linkAttribute(vbo1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	vao1.linkAttribute(vbo1, 3, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	vao1.linkAttribute(vbo1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	vao1.unbind();
 	vbo1.unbind();
 	ebo1.unbind();
