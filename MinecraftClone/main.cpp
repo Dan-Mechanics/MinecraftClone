@@ -83,10 +83,12 @@ int main() {
 	float rotation = 0.0f;
 	double prevTime = glfwGetTime();
 
+	glEnable(GL_DEPTH_TEST);
+
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR	
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shaderProgram.activate();
 
 		double currentTime = glfwGetTime();
