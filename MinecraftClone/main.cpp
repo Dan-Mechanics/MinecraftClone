@@ -118,7 +118,8 @@ int main() {
 	vao1.linkAttribute(vbo1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
 	vao1.linkAttribute(vbo1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	vao1.linkAttribute(vbo1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	vao1.linkAttribute(vbo1, 3, 2, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	vao1.linkAttribute(vbo1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+
 	vao1.unbind();
 	vbo1.unbind();
 	ebo1.unbind();
@@ -142,12 +143,12 @@ int main() {
 	glm::vec4 lightColor = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	glm::vec3 lightPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
-	glm::mat4 lightModel = glm::identity<glm::mat4>();
+	glm::mat4 lightModel = glm::mat4{ 1.0f };
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 pyramidPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
-	glm::mat4 pyramidModel = glm::identity<glm::mat4>();
-	lightModel = glm::translate(pyramidModel, pyramidPos);
+	glm::vec3 pyramidPos = glm::vec3{ 0.0f, 0.0f, 0.0f };
+	glm::mat4 pyramidModel = glm::mat4{ 1.0f };
+	pyramidModel = glm::translate(pyramidModel, pyramidPos);
 
 	lightShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
@@ -173,7 +174,7 @@ int main() {
 		camera.moveCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-
+		
 
 		shaderProgram.activate();
 		camera.applyMatrix(shaderProgram, "camMatrix");
