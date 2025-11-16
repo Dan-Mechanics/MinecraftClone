@@ -118,8 +118,7 @@ int main() {
 	vao1.linkAttribute(vbo1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
 	vao1.linkAttribute(vbo1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	vao1.linkAttribute(vbo1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	vao1.linkAttribute(vbo1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-
+	vao1.linkAttribute(vbo1, 3, 2, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
 	vao1.unbind();
 	vbo1.unbind();
 	ebo1.unbind();
@@ -142,7 +141,7 @@ int main() {
 
 	glm::vec4 lightColor = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-	glm::vec3 lightPos = glm::vec3{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 lightPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
 	glm::mat4 lightModel = glm::identity<glm::mat4>();
 	lightModel = glm::translate(lightModel, lightPos);
 
