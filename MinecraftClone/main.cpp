@@ -38,6 +38,33 @@ GLuint indices[] =
 	3, 0, 4
 };
 
+GLfloat lightVertices[] =
+{ //     COORDINATES     //
+	-0.1f, -0.1f,  0.1f,
+	-0.1f, -0.1f, -0.1f,
+	 0.1f, -0.1f, -0.1f,
+	 0.1f, -0.1f,  0.1f,
+	-0.1f,  0.1f,  0.1f,
+	-0.1f,  0.1f, -0.1f,
+	 0.1f,  0.1f, -0.1f,
+	 0.1f,  0.1f,  0.1f
+};
+
+GLuint lightIndices[] =
+{
+	0, 1, 2,
+	0, 2, 3,
+	0, 4, 7,
+	0, 7, 3,
+	3, 7, 6,
+	3, 6, 2,
+	2, 6, 5,
+	2, 5, 1,
+	1, 5, 4,
+	1, 4, 0,
+	4, 5, 6,
+	4, 6, 7
+};
 int main() {
 	if (!glfwInit())
 		return -1;
@@ -61,6 +88,8 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
+	// ===
+
 	Shader shaderProgram{ "default.vert", "default.frag" };
 
 	vao vao1;
@@ -76,6 +105,36 @@ int main() {
 	vbo1.unbind();
 	ebo1.unbind();
 
+	// ===
+
+	Shader lightShader("light.vert", "light.frag");
+
+	vao lightVao;
+	lightVao.bind();
+
+	vbo lightVbo{ lightVertices, sizeof(lightVertices) };
+	ebo lightEbo { lightIndices, sizeof(lightIndices) };
+
+	lightVao.linkAttribute(lightVbo, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
+	lightVbo.unbind();
+	lightVao.unbind();
+	lightEbo.unbind();
+
+	glm::vec3 lightPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
+	glm::mat4 lightModel = glm::identity<glm::mat4>();
+	lightModel = glm::translate(lightModel, lightPos);
+
+	glm::vec3 pyramidPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
+	glm::mat4 pyramidModel = glm::identity<glm::mat4>();
+	lightModel = glm::translate(pyramidModel, pyramidPos);
+
+	lightShader.activate();
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+
+	shaderProgram.activate();
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.id, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
+
 	Texture bluebells("texture.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	bluebells.setTextureUnit(shaderProgram, "tex0", 0);
 
@@ -87,15 +146,23 @@ int main() {
 		// BACKGROUND COLOR	
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		shaderProgram.activate();
 
 		camera.moveCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
+
+
+
+		shaderProgram.activate();
 		camera.applyMatrix(shaderProgram, "camMatrix");
 
 		bluebells.bind();
 		vao1.bind(); //				 COUNT OF INDICES.
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
+		lightShader.activate();
+		camera.applyMatrix(lightShader, "camMatrix");
+		lightVao.bind();
+		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 
