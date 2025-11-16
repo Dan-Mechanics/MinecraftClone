@@ -89,6 +89,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shaderProgram.activate();
 
+		camera.moveCamera(window);
 		camera.sendMatrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
 		bluebells.bind();
