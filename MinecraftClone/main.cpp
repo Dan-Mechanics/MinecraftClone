@@ -15,8 +15,8 @@
 #include "ebo.h"
 #include "Camera.h"
 
-const int width = 800;
-const int height = 800;
+const unsigned int width = 800;
+const unsigned int height = 800;
 
 // WE ARE MAKING A CUBE.
 GLfloat vertices[] =

@@ -7,9 +7,9 @@ void Camera::sendMatrix(float fovDeg, float nearPlane, float farPlane, Shader& s
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	view = glm::lookAt(position, position + orientation, up);
-	projection = glm::perspective(glm::radians(fovDeg), (float)(width / height), nearPlane, farPlane);
+	projection = glm::perspective(glm::radians(fovDeg), (float)width / height, nearPlane, farPlane);
 
-	glUniformMatrix2x4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
 }
 
 void Camera::handleInput() {
