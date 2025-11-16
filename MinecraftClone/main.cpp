@@ -168,7 +168,8 @@ int main() {
 
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR	
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.1f, 0.12f, 0.18f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		camera.moveCamera(window);
@@ -177,6 +178,7 @@ int main() {
 		
 
 		shaderProgram.activate();
+		glUniform3f(glGetUniformLocation(shaderProgram.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 		camera.applyMatrix(shaderProgram, "camMatrix");
 
 		bluebells.bind();
