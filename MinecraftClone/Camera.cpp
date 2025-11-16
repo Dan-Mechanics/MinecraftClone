@@ -42,10 +42,10 @@ void Camera::moveCamera(GLFWwindow* window) {
 
 	// SPRINT. ===
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		speed = 0.004f;
+		speed = 0.002f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-		speed = 0.001f;
+		speed = 0.0005f;
 	}
 
 	// CURSOR. ===
