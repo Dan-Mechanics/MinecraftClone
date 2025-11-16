@@ -14,8 +14,8 @@
 #include "vao.h"
 #include "ebo.h"
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const GLuint width = 800;
+const GLuint height = 800;
 
 // WE ARE MAKING A CUBE.
 GLfloat vertices[] =
