@@ -90,7 +90,8 @@ int main() {
 		shaderProgram.activate();
 
 		camera.moveCamera(window);
-		camera.sendMatrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+		camera.updateMatrix(45.0f, 0.1f, 100.0f);
+		camera.applyMatrix(shaderProgram, "camMatrix");
 
 		bluebells.bind();
 		vao1.bind(); //				 COUNT OF INDICES.
