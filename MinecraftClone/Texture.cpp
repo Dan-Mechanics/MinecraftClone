@@ -1,13 +1,14 @@
 #include "Texture.h"
 
-Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType) {
+Texture::Texture(const char* image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType) {
 	type = texType;
 	int widthImg, heightImg, numColorChannels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColorChannels, 0);
 
 	glGenTextures(1, &id);
-	glActiveTexture(slot);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	unit = slot;
 	glBindTexture(texType, id);
 
 	glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -29,7 +30,8 @@ void Texture::setTextureUnit(Shader& shader, const char* uniform, GLuint unit) c
 	glUniform1f(tex0uni, unit);
 }
 
-void Texture::bind() const{
+void Texture::bind() const {
+	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(type, id);
 }
 
