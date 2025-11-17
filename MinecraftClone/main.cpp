@@ -1,30 +1,17 @@
 // https://youtu.be/z03LXhRBLGI?si=kGOiI6dm8b5YW3Lo
 
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stb/stb_image.h>
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include "Texture.h"
-#include "shaderClass.h"
-#include "vbo.h"
-#include "vao.h"
-#include "ebo.h"
-#include "Camera.h"
+#include "Mesh.h"
 
 const unsigned int width = 800;
 const unsigned int height = 800;
 
 // Vertices coordinates
-GLfloat vertices[] =
-{ //     COORDINATES     /        COLORS        /    TexCoord    /       NORMALS     //
-	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+Vertex vertices[] =
+{ //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
@@ -34,16 +21,16 @@ GLuint indices[] =
 	0, 2, 3
 };
 
-GLfloat lightVertices[] =
+Vertex lightVertices[] =
 { //     COORDINATES     //
-	-0.1f, -0.1f,  0.1f,
-	-0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f,  0.1f,
-	-0.1f,  0.1f,  0.1f,
-	-0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f,  0.1f
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
 
 GLuint lightIndices[] =
@@ -85,40 +72,27 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
-	// ===
+	Texture textures[]{
+		Texture("planks", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+		Texture("planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+	};
 
 	Shader shaderProgram{ "default.vert", "default.frag" };
 
-	vao vao1;
-	vao1.bind();
-	
-	vbo vbo1{ vertices, sizeof(vertices) };
-	ebo ebo1{ indices, sizeof(indices) };
-
-	vao1.linkAttribute(vbo1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	vao1.linkAttribute(vbo1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	vao1.linkAttribute(vbo1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	vao1.linkAttribute(vbo1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-
-	vao1.unbind();
-	vbo1.unbind();
-	ebo1.unbind();
+	std::vector<Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector<GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	Mesh floor{ verts, ind, tex };
 
 	// ===
 
 	Shader lightShader("light.vert", "light.frag");
 
-	vao lightVao;
-	lightVao.bind();
+	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+	Mesh light{ lightVerts, lightInd, tex };
 
-	vbo lightVbo{ lightVertices, sizeof(lightVertices) };
-	ebo lightEbo { lightIndices, sizeof(lightIndices) };
-
-	lightVao.linkAttribute(lightVbo, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-
-	lightVbo.unbind();
-	lightVao.unbind();
-	lightEbo.unbind();
+	// ===
 
 	glm::vec4 lightColor = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -139,12 +113,6 @@ int main() {
 	glUniform4f(glGetUniformLocation(shaderProgram.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	Texture planksTexture("planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	planksTexture.setTextureUnit(shaderProgram, "tex0", 0);
-
-	Texture planksSpec("planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	planksSpec.setTextureUnit(shaderProgram, "tex1", 1);
-
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
@@ -158,37 +126,15 @@ int main() {
 		camera.moveCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		
-
-		shaderProgram.activate();
-		glUniform3f(glGetUniformLocation(shaderProgram.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-		camera.applyMatrix(shaderProgram, "camMatrix");
-
-		planksTexture.bind();
-		planksSpec.bind();
-		vao1.bind(); //				 COUNT OF INDICES.
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-		lightShader.activate();
-		camera.applyMatrix(lightShader, "camMatrix");
-		lightVao.bind();
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		floor.draw(shaderProgram, camera);
+		light.draw(lightShader, camera);
 
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
 	}
 
-	vao1.free();
-	vbo1.free();
-	ebo1.free();
-	planksTexture.free();
-	//planksSpec.free();
 	shaderProgram.free();
-
-	lightVao.free();
-	lightVbo.free();
-	lightEbo.free();
 	lightShader.free();
 
 	glfwDestroyWindow(window);
