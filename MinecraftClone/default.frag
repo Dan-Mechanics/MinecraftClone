@@ -13,7 +13,6 @@ uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
 
-
 vec4 pointLight()
 {	
 	vec3 lightVec = lightPos - crntPos;

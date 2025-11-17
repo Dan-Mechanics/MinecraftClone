@@ -72,25 +72,24 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
-	Texture textures[]{
-		Texture("planks", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+	/// ===
+
+	Texture textures[] {
+		Texture("planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
 		Texture("planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
 	};
 
-	Shader shaderProgram{ "default.vert", "default.frag" };
+	Shader shaderProgram("default.vert", "default.frag");
+	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	Mesh floor(verts, ind, tex);
 
-	std::vector<Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-	std::vector<GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
-	std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-	Mesh floor{ verts, ind, tex };
-
-	// ===
 
 	Shader lightShader("light.vert", "light.frag");
-
-	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
-	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
-	Mesh light{ lightVerts, lightInd, tex };
+	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+	Mesh light(lightVerts, lightInd, tex);
 
 	// ===
 
