@@ -19,15 +19,7 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	ebo.unbind();
 }
 
-void Mesh::draw
-(
-	Shader& shader,
-	Camera& camera,
-	glm::mat4 matrix,
-	glm::vec3 translation,
-	glm::quat rotation,
-	glm::vec3 scale
-) {
+void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale) {
 	shader.activate();
 	vao.bind();
 

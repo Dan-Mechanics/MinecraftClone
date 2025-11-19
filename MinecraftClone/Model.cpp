@@ -14,12 +14,14 @@ Model::Model(const char* file)
 	traverseNode(0);
 }
 
-void Model::draw(Shader& shader, Camera& camera)
-{
+void Model::draw(Shader& shader, Camera& camera) {
+	glm::vec3 translation{ 0.0f };
+	glm::quat rotation{ 0.5f, 0.5f, 0.5f, 0.5f };
+	glm::vec3 scale{ 0.2f };
+	
 	// Go over all meshes and draw each one
-	for (unsigned int i = 0; i < meshes.size(); i++)
-	{
-		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+	for (unsigned int i = 0; i < meshes.size(); i++) {
+		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
 	}
 }
 
