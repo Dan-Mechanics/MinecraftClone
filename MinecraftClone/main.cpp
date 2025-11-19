@@ -47,7 +47,7 @@ int main() {
 
 	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
 
-	Model model{ "models/sword/scene.gltf" };
+	Model model{ "models/map/scene.gltf" };
 
 	while (!glfwWindowShouldClose(window)) {
 		// BACKGROUND COLOR	
