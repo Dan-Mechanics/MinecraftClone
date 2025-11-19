@@ -110,7 +110,7 @@ float linearizeDepth(float depth)
 	return (2.0 * near * far) / (far + near - (depth * 2.0 - 1.0) * (far - near));
 }
 
-float logisticDepth(float depth, float steepness = 0.5f, float offset = 5.0f)
+float logisticDepth(float depth, float steepness = 0.2f, float offset = 5.0f)
 {
 	float zVal = linearizeDepth(depth);
 	return (1 / (1 + exp(-steepness * (zVal - offset))));
@@ -118,8 +118,7 @@ float logisticDepth(float depth, float steepness = 0.5f, float offset = 5.0f)
 
 void main()
 {
-	FragColor = direcLight();
 	// outputs final color
-	//float depth = logisticDepth(gl_FragCoord.z);
-	//FragColor = direcLight() * (1.0f - depth) + vec4(depth * vec3(0.85f, 0.85f, 0.90f), 1.0f);
+	float depth = logisticDepth(gl_FragCoord.z);
+	FragColor = direcLight() * (1.0f - depth) + vec4(depth * vec3(0.85f, 0.85f, 0.90f), 1.0f);
 }

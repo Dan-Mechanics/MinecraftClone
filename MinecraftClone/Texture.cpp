@@ -1,16 +1,15 @@
 #include"Texture.h"
 
-Texture::Texture(const char* image, const char* texType, GLuint slot)
-{
+Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	// Assigns the type of the texture ot the texture object
 	type = texType;
 
 	// Stores the width, height, and the number of color channels of the image
-	int widthImg, heightImg, numColCh;
+	int widthImg, heightImg, colorChannelCount;
 	// Flips the image so it appears right side up
 	stbi_set_flip_vertically_on_load(true);
 	// Reads the image from a file and stores it in bytes
-	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &colorChannelCount, 0);
 
 	// Generates an OpenGL texture object
 	glGenTextures(1, &id);
@@ -32,7 +31,9 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
 	// Check what type of color channels the texture has and load it accordingly
-	if (numColCh == 4)
+
+	switch (colorChannelCount) {
+	case 4:
 		glTexImage2D
 		(
 			GL_TEXTURE_2D,
@@ -45,7 +46,8 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 			GL_UNSIGNED_BYTE,
 			bytes
 		);
-	else if (numColCh == 3)
+		break;
+	case 3:
 		glTexImage2D
 		(
 			GL_TEXTURE_2D,
@@ -58,7 +60,8 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 			GL_UNSIGNED_BYTE,
 			bytes
 		);
-	else if (numColCh == 1)
+		break;
+	case 1:
 		glTexImage2D
 		(
 			GL_TEXTURE_2D,
@@ -71,8 +74,10 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 			GL_UNSIGNED_BYTE,
 			bytes
 		);
-	else
+		break;
+	default:
 		throw std::invalid_argument("Automatic Texture type recognition failed");
+	}
 
 	// Generates MipMaps
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -84,28 +89,21 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::setTextureUnit(Shader& shader, const char* uniform, GLuint unit)
-{
-	// Gets the location of the uniform
-	GLuint texUni = glGetUniformLocation(shader.id, uniform);
-	// Shader needs to be activated before changing the value of a uniform
+void Texture::setTextureUnit(Shader& shader, const char* uniform, GLuint unit) {
+	GLuint textureUnit = glGetUniformLocation(shader.id, uniform);
 	shader.activate();
-	// Sets the value of the uniform
-	glUniform1i(texUni, unit);
+	glUniform1i(textureUnit, unit);
 }
 
-void Texture::bind()
-{
+void Texture::bind() {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void Texture::unbind()
-{
+void Texture::unbind() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::free()
-{
+void Texture::free() {
 	glDeleteTextures(1, &id);
 }

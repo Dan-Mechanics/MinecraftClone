@@ -52,7 +52,6 @@ void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 tran
 	// Transform the matrices to their correct form
 	trans = glm::translate(trans, translation);
 	rot = glm::mat4_cast(rotation);
-	scale.y *= 5.0f;
 	sca = glm::scale(sca, scale);
 
 	// Push the matrices to the vertex shader

@@ -44,15 +44,25 @@ int main() {
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LESS);
 
 	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
-	//Model model{ "models/map/scene.gltf" };
 
 	Model trees{ "models/trees/scene.gltf" };
 	Model ground{ "models/ground/scene.gltf" };
 
+	int counter = 0;
+
 	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		counter++;
+		if (counter > 300) {
+			counter = 0;
+		}
+		else {
+			continue;
+		}
+
 		// BACKGROUND COLOR	
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClearColor(0.85f, 0.85f, 0.9f, 1.0f);
@@ -66,12 +76,11 @@ int main() {
 
 		glfwSwapBuffers(window);
 
-		glfwPollEvents();
 	}
 
-	shaderProgram.free();
 	trees.free();
 	ground.free();
+	shaderProgram.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -14,28 +14,21 @@ Model::Model(const char* file)
 	traverseNode(0);
 }
 
+void Model::draw(Shader& shader, Camera& camera)
+{
+	// Go over all meshes and draw each one
+	for (unsigned int i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+	}
+}
+
 void Model::free() const {
 	auto it = meshes.begin();
 	while (it != meshes.end()) {
 		it->free();
 		++it;
 	}
-}
-
-void Model::draw(Shader& shader, Camera& camera) {
-	//glm::vec3 translation{ 0.0f };
-	//glm::quat rotation{ 0.5f, 0.5f, 0.5f, 0.5f };
-	//glm::vec3 scale{ 0.2f };
-	//
-	//// Go over all meshes and draw each one
-	//for (unsigned int i = 0; i < meshes.size(); i++) {
-	//	meshes[i].Mesh::draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
-	//}
-
-	for (unsigned int i = 0; i < meshes.size(); i++) {
-		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
-	}
-
 }
 
 void Model::loadMesh(unsigned int indMesh)
@@ -134,10 +127,10 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix)
 	}
 
 	// Check if the node has children, and if it does, apply this function to them with the matNextNode
-	if (node.find("children") != node.end())
-	{
-		for (unsigned int i = 0; i < node["children"].size(); i++)
+	if (node.find("children") != node.end()){
+		for (unsigned int i = 0; i < node["children"].size(); i++) {
 			traverseNode(node["children"][i], matNextNode);
+		}
 	}
 }
 
@@ -205,7 +198,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
 
 	// Get properties from the bufferView
 	json bufferView = JSON["bufferViews"][buffViewInd];
-	unsigned int byteOffset = bufferView.value("byteOffset", 0);
+	unsigned int byteOffset = bufferView["byteOffset"];
 
 	// Get indices with regards to their type: unsigned int, unsigned short, or short
 	unsigned int beginningOfData = byteOffset + accByteOffset;
@@ -269,24 +262,23 @@ std::vector<Texture> Model::getTextures()
 		}
 
 		// If the texture has been loaded, skip this
-		if (!skip)
+		if (skip)
+			continue;
+
+		// Load diffuse texture
+		if (texPath.find("baseColor") != std::string::npos || texPath.find("diffuse") != std::string::npos)
 		{
-			// Load diffuse texture
-			if (texPath.find("baseColor") != std::string::npos)
-			{
-				Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", loadedTex.size());
-				textures.push_back(diffuse);
-				loadedTex.push_back(diffuse);
-				loadedTexName.push_back(texPath);
-			}
-			// Load specular texture
-			else if (texPath.find("metallicRoughness") != std::string::npos)
-			{
-				Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", loadedTex.size());
-				textures.push_back(specular);
-				loadedTex.push_back(specular);
-				loadedTexName.push_back(texPath);
-			}
+			Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", loadedTex.size());
+			textures.push_back(diffuse);
+			loadedTex.push_back(diffuse);
+			loadedTexName.push_back(texPath);
+		}
+		else if (texPath.find("metallicRoughness") != std::string::npos || texPath.find("specular") != std::string::npos)
+		{
+			Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", loadedTex.size());
+			textures.push_back(specular);
+			loadedTex.push_back(specular);
+			loadedTexName.push_back(texPath);
 		}
 	}
 
@@ -314,6 +306,7 @@ std::vector<Vertex> Model::assembleVertices
 			}
 		);
 	}
+
 	return vertices;
 }
 
@@ -331,8 +324,10 @@ std::vector<glm::vec2> Model::groupFloatsVec2(std::vector<float> floatVec)
 			vectors.back()[j] = floatVec[i + j];
 		}
 	}
+
 	return vectors;
 }
+
 std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec)
 {
 	const unsigned int floatsPerVector = 3;
@@ -347,6 +342,7 @@ std::vector<glm::vec3> Model::groupFloatsVec3(std::vector<float> floatVec)
 			vectors.back()[j] = floatVec[i + j];
 		}
 	}
+
 	return vectors;
 }
 std::vector<glm::vec4> Model::groupFloatsVec4(std::vector<float> floatVec)
