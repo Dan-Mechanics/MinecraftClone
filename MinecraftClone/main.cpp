@@ -28,7 +28,7 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
-	/// ===
+	// ===
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -46,7 +46,6 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
-
 	Model model{ "models/map/scene.gltf" };
 
 	while (!glfwWindowShouldClose(window)) {
