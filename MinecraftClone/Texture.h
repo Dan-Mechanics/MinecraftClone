@@ -6,7 +6,8 @@
 
 #include "shaderClass.h"
 
-class Texture{
+class Texture
+{
 public:
 	GLuint id;
 	const char* type;
@@ -14,10 +15,14 @@ public:
 
 	Texture(const char* image, const char* texType, GLuint slot);
 
-	void setTextureUnit(Shader& shader, const char* uniform, GLuint unit) const;
-	void bind() const;
-	void unbind() const;
-	void free() const;
+	// Assigns a texture unit to a texture
+	void setTextureUnit(Shader& shader, const char* uniform, GLuint unit);
+	// Binds a texture
+	void bind();
+	// Unbinds a texture
+	void unbind();
+	// Deletes a texture
+	void free();
 };
 
-#endif 
+#endif
