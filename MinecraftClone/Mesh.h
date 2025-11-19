@@ -15,8 +15,11 @@ public:
 	std::vector<GLuint> indices;
 	std::vector<Texture> textures;
 	vao vao;
+	ebo ebo;
+	vbo vbo;
 
 	Mesh(std::vector<Vertex>& verticies, std::vector<GLuint>& indices, std::vector<Texture>& textures);
+	void free() const;
 	void draw
 	(
 		Shader& shader,

@@ -6,8 +6,8 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	this->textures = textures;
 
 	vao.bind();
-	vbo vbo(vertices);
-	ebo ebo(indices);
+	vbo = { vertices };
+	ebo = { indices };
 
 	vao.linkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
 	vao.linkAttribute(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
@@ -52,6 +52,7 @@ void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 tran
 	// Transform the matrices to their correct form
 	trans = glm::translate(trans, translation);
 	rot = glm::mat4_cast(rotation);
+	scale.y *= 5.0f;
 	sca = glm::scale(sca, scale);
 
 	// Push the matrices to the vertex shader
@@ -62,4 +63,10 @@ void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 tran
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+void Mesh::free() const {
+	vao.free();
+	vbo.free();
+	ebo.free();
 }

@@ -17,6 +17,7 @@ public:
 class vbo {
 public:
 	GLuint id;
+	vbo();
 	vbo(std::vector<Vertex>& vertices);
 
 	void bind() const;

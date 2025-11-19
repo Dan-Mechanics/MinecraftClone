@@ -10,6 +10,7 @@ class Model {
 public:
 	Model(const char* file);
 	void draw(Shader& shader, Camera& camera);
+	void free() const;
 
 private:
 	const char* file;

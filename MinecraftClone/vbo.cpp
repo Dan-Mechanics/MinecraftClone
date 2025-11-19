@@ -1,5 +1,7 @@
 #include "vbo.h"
 
+vbo::vbo() = default;
+
 vbo::vbo(std::vector<Vertex>& vertices) {
 	glGenBuffers(1, &id);
 	glBindBuffer(GL_ARRAY_BUFFER, id);
