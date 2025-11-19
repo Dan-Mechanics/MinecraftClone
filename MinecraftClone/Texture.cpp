@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture(const char* image, const char* texType, GLuint slot, GLenum format, GLenum pixelType) {
+Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	type = texType;
 	int widthImg, heightImg, numColorChannels;
 	stbi_set_flip_vertically_on_load(true);
@@ -11,15 +11,60 @@ Texture::Texture(const char* image, const char* texType, GLuint slot, GLenum for
 	unit = slot;
 	glBindTexture(GL_TEXTURE_2D, id);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, pixelType, bytes);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	switch (numColorChannels) {
+	case 4:
+		glTexImage2D
+		(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			widthImg,
+			heightImg,
+			0,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			bytes
+		);
+		break;
+	case 3:
+		glTexImage2D
+		(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			widthImg,
+			heightImg,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			bytes
+		);
+		break;
+	case 2:
+		glTexImage2D
+		(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			widthImg,
+			heightImg,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			bytes
+		);
+		break;
+	default:
+		throw std::invalid_argument("Automatic Texture type recognition failed");
+	}
 
+	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(bytes);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
