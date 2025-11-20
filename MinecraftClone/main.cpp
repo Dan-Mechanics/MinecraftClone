@@ -32,8 +32,6 @@ int main() {
 
 	Shader shaderProgram("default.vert", "default.frag");
 
-	Shader outliningProgram("outlining.vert", "outlining.frag");
-
 	// ===
 
 	glm::vec4 lightColor = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
@@ -46,55 +44,48 @@ int main() {
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	//glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT); 
+	glFrontFace(GL_CW); // --> this depends on the model ur loading LOLOLOL.
 
 	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
 
 	Model trees{ "models/trees/scene.gltf" };
 	Model ground{ "models/ground/scene.gltf" };
 
-	int counter = 0;
+	double prevTime = 0.0;
+	double crntTime = 0.0;
+	double timeDiff;
+	unsigned int counter = 0;
+
+	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
-		counter++;
-		if (counter > 300) {
+		crntTime = glfwGetTime();
+		timeDiff = crntTime - prevTime;
+		++counter;
+		if (timeDiff >= 1.0 / 30.0) {
+			std::string fps = std::to_string((1.0 / timeDiff) * counter);
+			std::string ms = std::to_string((timeDiff / counter) * 1000);
+			std::string newTitle = "fps: " + fps + " | ms: " + ms;
+			glfwSetWindowTitle(window, newTitle.c_str());
+			prevTime = crntTime;
 			counter = 0;
-		}
-		else {
-			continue;
 		}
 
 		// BACKGROUND COLOR	
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClearColor(0.85f, 0.85f, 0.9f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		camera.moveCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
 		trees.draw(shaderProgram, camera);
 		ground.draw(shaderProgram, camera);
 
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
-		outliningProgram.activate();
-		glUniform1f(glGetUniformLocation(outliningProgram.id, "outlining"), 0.08f);
-
-		trees.draw(outliningProgram, camera);
-		ground.draw(outliningProgram, camera);
-
-		glStencilMask(0xFF);
-		glStencilFunc(GL_ALWAYS, 0, 0xFF);
-		glEnable(GL_DEPTH_TEST);
-
 		glfwSwapBuffers(window);
-
+		glfwPollEvents();
 	}
 
 	trees.free();
