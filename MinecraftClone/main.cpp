@@ -84,7 +84,7 @@ int main() {
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
 		outliningProgram.activate();
-		glUniform1f(glGetUniformLocation(outliningProgram.id, "outlining"), 1.08f);
+		glUniform1f(glGetUniformLocation(outliningProgram.id, "outlining"), 0.08f);
 
 		trees.draw(outliningProgram, camera);
 		ground.draw(outliningProgram, camera);
