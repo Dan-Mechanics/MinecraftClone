@@ -16,40 +16,39 @@ void Camera::applyMatrix(Shader& shader, const char* uniform) const {
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::moveCamera(GLFWwindow* window) {
-	// WASD. ===
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
-		position += speed * orientation;
-
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) 
-		position += speed * -glm::normalize(glm::cross(orientation, up));
-
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) 
-		position += speed * -orientation;
-
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
-		position += speed * glm::normalize(glm::cross(orientation, up));
-
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 
-		position += speed * up;
-
-	// UP DOWN. ===
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 
-		position += speed * up;
-
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) 
-		position += speed * -up;
-
+void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 	// SPRINT. ===
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		speed = 0.02f;
+		speed = 1.0f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-		speed = 0.005f;
+		speed = 0.25f;
 	}
+	
+	// WASD. ===
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		position += tickInterval * speed * orientation;
 
-	// CURSOR. ===
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		position += tickInterval * speed * -glm::normalize(glm::cross(orientation, up));
 
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		position += tickInterval * speed * -orientation;
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		position += tickInterval * speed * glm::normalize(glm::cross(orientation, up));
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		position += tickInterval * speed * up;
+
+	// UP DOWN. ===
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		position += tickInterval * speed * up;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		position += tickInterval * speed * -up;
+
+	// LOOK. ===
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 

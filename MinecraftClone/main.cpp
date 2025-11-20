@@ -53,33 +53,49 @@ int main() {
 	Model trees{ "models/trees/scene.gltf" };
 	Model ground{ "models/ground/scene.gltf" };
 
+	double fpsCap = 300.0;
+	double minDeltaTimeForFrame = 1.0 / fpsCap;
+	const float tickInterval = 0.01f;
+	float timer = 0.0f;
+
 	double prevTime = 0.0;
 	double crntTime = 0.0;
-	double timeDiff;
+	double deltaTime;
 	unsigned int counter = 0;
 
+	// DISABLE VSYNC
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
 		crntTime = glfwGetTime();
-		timeDiff = crntTime - prevTime;
+		deltaTime = crntTime - prevTime;
+
+		if (deltaTime < minDeltaTimeForFrame)
+			continue;
+
+
 		++counter;
-		if (timeDiff >= 1.0 / 30.0) {
-			std::string fps = std::to_string((1.0 / timeDiff) * counter);
-			std::string ms = std::to_string((timeDiff / counter) * 1000);
-			std::string newTitle = "fps: " + fps + " | ms: " + ms;
-			glfwSetWindowTitle(window, newTitle.c_str());
-			prevTime = crntTime;
-			counter = 0;
-		}
+		std::string fps = std::to_string((1.0 / deltaTime) * counter);
+		std::string ms = std::to_string((deltaTime / counter) * 1000);
+		std::string newTitle = "fps: " + fps + " | ms: " + ms;
+		glfwSetWindowTitle(window, newTitle.c_str());
+		prevTime = crntTime;
+		counter = 0;
 
 		// BACKGROUND COLOR	
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClearColor(0.85f, 0.85f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera.moveCamera(window);
-		camera.updateMatrix(45.0f, 0.1f, 100.0f);
+		timer += (float)deltaTime;
+		while (timer > tickInterval) {
+			timer -= tickInterval;
+			camera.moveCamera(window, tickInterval);
+			camera.updateMatrix(45.0f, 0.1f, 100.0f);
+		}
+
+		//camera.moveCamera(window);
+		//camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		trees.draw(shaderProgram, camera);
 		ground.draw(shaderProgram, camera);

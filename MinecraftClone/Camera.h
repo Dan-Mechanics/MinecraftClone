@@ -34,7 +34,7 @@ public:
 	/// </summary>
 	void updateMatrix(float fovDeg, float nearPlane, float farPlane);
 	void applyMatrix(Shader& shader, const char* uniform) const;
-	void moveCamera(GLFWwindow* window);
+	void moveCamera(GLFWwindow* window, const float tickInterval);
 };
 
 #endif 
