@@ -1,3 +1,5 @@
+// https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
+
 #include "Model.h"
 
 const unsigned int width = 800;
@@ -15,42 +17,32 @@ float rectangleVertices[] =
 	-1.0f,  1.0f,  0.0f, 1.0f
 };
 
-int main()
-{
-	// Initialize GLFW
-	glfwInit();
+int main() {
+	if (!glfwInit())
+		return -1;
 
-	// Tell GLFW what version of OpenGL we are using 
-	// In this case we are using OpenGL 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	// Tell GLFW we are using the CORE profile
-	// So that means we only have the modern functions
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(width, height, "YoutubeOpenGL", NULL, NULL);
-	// Error check if the window fails to create
-	if (window == NULL)
-	{
+	// HERE YOU CAN SET FULLSCREEN OR NOT.
+	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
+
+	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-	// Introduce the window into the current context
+
 	glfwMakeContextCurrent(window);
 
-	//Load GLAD so it configures OpenGL
 	gladLoadGL();
-	// Specify the viewport of OpenGL in the Window
-	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
+
 	glViewport(0, 0, width, height);
 
+	// ===
 
-
-
-
-	// Generates shaders
+	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
 	Shader framebufferProgram("framebuffer.vert", "framebuffer.frag");
 
@@ -61,11 +53,11 @@ int main()
 	shaderProgram.activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 	framebufferProgram.activate();
 	glUniform1i(glGetUniformLocation(framebufferProgram.id, "screenTexture"), 0);
 
-
-
+	// ===
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
@@ -73,17 +65,16 @@ int main()
 	// Enables Cull Facing
 	glEnable(GL_CULL_FACE);
 	// Keeps front faces
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	// Uses counter clock-wise standard
 	glFrontFace(GL_CCW);
-
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
+	// ===
 
 	Model model{ "models/ground/scene.gltf" };
-
 
 	// Prepare framebuffer rectangle VBO and VAO
 	unsigned int rectVAO, rectVBO;
@@ -97,23 +88,20 @@ int main()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+	double fpsCap = 300.0;
+	double minDeltaTimeForFrame = 1.0 / fpsCap;
+	const float tickInterval = 0.01f;
+	float timer = 0.0f;
 
-
-	// Variables to create periodic event for FPS displaying
 	double prevTime = 0.0;
 	double crntTime = 0.0;
-	double timeDiff;
-	// Keeps track of the amount of frames in timeDiff
+	double deltaTime;
 	unsigned int counter = 0;
 
-	// Use this to disable VSync (not advized)
-	//glfwSwapInterval(0);
-
-
 	// Create Frame Buffer Object
-	unsigned int FBO;
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	unsigned int fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 	// Create Framebuffer Texture
 	unsigned int framebufferTexture;
@@ -127,12 +115,11 @@ int main()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
 
 	// Create Render Buffer Object
-	unsigned int RBO;
-	glGenRenderbuffers(1, &RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	// Error checking framebuffer
 	auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -140,33 +127,26 @@ int main()
 		std::cout << "Framebuffer error: " << fboStatus << std::endl;
 
 
-	// Main while loop
-	while (!glfwWindowShouldClose(window))
-	{
-		// Updates counter and times
+	// DISABLE VSYNC
+	glfwSwapInterval(0);
+
+	while (!glfwWindowShouldClose(window)) {
 		crntTime = glfwGetTime();
-		timeDiff = crntTime - prevTime;
-		counter++;
+		deltaTime = crntTime - prevTime;
 
-		if (timeDiff >= 1.0 / 30.0)
-		{
-			// Creates new title
-			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
-			std::string ms = std::to_string((timeDiff / counter) * 1000);
-			std::string newTitle = "YoutubeOpenGL - " + FPS + "FPS / " + ms + "ms";
-			glfwSetWindowTitle(window, newTitle.c_str());
+		if (deltaTime < minDeltaTimeForFrame)
+			continue;
 
-			// Resets times and counter
-			prevTime = crntTime;
-			counter = 0;
-
-			// Use this if you have disabled VSync
-			//camera.Inputs(window);
-		}
-
+		++counter;
+		std::string fps = std::to_string((1.0 / deltaTime) * counter);
+		std::string ms = std::to_string((deltaTime / counter) * 1000);
+		std::string newTitle = "fps: " + fps + " | ms: " + ms;
+		glfwSetWindowTitle(window, newTitle.c_str());
+		prevTime = crntTime;
+		counter = 0;
 
 		// Bind the custom framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and depth buffer
@@ -174,15 +154,14 @@ int main()
 		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
 		glEnable(GL_DEPTH_TEST);
 
-		// Handles camera inputs (delete this if you have disabled VSync)
-		camera.moveCamera(window);
-		// Updates and exports the camera matrix to the Vertex Shader
-		camera.updateMatrix(45.0f, 0.1f, 100.0f);
+		timer += (float)deltaTime;
+		while (timer > tickInterval) {
+			timer -= tickInterval;
+			camera.moveCamera(window, tickInterval);
+			camera.updateMatrix(45.0f, 0.1f, 100.0f);
+		}
 
-
-		// Draw the normal model
 		model.draw(shaderProgram, camera);
-
 
 		// Bind the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -193,21 +172,17 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, framebufferTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
+		// https://youtu.be/QQ3jr-9Rc1o?si=2S_BGxm-etPpO9xY&t=220
 
-		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
-		// Take care of all GLFW events
 		glfwPollEvents();
 	}
 
-
-
-	// Delete all the objects we've created
+	model.free();
 	shaderProgram.free();
-	glDeleteFramebuffers(1, &FBO);
-	// Delete window before ending the program
+	glDeleteFramebuffers(1, &fbo);
+
 	glfwDestroyWindow(window);
-	// Terminate GLFW before ending the program
 	glfwTerminate();
 	return 0;
 }
