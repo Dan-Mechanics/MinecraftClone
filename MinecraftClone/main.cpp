@@ -65,7 +65,7 @@ int main() {
 	// Enables Cull Facing
 	glEnable(GL_CULL_FACE);
 	// Keeps front faces
-	glCullFace(GL_BACK);
+	glCullFace(GL_FRONT);
 	// Uses counter clock-wise standard
 	glFrontFace(GL_CCW);
 
@@ -125,7 +125,6 @@ int main() {
 	auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer error: " << fboStatus << std::endl;
-
 
 	// DISABLE VSYNC
 	glfwSwapInterval(0);
