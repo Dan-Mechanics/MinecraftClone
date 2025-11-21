@@ -40,7 +40,8 @@ void Model::draw(
 	glm::vec3 scale) {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+		//meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i], translation, rotation, scale);
 	}
 }
 

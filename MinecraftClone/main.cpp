@@ -2,8 +2,10 @@
 
 #include "Model.h"
 
+
 const unsigned int width = 800;
 const unsigned int height = 800;
+
 
 // Takes care of the information needed to draw the windows
 const unsigned int numWindows = 100;
@@ -46,33 +48,42 @@ int main() {
 
 	// ===
 
+	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag");
 	Shader grassProgram("default.vert", "grass.frag");
 	Shader winProgram("default.vert", "windows.frag");
 
-	// ===
-
-	glm::vec4 lightColor = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	glm::vec3 lightPos = glm::vec3{ 0.5f, 0.5f, 0.5f };
-	glm::mat4 lightModel = glm::mat4{ 1.0f };
+	// Take care of all the light related things
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
 	shaderProgram.activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
 	grassProgram.activate();
 	glUniform4f(glGetUniformLocation(grassProgram.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(grassProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK); 
-	glFrontFace(GL_CCW); // --> this depends on the model ur loading LOLOLOL.
+	// ===
 
+	// Enables the Depth Buffer
+	glEnable(GL_DEPTH_TEST);
+
+	// Enables Cull Facing
+	glEnable(GL_CULL_FACE);
+	// Keeps front faces
+	glCullFace(GL_BACK);
+	// Uses counter clock-wise standard
+	glFrontFace(GL_CCW);
+	// Configures the blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	Camera camera{ width, height, glm::vec3{0.0f, 0.0f, 2.0f} };
+	// Creates camera object
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+	// ===
 
 	Model ground{ "models/ground/scene.gltf" };
 	Model grass{ "models/grass/scene.gltf" };
@@ -120,7 +131,7 @@ int main() {
 
 		// BACKGROUND COLOR	
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClearColor(0.85f, 0.85f, 0.9f, 1.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		timer += (float)deltaTime;
@@ -144,10 +155,12 @@ int main() {
 		}
 		// Sort windows by distance from camera
 		qsort(orderDraw, numWindows, sizeof(unsigned int), compare);
+		float x = 0.0f;
 		// Draw windows
 		for (unsigned int i = 0; i < numWindows; i++)
 		{
 			windows.draw(winProgram, camera, positionsWin[orderDraw[i]], glm::quat(1.0f, 0.0f, rotationsWin[orderDraw[i]], 0.0f));
+			//i++;
 		}
 		glDisable(GL_BLEND);
 		glEnable(GL_CULL_FACE);
@@ -159,8 +172,10 @@ int main() {
 	grass.free();
 	ground.free();
 	windows.free();
+
 	shaderProgram.free();
 	grassProgram.free();
+	winProgram.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
