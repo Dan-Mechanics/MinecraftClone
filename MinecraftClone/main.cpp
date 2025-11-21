@@ -55,19 +55,19 @@ int main() {
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	framebufferProgram.activate();
-	glUniform1i(glGetUniformLocation(framebufferProgram.id, "screenTexture"), 0);
+	glUniform1i(glGetUniformLocation(framebufferProgram.id, "screenTexture"), 1);
 
 	// ===
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
-	// Enables Cull Facing
-	glEnable(GL_CULL_FACE);
-	// Keeps front faces
+
+	/*glEnable(GL_CULL_FACE);
+
 	glCullFace(GL_FRONT);
-	// Uses counter clock-wise standard
-	glFrontFace(GL_CCW);
+
+	glFrontFace(GL_CCW);*/
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
