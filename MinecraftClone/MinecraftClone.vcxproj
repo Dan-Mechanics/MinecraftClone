@@ -163,6 +163,7 @@
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="outlining.vert" />
+    <None Include="windows.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -181,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="outlining.frag" />
+    <Text Include="grass.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

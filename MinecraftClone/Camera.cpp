@@ -19,10 +19,10 @@ void Camera::applyMatrix(Shader& shader, const char* uniform) const {
 void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 	// SPRINT. ===
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		speed = 1.0f;
+		speed = 30.0f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-		speed = 0.25f;
+		speed = 10.0f;
 	}
 	
 	// WASD. ===

@@ -14,9 +14,30 @@ Model::Model(const char* file)
 	traverseNode(0);
 }
 
-void Model::draw(Shader& shader, Camera& camera)
-{
-	// Go over all meshes and draw each one
+//void Model::draw(Shader& shader, Camera& camera)
+//{
+//	// Go over all meshes and draw each one
+//	for (unsigned int i = 0; i < meshes.size(); i++)
+//	{
+//		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+//	}
+//}
+
+//void Model::draw(Shader& shader, Camera& camera)
+//{
+//	// Go over all meshes and draw each one
+//	for (unsigned int i = 0; i < meshes.size(); i++)
+//	{
+//		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);
+//	}
+//}
+
+void Model::draw(
+	Shader& shader,
+	Camera& camera,
+	glm::vec3 translation,
+	glm::quat rotation,
+	glm::vec3 scale) {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].Mesh::draw(shader, camera, matricesMeshes[i]);

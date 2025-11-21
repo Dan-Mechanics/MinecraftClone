@@ -19,7 +19,17 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	ebo.unbind();
 }
 
-void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale) {
+void Mesh::draw
+(
+	Shader& shader,
+	Camera& camera,
+	glm::mat4 matrix,
+	glm::vec3 translation,
+	glm::quat rotation,
+	glm::vec3 scale
+)
+{
+	// Bind shader to be able to access uniforms
 	shader.activate();
 	vao.bind();
 
@@ -31,10 +41,12 @@ void Mesh::draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 tran
 	{
 		std::string num;
 		std::string type = textures[i].type;
-		if (type == "diffuse") {
+		if (type == "diffuse")
+		{
 			num = std::to_string(numDiffuse++);
 		}
-		else if (type == "specular") {
+		else if (type == "specular")
+		{
 			num = std::to_string(numSpecular++);
 		}
 		textures[i].setTextureUnit(shader, (type + num).c_str(), i);
