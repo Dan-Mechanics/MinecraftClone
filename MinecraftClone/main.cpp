@@ -55,26 +55,26 @@ int main() {
 	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	framebufferProgram.activate();
-	glUniform1i(glGetUniformLocation(framebufferProgram.id, "screenTexture"), 1);
+	glUniform1i(glGetUniformLocation(framebufferProgram.id, "screenTexture"), 0);
 
 	// ===
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
-
-	/*glEnable(GL_CULL_FACE);
-
+	// Enables Cull Facing
+	glEnable(GL_CULL_FACE);
+	// Keeps front faces
 	glCullFace(GL_FRONT);
-
-	glFrontFace(GL_CCW);*/
+	// Uses counter clock-wise standard
+	glFrontFace(GL_CCW);
 
 	// Creates camera object
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	// ===
 
-	Model model{ "models/ground/scene.gltf" };
+	Model model{ "models/map/scene.gltf" };
 
 	// Prepare framebuffer rectangle VBO and VAO
 	unsigned int rectVAO, rectVBO;
