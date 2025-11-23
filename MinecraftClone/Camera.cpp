@@ -22,7 +22,7 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 		speed = 30.0f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-		speed = 10.0f;
+		speed = 5.0f;
 	}
 	
 	// WASD. ===

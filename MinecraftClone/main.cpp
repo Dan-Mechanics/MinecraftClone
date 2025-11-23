@@ -67,6 +67,7 @@ int main() {
 
 	// Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("default.vert", "default.frag", "default.geom");
+	Shader normalsShader("default.vert", "normals.frag", "normals.geom");
 
 	// Take care of all the light related things
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -131,6 +132,7 @@ int main() {
 		}
 
 		model.draw(shaderProgram, camera);
+		model.draw(normalsShader, camera);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
