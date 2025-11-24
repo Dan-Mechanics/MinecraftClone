@@ -27,7 +27,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shaderClass.cpp">
+    <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vbo.cpp">
@@ -62,15 +62,9 @@
     <None Include="default.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="framebuffer.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="framebuffer.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shaderClass.h">
+    <ClInclude Include="shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vbo.h">

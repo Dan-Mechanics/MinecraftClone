@@ -54,7 +54,7 @@ void Mesh::draw
 	}
 	// Take care of the camera Matrix
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-	camera.applyMatrix(shader, "camMatrix");
+	camera.sendMatrixToShader(shader, "camMatrix");
 
 	// Initialize matrices
 	glm::mat4 trans = glm::mat4(1.0f);

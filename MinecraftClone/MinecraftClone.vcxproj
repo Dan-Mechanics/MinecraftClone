@@ -153,7 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="shaderClass.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="vao.cpp" />
@@ -162,17 +162,13 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
-    <None Include="framebuffer.frag" />
-    <None Include="framebuffer.vert" />
-    <None Include="skybox.frag" />
-    <None Include="skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ebo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="shaderClass.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="vao.h" />
     <ClInclude Include="vbo.h" />

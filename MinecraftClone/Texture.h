@@ -3,11 +3,9 @@
 
 #include <glad/glad.h>
 #include <stb/stb_image.h>
+#include "shader.h"
 
-#include "shaderClass.h"
-
-class Texture
-{
+class Texture {
 public:
 	GLuint id;
 	const char* type;
@@ -23,6 +21,7 @@ public:
 	void unbind();
 	// Deletes a texture
 	void free();
+
 };
 
 #endif
