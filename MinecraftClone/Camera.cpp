@@ -48,7 +48,7 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
-	const auto leftIsPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+	/*const auto leftIsPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
 	if (!leftIsPressed) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -61,13 +61,13 @@ void Camera::rotateCamera(GLFWwindow* window) {
 	if (shouldCenterCursor) {
 		glfwSetCursorPos(window, (double)width / 2, (double)height / 2);
 		shouldCenterCursor = false;
-	}
+	}*/
 
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 
 	float rotX = sensitivity * (float)(mouseY - ((float)height / 2)) / height;
-	float rotY = sensitivity * (float)(mouseX - ((float)height / 2)) / height;
+	float rotY = sensitivity * (float)(mouseX - ((float)width / 2)) / width;
 
 	glm::vec3 newOrientation = glm::rotate(eyesForward, glm::radians(-rotX), glm::normalize(glm::normalize(glm::cross(eyesForward, up))));
 

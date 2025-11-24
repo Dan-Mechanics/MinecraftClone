@@ -2,8 +2,8 @@
 
 #include "Model.h"
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 1920;
+const unsigned int height = 1080;
 const double fpsCap = 300.0;
 const double minDeltaTimeForFrame = 1.0 / fpsCap;
 const float tickInterval = 0.01f;
@@ -60,18 +60,21 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// HERE YOU CAN SET FULLSCREEN OR NOT.
-	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
 
+	//GLFWwindow* window = glfwCreateWindow(width, height, "My Title", glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
 
+	glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 144);
+
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 	glViewport(0, 0, width, height);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	// ===
 
@@ -82,7 +85,7 @@ int main() {
 
 
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader shader("default.vert", "default.frag");
+	Shader defaultShader("default.vert", "default.frag");
 	// Store mesh data in vectors for the mesh
 	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
 	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
@@ -100,9 +103,6 @@ int main() {
 	Mesh light(lightVerts, lightInd, tex);
 
 
-
-
-
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
@@ -117,24 +117,25 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-	shader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
-	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	defaultShader.activate();
+	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
+	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 
 
 
 	// ===
 
+	// https://learnopengl.com/Advanced-OpenGL/Face-culling
 	glEnable(GL_DEPTH_TEST);
-	/*glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);*/
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK); 
+	glFrontFace(GL_CW); // THIS IS INCORRECT BECAUSE IT MAKES THE MESH EASIER TO WRITE.
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
-	const auto sensitivity = 100.0f;
+	const auto sensitivity = 125.0f;
 	Camera camera(width, height, standardSpeed, sensitivity);
 
 	float timer = 0.0f;
@@ -161,9 +162,9 @@ int main() {
 		prevTime = crntTime;
 		counter = 0;
 
-		const auto r = 15 / 255.0f;
-		const auto g = 15 / 255.0f;
-		const auto b = 50 / 255.0f;
+		const auto r = 12 / 255.0f;
+		const auto g = 12 / 255.0f;
+		const auto b = 40 / 255.0f;
 		glClearColor(r, g, b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -176,16 +177,19 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		floor.draw(shader, camera);
 		light.draw(lightShader, camera);
+		floor.draw(defaultShader, camera);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			break;
 	}
 
 	floor.free();
 	light.free();
-	shader.free();
+	defaultShader.free();
 	lightShader.free();
 
 	glfwDestroyWindow(window);
