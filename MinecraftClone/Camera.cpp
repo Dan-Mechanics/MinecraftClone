@@ -3,7 +3,8 @@
 Camera::Camera() = default;
 
 Camera::Camera(const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity) :
-	width{ width }, height{ height }, standardSpeed{ standardSpeed }, sensitivity{ sensitivity } { }
+	width{ width }, height{ height }, standardSpeed{ standardSpeed }, sensitivity{ sensitivity } { 
+}
 
 void Camera::updateMatrix(float fovDeg, float nearPlane, float farPlane) {
 	glm::mat4 view = glm::mat4(1.0f);
@@ -48,8 +49,6 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 

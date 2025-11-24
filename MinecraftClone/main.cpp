@@ -74,7 +74,9 @@ int main() {
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 	glViewport(0, 0, width, height);
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetCursorPos(window, (double)width / 2.0, (double)height / 2.0f);
 
 	// ===
 
@@ -177,7 +179,7 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		light.draw(lightShader, camera);
+		light.draw(lightShader, camera, glm::identity<glm::mat4>(), glm::vec3{0.0f, 0.0f, 1.0f});
 		floor.draw(defaultShader, camera);
 
 		glfwSwapBuffers(window);
