@@ -2,8 +2,10 @@
 
 Camera::Camera() = default;
 
-Camera::Camera(const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity) :
+Camera::Camera(GLFWwindow* window, const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity) :
 	width{ width }, height{ height }, standardSpeed{ standardSpeed }, sensitivity{ sensitivity } { 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetCursorPos(window, (double)width / 2.0, (double)height / 2.0f);
 }
 
 void Camera::updateMatrix(float fovDeg, float nearPlane, float farPlane) {
@@ -27,16 +29,22 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 		movement += bodyForward;
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		movement -= glm::normalize(glm::cross(bodyForward, up));
+		// THIS IS NOT CORRECT ITS NOT REALISTIC !!
+		movement -= bodyRight;
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		movement -= bodyForward;
 
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		movement += glm::normalize(glm::cross(bodyForward, up));
+		movement += bodyRight;
 
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		movement += up;
+	// THIS TOOK 30 MINS FFS.
+	/*float magnitude = pow(movement.x + movement.y + movement.z, 1.0f / 3.0f);
+	if (magnitude > 0.0f) {
+		movement.x /= magnitude;
+		movement.y /= magnitude;
+		movement.z /= magnitude;
+	}*/
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		movement += up;
@@ -66,11 +74,12 @@ void Camera::rotateCamera(GLFWwindow* window) {
 		rotX = -ang;
 
 	// UP DOWN ===
-	eyesForward = glm::rotate(forward, glm::radians(-rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
+	eyesForward = glm::rotate(worldForward, glm::radians(rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
 
 	// LEFT RIGHT ===
 	eyesForward = glm::rotate(eyesForward, glm::radians(-rotY), up);
-	bodyForward = glm::rotate(forward, glm::radians(-rotY), up);
+	bodyForward = glm::rotate(worldForward, glm::radians(-rotY), up);
+	bodyRight = glm::rotate(bodyForward, glm::radians(-90.0f), up);
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
