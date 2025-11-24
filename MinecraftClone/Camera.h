@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
-#include "shaderClass.h"
+#include "shader.h"
 
 class Camera {
 public:
@@ -16,9 +16,7 @@ public:
 	glm::vec3 eyesForward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 bodyForward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
-	glm::mat4 cameraMatrix = glm::mat4{ 1.0 };
-
-	const glm::vec3 worldUp = glm::vec3{ 0.0f, 1.0f, 0.0f };
+	glm::mat4 cameraMatrix = glm::identity<glm::mat4>();
 
 	bool shouldCenterCursor{};
 	const unsigned int width{};
