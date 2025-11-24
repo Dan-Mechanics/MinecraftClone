@@ -13,6 +13,7 @@
 class Camera {
 public:
 	glm::vec3 position{};
+	glm::vec3 forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 eyesForward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 bodyForward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
@@ -23,6 +24,9 @@ public:
 	const unsigned int height{};
 	const float standardSpeed{};
 	const float sensitivity{};
+
+	float rotX{};
+	float rotY{};
 
 	Camera();
 	Camera(const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity);

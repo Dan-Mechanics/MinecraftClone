@@ -135,7 +135,7 @@ int main() {
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
-	const auto sensitivity = 125.0f;
+	const auto sensitivity = 0.1f;
 	Camera camera(width, height, standardSpeed, sensitivity);
 
 	float timer = 0.0f;

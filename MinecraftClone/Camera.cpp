@@ -48,34 +48,31 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
-	/*const auto leftIsPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-
-	if (!leftIsPressed) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		shouldCenterCursor = true;
-		return;
-	}
-
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-	if (shouldCenterCursor) {
-		glfwSetCursorPos(window, (double)width / 2, (double)height / 2);
-		shouldCenterCursor = false;
-	}*/
 
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 
-	float rotX = sensitivity * (float)(mouseY - ((float)height / 2)) / height;
-	float rotY = sensitivity * (float)(mouseX - ((float)width / 2)) / width;
+	double halfWidth = (double)width / 2.0;
+	double halfHeight = (double)height / 2.0;
 
-	glm::vec3 newOrientation = glm::rotate(eyesForward, glm::radians(-rotX), glm::normalize(glm::normalize(glm::cross(eyesForward, up))));
+	rotX += (mouseY - halfHeight) * sensitivity;
+	rotY += (mouseX - halfWidth) * sensitivity;
 
-	if (abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-		eyesForward = newOrientation;
+	const auto ang = 89.9f;
+	if (rotX > ang)
+		rotX = ang;
 
+	if (rotX < -ang)
+		rotX = -ang;
+
+	// UP DOWN ===
+	eyesForward = glm::rotate(forward, glm::radians(-rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
+
+	// LEFT RIGHT ===
 	eyesForward = glm::rotate(eyesForward, glm::radians(-rotY), up);
-	bodyForward = glm::rotate(bodyForward, glm::radians(-rotY), up);
+	bodyForward = glm::rotate(forward, glm::radians(-rotY), up);
 
-	glfwSetCursorPos(window, (double)width / 2, (double)height / 2);
+	// RESET ===
+	glfwSetCursorPos(window, halfWidth, halfHeight);
 }
