@@ -1,13 +1,13 @@
 // https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
 
 #include "Model.h"
+#include "Cube.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 const double fpsCap = 300.0;
 const double minDtForFrame = 1.0 / fpsCap;
 const double tickInterval = 0.02;
-const auto culling = false;
 
 // Vertices coordinates
 Vertex vertices[] = { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
@@ -66,30 +66,21 @@ int main() {
 
 	// Shader for light cube
 	Shader lightShader("default.vert", "light.frag");
-	// Store mesh data in vectors for the mesh
-	std::vector <Vertex> lightVerts(cubeVerticies, cubeVerticies + sizeof(cubeVerticies) / sizeof(Vertex));
-	std::vector <GLuint> lightInd(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
-	// Create light mesh
-	Mesh cube(lightVerts, lightInd, tex);
-
-
+	Cube cube{ glm::vec3{0.5f}, glm::vec3{0.0f} , glm::vec3{1.0f} };
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3{ 0.0f, 0.0f, 0.0f };
-	glm::mat4 lightModel = glm::identity<glm::mat4>();
-	lightModel = glm::translate(lightModel, lightPos);
 
 	glm::vec3 objectPos{};
-	glm::mat4 objectModel = glm::identity<glm::mat4>();
+	glm::mat4 objectModel = glm::mat4{ 1.0f };
 	objectModel = glm::translate(objectModel, objectPos);
 
 	lightShader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(lightShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
 	defaultShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), cube.pos.x, cube.pos.y, cube.pos.z);
 
 	// ===
 
@@ -151,22 +142,17 @@ int main() {
 			}
 
 			lightColor.g = lightColor.r;
-
-			std::cout << lightColor.r << " " << lightColor.g << " " << lightColor.b << std::endl;
-
-			//glm::mat4 lightModel = glm::identity<glm::mat4>();
-			lightPos = -camera.position;
-			lightPos.y = 1.0f;
-			//lightModel = glm::translate(glm::identity<glm::mat4>(), lightPos);
+			cube.pos = -camera.position;
+			cube.pos.y = 1.0f;
 		}
 
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		cube.ezDraw(lightShader, camera, lightModel, lightPos, lightPos, lightColor);
-	//	floor.draw(defaultShader, camera, objectModel, {0.0f, -0.5f, 0.0f});
-		floor.ezDraw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, lightPos, lightColor);
+		cube.draw(lightShader, camera, cube.pos, lightColor);
+		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{1.0f, 0.0f, 0.0f, 0.0f}, 
+			glm::vec3{1.0f});
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -1,11 +1,31 @@
 #include "Cube.h"
 
+Vertex cubeVerticies[] = { //     COORDINATES     //
+	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
+	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
+	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
+	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
+	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
+};
+
+GLuint cubeIndices[] = {
+	0, 1, 3, 3, 1, 2,
+	1, 5, 2, 2, 5, 6,
+	5, 4, 6, 6, 4, 7,
+	4, 0, 7, 7, 0, 3,
+	3, 2, 7, 7, 2, 6,
+	4, 5, 0, 0, 5, 1
+};
+
 Cube::Cube() = default;
-Cube::Cube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) : position{ position }, rotation{ rotation }, scale{ scale } {
+Cube::Cube(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec3& scale) : pos{ pos }, rotation{ rotation }, scale{ scale } {
 	std::vector <Vertex> verts(cubeVerticies, cubeVerticies + sizeof(cubeVerticies) / sizeof(Vertex));
 	std::vector <GLuint> tris(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
 	std::vector<Texture> tex{};
-	Mesh cube{ verts, tris, tex };
+	mesh = { verts, tris, tex };
 }
 
 void Cube::draw(const Shader& shader, const Camera& camera, const glm::vec3& lightPos, const glm::vec4& lightColor) const {
@@ -17,14 +37,14 @@ void Cube::draw(const Shader& shader, const Camera& camera, const glm::vec3& lig
 	camera.sendMatrixToShader(shader, "camMatrix");
 
 	// Initialize matrices
-	glm::mat4 model = glm::identity<glm::mat4>(); // DO NOTHING
-	glm::mat4 trans = glm::identity<glm::mat4>();
-	glm::mat4 rot = glm::identity<glm::mat4>(); // TODO
-	glm::mat4 sca = glm::identity<glm::mat4>();
+	glm::mat4 model{ 1.0f }; // DO NOTHING
+	glm::mat4 trans{ 1.0f }; 
+	glm::mat4 rot{ 1.0f }; // TODO
+	glm::mat4 sca{ 1.0f };
 
 	// Transform the matrices to their correct form
-	trans = glm::translate(trans, position);
-	rot = glm::mat4_cast(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)); // TODO
+	trans = glm::translate(trans, pos);
+	rot = glm::mat4_cast(glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f }); // TODO
 	sca = glm::scale(sca, scale);
 
 	// Push the matrices to the vertex shader
@@ -42,7 +62,7 @@ void Cube::draw(const Shader& shader, const Camera& camera, const glm::vec3& lig
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {
-	position += vel * (float)dt;
+	pos += vel * (float)dt;
 }
 
 void Cube::free() const {
