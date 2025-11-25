@@ -40,6 +40,8 @@ int main() {
 		return -1;
 	}
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	//glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 144);
 
 	glfwMakeContextCurrent(window);
@@ -66,21 +68,24 @@ int main() {
 
 	// Shader for light cube
 	Shader lightShader("default.vert", "light.frag");
-	Cube cube{ glm::vec3{0.5f}, glm::vec3{0.0f} , glm::vec3{1.0f} };
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	Cube lightCube{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
+
+	Cube bouncingCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	bouncingCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
 	glm::vec3 objectPos{};
 	glm::mat4 objectModel = glm::mat4{ 1.0f };
 	objectModel = glm::translate(objectModel, objectPos);
 
-	lightShader.activate();
+	/*lightShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(lightShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
 	defaultShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), cube.pos.x, cube.pos.y, cube.pos.z);
+	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightCube.pos.x, lightCube.pos.y, lightCube.pos.z);*/
 
 	// ===
 
@@ -142,20 +147,22 @@ int main() {
 			}
 
 			lightColor.g = lightColor.r;
-			cube.pos = -camera.position;
-			cube.pos.y = 1.0f;
+			//lightCube.pos = -camera.position;
+			//lightCube.pos.y = 1.0f;
+			bouncingCube.rot.y += 1;
+			lightCube.setColor(lightColor);
 		}
 
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		cube.draw(lightShader, camera, cube.pos, lightColor);
-		cube.pos += glm::vec3{ 0.0f, 2.0f, 0.0f };
-		cube.draw(lightShader, camera, cube.pos, lightColor);
-		cube.pos -= glm::vec3{ 0.0f, 2.0f, 0.0f };
+		lightCube.draw(lightShader, camera);
+
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, cube.pos, lightColor);
+			glm::vec3{ 1.0f }, lightCube.pos, lightColor);
+
+		bouncingCube.draw(lightShader, camera);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -165,7 +172,7 @@ int main() {
 	}
 
 	floor.free();
-	cube.free();
+	lightCube.free();
 	defaultShader.free();
 	lightShader.free();
 

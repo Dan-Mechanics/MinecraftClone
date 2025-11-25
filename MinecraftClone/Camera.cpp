@@ -29,7 +29,6 @@ void Camera::moveCamera(GLFWwindow* window, const double dt) {
 		movement += bodyForward;
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		// THIS IS NOT CORRECT ITS NOT REALISTIC !!
 		movement -= bodyRight;
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -79,5 +78,4 @@ void Camera::rotateCamera(GLFWwindow* window) {
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
-//	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
