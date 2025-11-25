@@ -151,8 +151,8 @@ int main() {
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
 		cube.draw(lightShader, camera, cube.pos, lightColor);
-		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{1.0f, 0.0f, 0.0f, 0.0f}, 
-			glm::vec3{1.0f});
+		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, cube.pos, lightColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

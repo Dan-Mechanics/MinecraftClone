@@ -20,8 +20,12 @@ public:
 
 	Mesh();
 	Mesh(std::vector<Vertex>& verticies, std::vector<GLuint>& indices, std::vector<Texture>& textures);
-	void draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale);
+
+	void draw(const Shader & shader, const Camera & camera, glm::mat4 matrix, glm::vec3 translation,
+		glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor) const;
+
 	void free() const;
+
 
 };
 
