@@ -1,38 +1,38 @@
 #include "Cube.h"
 
-Vertex cubeVerticies[] = { //     COORDINATES     //
-	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
-};
-
-GLuint cubeIndices[] = {
-	0, 1, 3, 3, 1, 2,
-	1, 5, 2, 2, 5, 6,
-	5, 4, 6, 6, 4, 7,
-	4, 0, 7, 7, 0, 3,
-	3, 2, 7, 7, 2, 6,
-	4, 5, 0, 0, 5, 1
-};
-
 Cube::Cube() = default;
 Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
-	std::vector <Vertex> verts(cubeVerticies, cubeVerticies + sizeof(cubeVerticies) / sizeof(Vertex));
-	std::vector <GLuint> tris(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
-	std::vector<Texture> tex{};
-	mesh = { verts, tris, tex };
+	Vertex cubeVerts[] = {
+		Vertex{glm::vec3(-0.5f, -0.5f, 0),
+		Vertex{glm::vec3(0.5f, -0.5f, 0), 
+		Vertex{glm::vec3(0.5f, 0.5f, 0), 
+		Vertex{glm::vec3(-0.5f, 0.5f, 0)
+	};
+
+	GLuint cubeTris[] = {
+		0, 2, 1,
+		0, 3, 2
+	};
+	
+	std::vector <Vertex> verts(cubeVerts, cubeVerts + sizeof(cubeVerts) / sizeof(Vertex));
+	std::vector <GLuint> tris(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
+
+	Texture textures[]{
+		Texture("planks.png", "diffuse", 0),
+		Texture("planksSpec.png", "specular", 1)
+	};
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+
+	faceMesh = { verts, tris, tex };
 }
 
 void Cube::draw(const Shader& shader, const Camera& camera, const glm::vec3& lightPos, const glm::vec4& lightColor) const {
 	glm::mat4 matrix{ 1.0f };
 	glm::quat rotation{ 1.0f, 0.0f, 0.0f, 0.0f };
 
-	mesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor);
+	faceMesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor);
+	faceMesh.draw(shader, camera, matrix, pos + glm::vec3(0.0f, 0.0f, -1.0f), { -1.0f, 0.0f, 0.0f, 0.0f }, scale, lightPos, lightColor);
+
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {
@@ -40,5 +40,5 @@ void Cube::move(const glm::vec3& vel, const double dt) {
 }
 
 void Cube::free() const {
-	mesh.free();
+	faceMesh.free();
 }

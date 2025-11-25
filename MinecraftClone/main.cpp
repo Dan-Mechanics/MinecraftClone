@@ -18,11 +18,10 @@ Vertex vertices[] = { //               COORDINATES           /            COLORS
 };
 
 // Indices for vertices order
-GLuint indices[] = {
+GLuint cubeTris[] = {
 	0, 2, 1,
 	0, 3, 2
 };
-
 
 int main() {
 	if (!glfwInit())
@@ -58,7 +57,7 @@ int main() {
 	Shader defaultShader("default.vert", "default.frag");
 	// Store mesh data in vectors for the mesh
 	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <GLuint> ind(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
 	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
 	// Create floor mesh
 	Mesh floor(verts, ind, tex);
@@ -66,12 +65,16 @@ int main() {
 
 	// Shader for light cube
 	Shader lightShader("default.vert", "light.frag");
-	Cube cube{ glm::vec3{0.5f}, glm::vec3{0.0f} , glm::vec3{1.0f} };
+	Cube lightCube{ glm::vec3{0.5f}, glm::vec3{0.0f} , glm::vec3{0.1f} };
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glm::vec3 objectPos{};
 	glm::mat4 objectModel = glm::mat4{ 1.0f };
 	objectModel = glm::translate(objectModel, objectPos);
+
+	Cube normalCube{ glm::vec3{0.0f}, glm::vec3{0.0f} , glm::vec3{1.0f} };
+
+
 
 	lightShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
@@ -80,7 +83,7 @@ int main() {
 	defaultShader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
 	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), cube.pos.x, cube.pos.y, cube.pos.z);
+	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightCube.pos.x, lightCube.pos.y, lightCube.pos.z);
 
 	// ===
 
@@ -89,7 +92,7 @@ int main() {
 	// https://learnopengl.com/Advanced-OpenGL/Face-culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	glFrontFace(GL_CW);
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
@@ -142,20 +145,22 @@ int main() {
 			}
 
 			lightColor.g = lightColor.r;
-			cube.pos = -camera.position;
-			cube.pos.y = 1.0f;
+			lightCube.pos = -camera.position;
+			lightCube.pos.y = 1.0f;
 		}
 
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		cube.draw(lightShader, camera, cube.pos, lightColor);
-		cube.pos += glm::vec3{ 0.0f, 2.0f, 0.0f };
-		cube.draw(lightShader, camera, cube.pos, lightColor);
-		cube.pos -= glm::vec3{ 0.0f, 2.0f, 0.0f };
+		lightCube.draw(lightShader, camera, lightCube.pos, lightColor);
+		lightCube.pos += glm::vec3{ 0.0f, 2.0f, 0.0f };
+		lightCube.draw(lightShader, camera, lightCube.pos, lightColor);
+		lightCube.pos -= glm::vec3{ 0.0f, 2.0f, 0.0f };
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, cube.pos, lightColor);
+			glm::vec3{ 1.0f }, lightCube.pos, lightColor);
+
+		normalCube.draw(defaultShader, camera, lightCube.pos, lightColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -165,7 +170,7 @@ int main() {
 	}
 
 	floor.free();
-	cube.free();
+	lightCube.free();
 	defaultShader.free();
 	lightShader.free();
 

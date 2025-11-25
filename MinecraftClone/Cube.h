@@ -6,7 +6,7 @@ public:
 	glm::vec3 pos{};
 	glm::vec3 rot{};
 	glm::vec3 scale{};
-	Mesh mesh{};
+	Mesh faceMesh{};
 
 	Cube();
 	Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale);
