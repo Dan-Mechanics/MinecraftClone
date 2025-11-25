@@ -1,6 +1,6 @@
 // https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
 
-#include "Model.h"
+#include "Mesh.h"
 #include "Cube.h"
 
 const unsigned int width = 1920;
@@ -151,6 +151,9 @@ int main() {
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
 		cube.draw(lightShader, camera, cube.pos, lightColor);
+		cube.pos += glm::vec3{ 0.0f, 2.0f, 0.0f };
+		cube.draw(lightShader, camera, cube.pos, lightColor);
+		cube.pos -= glm::vec3{ 0.0f, 2.0f, 0.0f };
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, cube.pos, lightColor);
 

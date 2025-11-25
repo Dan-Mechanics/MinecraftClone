@@ -21,7 +21,7 @@ GLuint cubeIndices[] = {
 };
 
 Cube::Cube() = default;
-Cube::Cube(const glm::vec3& pos, const glm::vec3& rotation, const glm::vec3& scale) : pos{ pos }, rotation{ rotation }, scale{ scale } {
+Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
 	std::vector <Vertex> verts(cubeVerticies, cubeVerticies + sizeof(cubeVerticies) / sizeof(Vertex));
 	std::vector <GLuint> tris(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
 	std::vector<Texture> tex{};

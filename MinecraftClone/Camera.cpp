@@ -79,5 +79,5 @@ void Camera::rotateCamera(GLFWwindow* window) {
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+//	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
