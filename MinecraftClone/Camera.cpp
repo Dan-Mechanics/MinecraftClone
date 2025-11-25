@@ -22,7 +22,7 @@ void Camera::sendMatrixToShader(Shader& shader, const char* uniform) const {
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
+void Camera::moveCamera(GLFWwindow* window, const double tickInterval) {
 	glm::vec3 movement{};
 	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -38,13 +38,9 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		movement += bodyRight;
 
-	// THIS TOOK 30 MINS FFS.
-	/*float magnitude = pow(movement.x + movement.y + movement.z, 1.0f / 3.0f);
-	if (magnitude > 0.0f) {
-		movement.x /= magnitude;
-		movement.y /= magnitude;
-		movement.z /= magnitude;
-	}*/
+	if (glm::length(movement) > 0.0f) {
+		movement = glm::normalize(movement);
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		movement += up;
@@ -53,10 +49,11 @@ void Camera::moveCamera(GLFWwindow* window, const float tickInterval) {
 		movement -= up;
 
 	const auto currentSpeed = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? standardSpeed * 3.0f : standardSpeed;
-	position += tickInterval * currentSpeed * movement;
+	position += (float)tickInterval * currentSpeed * movement;
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 

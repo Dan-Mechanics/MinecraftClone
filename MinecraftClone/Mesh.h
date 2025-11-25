@@ -30,6 +30,8 @@ public:
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 
+	void ezDraw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::vec3 lightPos, glm::vec4 lightColor);
+
 };
 
 #endif

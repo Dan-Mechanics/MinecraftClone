@@ -6,7 +6,7 @@ const unsigned int width = 1920;
 const unsigned int height = 1080;
 const double fpsCap = 300.0;
 const double minDtForFrame = 1.0 / fpsCap;
-const float tickInterval = 0.01f;
+const double tickInterval = 0.02;
 const auto culling = false;
 
 // Vertices coordinates
@@ -19,34 +19,28 @@ Vertex vertices[] = { //               COORDINATES           /            COLORS
 
 // Indices for vertices order
 GLuint indices[] = {
-	0, 1, 2,
-	0, 2, 3
+	0, 2, 1,
+	0, 3, 2
 };
 
-Vertex lightVertices[] = { //     COORDINATES     //
-	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+Vertex cubeVerticies[] = { //     COORDINATES     //
+	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
+	Vertex{glm::vec3( 0.5f, -0.5f, -0.5f)},
+	Vertex{glm::vec3( 0.5f, -0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
+	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
+	Vertex{glm::vec3( 0.5f,  0.5f, -0.5f)},
+	Vertex{glm::vec3( 0.5f,  0.5f,  0.5f)}
 };
 
-GLuint lightIndices[] = {
-	0, 1, 2,
-	0, 2, 3,
-	0, 4, 7,
-	0, 7, 3,
-	3, 7, 6,
-	3, 6, 2,
-	2, 6, 5,
-	2, 5, 1,
-	1, 5, 4,
-	1, 4, 0,
-	4, 5, 6,
-	4, 6, 7
+GLuint cubeIndices[] = {
+	0, 1, 3, 3, 1, 2,
+	1, 5, 2, 2, 5, 6,
+	5, 4, 6, 6, 4, 7,
+	4, 0, 7, 7, 0, 3,
+	3, 2, 7, 7, 2, 6,
+	4, 5, 0, 0, 5, 1
 };
 
 int main() {
@@ -93,14 +87,14 @@ int main() {
 	// Shader for light cube
 	Shader lightShader("default.vert", "light.frag");
 	// Store mesh data in vectors for the mesh
-	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
-	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
+	std::vector <Vertex> lightVerts(cubeVerticies, cubeVerticies + sizeof(cubeVerticies) / sizeof(Vertex));
+	std::vector <GLuint> lightInd(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
 	// Create light mesh
-	Mesh light(lightVerts, lightInd, tex);
+	Mesh cube(lightVerts, lightInd, tex);
 
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3{ 0.0f, 0.5f, 0.0f };
+	glm::vec3 lightPos = glm::vec3{ 0.0f, 0.0f, 0.0f };
 	glm::mat4 lightModel = glm::identity<glm::mat4>();
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -122,11 +116,9 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	// https://learnopengl.com/Advanced-OpenGL/Face-culling
-	if (culling) {
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CW);
-	}
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
@@ -135,43 +127,66 @@ int main() {
 
 	double previousTime = 0.0;
 	double currentTime = 0.0;
-	float timer = 0.0f;
+	double timer = 0.0;
+	bool increase = false;
+
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = glfwGetTime();
-		double dt = currentTime - previousTime;
+		double deltaTime = currentTime - previousTime;
 
-		if (dt < minDtForFrame)
+		if (deltaTime < minDtForFrame)
 			continue;
 
 		previousTime = currentTime;
 
-		std::string fps = std::to_string(1.0 / dt);
-		std::string ms = std::to_string(dt * 1000);
+		std::string fps = std::to_string(1.0 / deltaTime);
+		std::string ms = std::to_string(deltaTime * 1000);
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
 		/*const auto r = 12 / 255.0f;
 		const auto g = 12 / 255.0f;
 		const auto b = 40 / 255.0f;*/
-		glClearColor(0, 0, 0, 1.0f);
+		glClearColor(0.5, 0.5, 0.5, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		/*timer += (float)dt;
+		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			camera.moveCamera(window, tickInterval);
-		}*/
+			//camera.moveCamera(window, tickInterval);
 
-		camera.moveCamera(window, minDtForFrame);
+			lightColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
+			if (lightColor.r > 1.0f) {
+				lightColor.r = 1.0f;
+				increase = !increase;
+			}
+
+			if (lightColor.r < 0.0f) {
+				lightColor.r = 0.0f;
+				increase = !increase;
+			}
+
+			lightColor.g = lightColor.r;
+
+			std::cout << lightColor.r << " " << lightColor.g << " " << lightColor.b << std::endl;
+
+			//glm::mat4 lightModel = glm::identity<glm::mat4>();
+			lightPos = -camera.position;
+			lightPos.y = 1.0f;
+			//lightModel = glm::translate(glm::identity<glm::mat4>(), lightPos);
+		}
+
+		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		light.draw(lightShader, camera, lightModel);
-		floor.draw(defaultShader, camera, objectModel, {0.0f, -0.5f, 0.0f});
+		cube.ezDraw(lightShader, camera, lightModel, lightPos, lightPos, lightColor);
+	//	floor.draw(defaultShader, camera, objectModel, {0.0f, -0.5f, 0.0f});
+		floor.ezDraw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, lightPos, lightColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -181,7 +196,7 @@ int main() {
 	}
 
 	floor.free();
-	light.free();
+	cube.free();
 	defaultShader.free();
 	lightShader.free();
 
