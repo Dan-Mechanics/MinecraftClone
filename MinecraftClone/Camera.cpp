@@ -18,11 +18,11 @@ void Camera::updateMatrix(float fovDeg, float nearPlane, float farPlane) {
 	cameraMatrix = projection * view;
 }
 
-void Camera::sendMatrixToShader(Shader& shader, const char* uniform) const {
+void Camera::sendMatrixToShader(const Shader& shader, const char* uniform) const {
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::moveCamera(GLFWwindow* window, const double tickInterval) {
+void Camera::moveCamera(GLFWwindow* window, const double dt) {
 	glm::vec3 movement{};
 	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -49,11 +49,10 @@ void Camera::moveCamera(GLFWwindow* window, const double tickInterval) {
 		movement -= up;
 
 	const auto currentSpeed = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? standardSpeed * 3.0f : standardSpeed;
-	position += (float)tickInterval * currentSpeed * movement;
+	position += (float)dt * currentSpeed * movement;
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 
@@ -80,4 +79,5 @@ void Camera::rotateCamera(GLFWwindow* window) {
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }

@@ -32,8 +32,8 @@ public:
 	Camera(GLFWwindow* window, const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity);
 
 	void updateMatrix(float fovDeg, float nearPlane, float farPlane);
-	void sendMatrixToShader(Shader& shader, const char* uniform) const;
-	void moveCamera(GLFWwindow* window, const double tickInterval);
+	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
+	void moveCamera(GLFWwindow* window, const double dt);
 	void rotateCamera(GLFWwindow* window);
 
 };
