@@ -8,33 +8,35 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
-#include "shaderClass.h"
+#include "shader.h"
 
 class Camera {
 public:
-	glm::vec3 position;
-	glm::vec3 orientation = glm::vec3{ 0.0f, 0.0f, -1.0f };
+	glm::vec3 position{};
+	glm::vec3 eyesForward{};
+	glm::vec3 bodyForward{};
+	glm::vec3 bodyRight{};
 	glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
-	glm::mat4 cameraMatrix = glm::mat4{ 1.0 };
+	glm::mat4 cameraMatrix = glm::identity<glm::mat4>();
 
-	bool firstClick = true;
+	const glm::vec3 worldForward{ 0.0f, 0.0f, 1.0f };
+	const unsigned int width{};
+	const unsigned int height{};
+	const float standardSpeed{};
+	const float sensitivity{};
 
-	int width;
-	int height;
+	int hasFocus{};
+	float rotX{};
+	float rotY{};
 
-	float speed = 10.0f;
-	float sensitivity = 100.0f;
+	Camera();
+	Camera(GLFWwindow* window, const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity);
 
-	Camera(int width, int height, glm::vec3 position);
-
-	/// <summary>
-	/// Literally spent half an hour trying
-	/// to get this bug to work because
-	/// this was const. GRRRRR !!
-	/// </summary>
 	void updateMatrix(float fovDeg, float nearPlane, float farPlane);
-	void applyMatrix(Shader& shader, const char* uniform) const;
-	void moveCamera(GLFWwindow* window, const float tickInterval);
+	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
+	void moveCamera(GLFWwindow* window, const double dt);
+	void rotateCamera(GLFWwindow* window);
+
 };
 
 #endif 

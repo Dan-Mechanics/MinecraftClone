@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+Mesh::Mesh() = default;
+
 Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures) {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -19,17 +21,8 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	ebo.unbind();
 }
 
-void Mesh::draw
-(
-	Shader& shader,
-	Camera& camera,
-	glm::mat4 matrix,
-	glm::vec3 translation,
-	glm::quat rotation,
-	glm::vec3 scale
-)
-{
-	// Bind shader to be able to access uniforms
+void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
+	glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor) const {
 	shader.activate();
 	vao.bind();
 
@@ -54,7 +47,7 @@ void Mesh::draw
 	}
 	// Take care of the camera Matrix
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-	camera.applyMatrix(shader, "camMatrix");
+	camera.sendMatrixToShader(shader, "camMatrix");
 
 	// Initialize matrices
 	glm::mat4 trans = glm::mat4(1.0f);
@@ -71,6 +64,9 @@ void Mesh::draw
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+
+	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

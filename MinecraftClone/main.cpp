@@ -1,44 +1,33 @@
 // https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
 
-#include "Model.h"
+#include "Mesh.h"
+#include "Cube.h"
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 1920;
+const unsigned int height = 1080;
+const double fpsCap = 300.0;
+const double minDtForFrame = 1.0 / fpsCap;
+const double tickInterval = 0.02;
 
-float skyboxVertices[] =
-{
-	//   Coordinates
-	-1.0f, -1.0f,  1.0f,//        7--------6
-	 1.0f, -1.0f,  1.0f,//       /|       /|
-	 1.0f, -1.0f, -1.0f,//      4--------5 |
-	-1.0f, -1.0f, -1.0f,//      | |      | |
-	-1.0f,  1.0f,  1.0f,//      | 3------|-2
-	 1.0f,  1.0f,  1.0f,//      |/       |/
-	 1.0f,  1.0f, -1.0f,//      0--------1
-	-1.0f,  1.0f, -1.0f
+bool hasFocus = true;
+
+// Vertices coordinates
+Vertex vertices[] = { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
-unsigned int skyboxIndices[] =
-{
-	// Right
-	1, 2, 6,
-	6, 5, 1,
-	// Left
-	0, 4, 7,
-	7, 3, 0,
-	// Top
-	4, 5, 6,
-	6, 7, 4,
-	// Bottom
-	0, 3, 2,
-	2, 1, 0,
-	// Back
-	0, 1, 5,
-	5, 4, 0,
-	// Front
-	3, 7, 6,
-	6, 2, 3
+// Indices for vertices order
+GLuint indices[] = {
+	0, 2, 1,
+	0, 3, 2
 };
+
+static void test(GLFWwindow* window, int focus) {
+	hasFocus = focus;
+}
 
 int main() {
 	if (!glfwInit())
@@ -48,100 +37,163 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// HERE YOU CAN SET FULLSCREEN OR NOT.
+	//GLFWwindow* window = glfwCreateWindow(width, height, "My Title", glfwGetPrimaryMonitor(), NULL);
 	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
-
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
 
+	glfwSetWindowFocusCallback(window, &test);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+	//glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 144);
+
 	glfwMakeContextCurrent(window);
-
 	gladLoadGL();
-
 	glViewport(0, 0, width, height);
 
 	// ===
 
+	Texture textures[]{
+		Texture("planks.png", "diffuse", 0),
+		Texture("planksSpec.png", "specular", 1)
+	};
+
+
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader shaderProgram("default.vert", "default.frag", "default.geom");
-	Shader normalsShader("default.vert", "normals.frag", "normals.geom");
+	Shader defaultShader("default.vert", "default.frag");
+	// Store mesh data in vectors for the mesh
+	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
+	// Create floor mesh
+	Mesh floor(verts, ind, tex);
 
-	// Take care of all the light related things
+
+	// Shader for light cube
+	Shader lightShader("default.vert", "light.frag");
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	Cube lightCube{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
 
-	shaderProgram.activate();
-	glUniform4f(glGetUniformLocation(shaderProgram.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
+	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+	glm::vec3 objectPos{};
+	glm::mat4 objectModel = glm::mat4{ 1.0f };
+	objectModel = glm::translate(objectModel, objectPos);
+
+	/*lightShader.activate();
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
+	glUniform4f(glGetUniformLocation(lightShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+
+	defaultShader.activate();
+	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
+	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightCube.pos.x, lightCube.pos.y, lightCube.pos.z);*/
 
 	// ===
 
 	glEnable(GL_DEPTH_TEST);
 
+	// https://learnopengl.com/Advanced-OpenGL/Face-culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	// Creates camera object
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	// METERS PER SECOND.
+	const auto standardSpeed = 1.0f;
+	const auto sensitivity = 0.1f;
+	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
-	// ===
+	double previousTime = 0.0;
+	double currentTime = 0.0;
+	double timer = 0.0;
+	bool increase = false;
 
-	Model model{ "models/statue/scene.gltf" };
 
-	double fpsCap = 300.0;
-	double minDeltaTimeForFrame = 1.0 / fpsCap;
-	const float tickInterval = 0.01f;
-	float timer = 0.0f;
-
-	double prevTime = 0.0;
-	double crntTime = 0.0;
-	double deltaTime;
-	unsigned int counter = 0;
-
-	// DISABLE VSYNC
+	// DISABLE VSYNC.
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
-		crntTime = glfwGetTime();
-		deltaTime = crntTime - prevTime;
+		currentTime = glfwGetTime();
+		double deltaTime = currentTime - previousTime;
 
-		if (deltaTime < minDeltaTimeForFrame)
+		if (deltaTime < minDtForFrame)
 			continue;
 
-		++counter;
-		std::string fps = std::to_string((1.0 / deltaTime) * counter);
-		std::string ms = std::to_string((deltaTime / counter) * 1000);
+		previousTime = currentTime;
+
+		std::string fps = std::to_string(1.0 / deltaTime);
+		std::string ms = std::to_string(deltaTime * 1000);
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
-		prevTime = crntTime;
-		counter = 0;
 
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		// Clean the back buffer and depth buffer
+		/*const auto r = 12 / 255.0f;
+		const auto g = 12 / 255.0f;
+		const auto b = 40 / 255.0f;*/
+		glClearColor(0.5, 0.5, 0.5, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		timer += (float)deltaTime;
-		while (timer > tickInterval) {
+		timer += deltaTime;
+		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			camera.moveCamera(window, tickInterval);
-			camera.updateMatrix(45.0f, 0.1f, 100.0f);
+			lightColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
+			if (lightColor.r > 1.0f) {
+				lightColor.r = 1.0f;
+				increase = !increase;
+			}
+
+			if (lightColor.r < 0.0f) {
+				lightColor.r = 0.0f;
+				increase = !increase;
+			}
+
+			lightColor.g = lightColor.r;
+			lightCube.setColor(lightColor);
+
+			redCube.rot.y += 1.0f;
+			/*redCube.pos.y += tickInterval;
+			if (redCube.pos.y > 3.0f)
+				redCube.pos.y = 0.0f;*/
+
+			blueCube.rot.y -= 1.0f;
+			/*blueCube.pos.y -= tickInterval;
+			if (blueCube.pos.y < -3.0f)
+				blueCube.pos.y = 0.0f;*/
 		}
 
-		model.draw(shaderProgram, camera);
-		model.draw(normalsShader, camera);
+		camera.hasFocus = hasFocus;
+		camera.moveCamera(window, deltaTime);
+		camera.rotateCamera(window);
+		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+
+		lightCube.draw(lightShader, camera);
+
+		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, lightCube.pos, lightColor);
+
+		redCube.draw(lightShader, camera);
+		blueCube.draw(lightShader, camera);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			break;
 	}
 
-	model.free();
-	shaderProgram.free();
+	floor.free();
+	lightCube.free();
+	defaultShader.free();
+	lightShader.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
+
 	return 0;
 }

@@ -18,8 +18,6 @@ out DATA
     mat4 projection;
 } data_out;
 
-
-
 // Imports the camera matrix
 uniform mat4 camMatrix;
 // Imports the transformation matrices
@@ -27,7 +25,6 @@ uniform mat4 model;
 uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
-
 
 void main()
 {

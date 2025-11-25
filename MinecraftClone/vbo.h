@@ -7,18 +7,18 @@
 
 struct Vertex {
 public:
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec3 color;
-	glm::vec2 texUv;
+	glm::vec3 position{};
+	glm::vec3 normal{};
+	glm::vec3 color{};
+	glm::vec2 texUv{};
 
 };
 
 class vbo {
 public:
-	GLuint id;
+	GLuint id{};
 	vbo();
-	vbo(std::vector<Vertex>& vertices);
+	vbo(const std::vector<Vertex>& vertices);
 
 	void bind() const;
 	void unbind() const;

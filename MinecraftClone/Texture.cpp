@@ -31,7 +31,6 @@ Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
 	// Check what type of color channels the texture has and load it accordingly
-
 	switch (colorChannelCount) {
 	case 4:
 		glTexImage2D
@@ -89,21 +88,21 @@ Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::setTextureUnit(Shader& shader, const char* uniform, GLuint unit) {
+void Texture::setTextureUnit(const Shader& shader, const char* uniform, GLuint unit) const {
 	GLuint textureUnit = glGetUniformLocation(shader.id, uniform);
 	shader.activate();
 	glUniform1i(textureUnit, unit);
 }
 
-void Texture::bind() {
+void Texture::bind() const {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void Texture::unbind() {
+void Texture::unbind() const {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::free() {
+void Texture::free() const {
 	glDeleteTextures(1, &id);
 }

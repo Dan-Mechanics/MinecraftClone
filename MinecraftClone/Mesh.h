@@ -11,24 +11,21 @@
 
 class Mesh {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
-	std::vector<Texture> textures;
-	vao vao;
-	ebo ebo;
-	vbo vbo;
+	std::vector<Vertex> vertices{};
+	std::vector<GLuint> indices{};
+	std::vector<Texture> textures{};
+	vao vao{};
+	ebo ebo{};
+	vbo vbo{};
 
+	Mesh();
 	Mesh(std::vector<Vertex>& verticies, std::vector<GLuint>& indices, std::vector<Texture>& textures);
+
+	void draw(const Shader & shader, const Camera & camera, glm::mat4 matrix, glm::vec3 translation,
+		glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor) const;
+
 	void free() const;
-	void draw
-	(
-		Shader& shader,
-		Camera& camera,
-		glm::mat4 matrix = glm::mat4(1.0f),
-		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
-	);
+
 
 };
 
