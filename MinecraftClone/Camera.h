@@ -25,6 +25,7 @@ public:
 	const float standardSpeed{};
 	const float sensitivity{};
 
+	int hasFocus{};
 	float rotX{};
 	float rotY{};
 

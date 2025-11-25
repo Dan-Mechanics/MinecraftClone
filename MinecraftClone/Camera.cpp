@@ -23,6 +23,9 @@ void Camera::sendMatrixToShader(const Shader& shader, const char* uniform) const
 }
 
 void Camera::moveCamera(GLFWwindow* window, const double dt) {
+	if (!hasFocus)
+		return;
+	
 	glm::vec3 movement{};
 	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -52,11 +55,15 @@ void Camera::moveCamera(GLFWwindow* window, const double dt) {
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {
+	if (!hasFocus || glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		return;
+	
+	// THIS CAN BE MADE BETTER BUT ITS FINE.
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
-
 	double halfWidth = (double)width / 2.0;
 	double halfHeight = (double)height / 2.0;
+
 
 	rotX += (mouseY - halfHeight) * sensitivity;
 	rotY += (mouseX - halfWidth) * sensitivity;
@@ -78,4 +85,6 @@ void Camera::rotateCamera(GLFWwindow* window) {
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }

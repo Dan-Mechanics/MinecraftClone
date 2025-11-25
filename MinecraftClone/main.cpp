@@ -9,6 +9,8 @@ const double fpsCap = 300.0;
 const double minDtForFrame = 1.0 / fpsCap;
 const double tickInterval = 0.02;
 
+bool hasFocus = true;
+
 // Vertices coordinates
 Vertex vertices[] = { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
 	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
@@ -23,6 +25,9 @@ GLuint indices[] = {
 	0, 3, 2
 };
 
+static void test(GLFWwindow* window, int focus) {
+	hasFocus = focus;
+}
 
 int main() {
 	if (!glfwInit())
@@ -33,12 +38,14 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	//GLFWwindow* window = glfwCreateWindow(width, height, "My Title", glfwGetPrimaryMonitor(), NULL);
-	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
+
+	glfwSetWindowFocusCallback(window, &test);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -71,8 +78,10 @@ int main() {
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	Cube lightCube{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
 
-	Cube bouncingCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	bouncingCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
+	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
 	glm::vec3 objectPos{};
 	glm::mat4 objectModel = glm::mat4{ 1.0f };
@@ -98,7 +107,7 @@ int main() {
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
-	const auto sensitivity = 0.1125f;
+	const auto sensitivity = 0.1f;
 	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
 	double previousTime = 0.0;
@@ -133,8 +142,6 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			//camera.moveCamera(window, tickInterval);
-
 			lightColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
 			if (lightColor.r > 1.0f) {
 				lightColor.r = 1.0f;
@@ -147,12 +154,20 @@ int main() {
 			}
 
 			lightColor.g = lightColor.r;
-			//lightCube.pos = -camera.position;
-			//lightCube.pos.y = 1.0f;
-			bouncingCube.rot.y += 1;
 			lightCube.setColor(lightColor);
+
+			redCube.rot.y += 1.0f;
+			/*redCube.pos.y += tickInterval;
+			if (redCube.pos.y > 3.0f)
+				redCube.pos.y = 0.0f;*/
+
+			blueCube.rot.y -= 1.0f;
+			/*blueCube.pos.y -= tickInterval;
+			if (blueCube.pos.y < -3.0f)
+				blueCube.pos.y = 0.0f;*/
 		}
 
+		camera.hasFocus = hasFocus;
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
@@ -162,7 +177,8 @@ int main() {
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, lightCube.pos, lightColor);
 
-		bouncingCube.draw(lightShader, camera);
+		redCube.draw(lightShader, camera);
+		blueCube.draw(lightShader, camera);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
