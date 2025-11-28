@@ -123,17 +123,17 @@ int main() {
 	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f,  0.5f }, glm::vec3{ 0.0f, 0.5f,  0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f}, glm::vec3{  0.0f, 0.5f,  0.8f }, glm::vec3{ 0.92f, 0.86f, 0.76f }, glm::vec2{ 2.5f, 5.0f });
 
-	Vertex vertices[16];
-	std::copy(pyramidVerts.begin(), pyramidVerts.end(), vertices);
+	//Vertex vertices[16];
+	//std::copy(pyramidVerts.begin(), pyramidVerts.end(), vertices);
 
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader defaultShader("default.vert", "default.frag");
+	Shader defaultShader("default.vert", "worldlight.frag");
 	// Store mesh data in vectors for the mesh
-	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+	//std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
 	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
 	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
 	// Create floor mesh
-	Mesh floor(verts, ind, tex);
+	Mesh floor(pyramidVerts, ind, tex);
 
 
 	// Shader for light cube

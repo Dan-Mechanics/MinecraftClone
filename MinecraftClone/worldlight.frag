@@ -60,11 +60,23 @@ vec4 test()
 
 vec4 getColor()
 {
-	return texture(diffuse0, texCoord) * (lightColor * texture(specular0, texCoord).r + worldColor);
+	// used in two variables so I calculate it here to not have to do it twice
+	vec3 lightVec = lightPos - crntPos;
+
+	// diffuse lighting
+	vec3 normal = normalize(Normal);
+	vec3 lightDirection = normalize(lightVec);
+	float diffuse = max(dot(normal, lightDirection), 0.0f);
+
+	//if (diffuse >= 0.5f) 
+		return texture(diffuse0, texCoord) * (diffuse * lightColor + worldColor);
+		// return texture(diffuse0, texCoord) * (lightColor * texture(specular0, texCoord).r + worldColor);
+	
+//	return texture(diffuse0, texCoord) * worldColor;
 }
 
 void main()
 {
 	// outputs final color
-	FragColor = test();
+	FragColor = getColor();
 }
