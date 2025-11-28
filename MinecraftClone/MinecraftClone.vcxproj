@@ -163,7 +163,7 @@
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="worldlight.frag" />
-    <None Include="solid_color.frag" />
+    <None Include="unlit_color.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -178,6 +178,9 @@
   <ItemGroup>
     <Image Include="planks.png" />
     <Image Include="planksSpec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="lit_color.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

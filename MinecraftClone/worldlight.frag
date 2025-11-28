@@ -27,7 +27,7 @@ uniform vec3 lightPos;
 // Gets the position of the camera from the main function
 uniform vec3 camPos;
 
-vec4 sunLight()
+vec4 direcLight()
 {
 	// ambient lighting
 	float ambient = 0.20f;
@@ -44,11 +44,10 @@ vec4 sunLight()
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
 
-	return vec4(color.x, color.y, color.z, 1.0f);
-	//return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
+	return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
 }
 
-vec4 test()
+vec4 testDiffuse()
 {
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
@@ -58,25 +57,18 @@ vec4 test()
 	return vec4(diffuse, diffuse, diffuse, 1.0f);
 }
 
-vec4 getColor()
+vec4 worldLight()
 {
-	// used in two variables so I calculate it here to not have to do it twice
 	vec3 lightVec = lightPos - crntPos;
-
-	// diffuse lighting
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightVec);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
-	//if (diffuse >= 0.5f) 
-		return texture(diffuse0, texCoord) * (diffuse * lightColor + worldColor);
-		// return texture(diffuse0, texCoord) * (lightColor * texture(specular0, texCoord).r + worldColor);
-	
-//	return texture(diffuse0, texCoord) * worldColor;
+	return texture(diffuse0, texCoord) * (texture(specular0, texCoord).r * diffuse * lightColor + worldColor);
 }
 
 void main()
 {
 	// outputs final color
-	FragColor = getColor();
+	FragColor = worldLight();
 }

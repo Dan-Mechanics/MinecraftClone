@@ -10,8 +10,8 @@ public:
 	Mesh mesh{};
 
 	Cube();
-	Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale);
-	void draw(const Shader& shader, const Camera& camera);
+	Cube(std::vector<Vertex>& verts, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale);
+	void draw(const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor);
 	void move(const glm::vec3& vel, const double dt);
 	void setColor(const glm::vec4& color);
 	void setTexture(); // IS THIS ALLOWED EVEN ??

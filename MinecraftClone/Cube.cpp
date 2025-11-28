@@ -1,16 +1,16 @@
 #include "Cube.h"
 
-Vertex cubeVerts[] = { 
-	//     COORDINATES     //
-	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
-};
+//Vertex cubeVerts[] = { 
+//	//     COORDINATES     //
+//	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
+//};
 
 GLuint cubeTris[] = {
 	0, 1, 3, 3, 1, 2,
@@ -21,9 +21,16 @@ GLuint cubeTris[] = {
 	4, 5, 0, 0, 5, 1
 };
 
+//GLuint cubeTris[] =
+//{
+//	0, 1, 3, 3, 1, 2,
+//	1, 5, 2, 2, 5, 6,
+//	5, 4, 6, 6, 4, 7
+//};
+
 Cube::Cube() = default;
-Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
-	std::vector <Vertex> verts(cubeVerts, cubeVerts + sizeof(cubeVerts) / sizeof(Vertex));
+Cube::Cube(std::vector<Vertex>& verts, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
+	//std::vector <Vertex> verts(cubeVerts, cubeVerts + sizeof(cubeVerts) / sizeof(Vertex));
 	std::vector <GLuint> tris(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
 	std::vector<Texture> tex{};
 	mesh = { verts, tris, tex };
@@ -32,7 +39,7 @@ Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) :
 	setColor(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
 }
 
-void Cube::draw(const Shader& shader, const Camera& camera) {
+void Cube::draw(const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
 	}
@@ -65,7 +72,7 @@ void Cube::draw(const Shader& shader, const Camera& camera) {
 	glm::quat rotation = glm::quatLookAt(direction, up);
 
 	glm::mat4 matrix{ 1.0f };
-	mesh.draw(shader, camera, matrix, pos, rotation, scale, { 0.0f, 0.0f, 0.0f }, color, glm::vec4{ 0.0f });
+	mesh.drawLitColor(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor, color);
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {

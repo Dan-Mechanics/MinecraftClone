@@ -93,7 +93,7 @@ int main() {
 	glViewport(0, 0, width, height);
 
 	// ===
-	glm::vec4 worldColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 worldColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	Texture textures[]{
 		Texture("planks.png", "diffuse", 0),
@@ -123,6 +123,17 @@ int main() {
 	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f,  0.5f }, glm::vec3{ 0.0f, 0.5f,  0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f}, glm::vec3{  0.0f, 0.5f,  0.8f }, glm::vec3{ 0.92f, 0.86f, 0.76f }, glm::vec2{ 2.5f, 5.0f });
 
+	std::vector<Vertex> cubeVerts{};
+	cubeVerts.emplace_back(glm::vec3{ -0.5f, -0.5f, -0.5f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
+	cubeVerts.emplace_back(glm::vec3{ 0.5f, -0.5f, -0.5f }, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 0.0f });
+	cubeVerts.emplace_back(glm::vec3{ 0.5f, 0.5f, -0.5f }, glm::vec3{ 0.0f, 0.0f, -1.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 1.0f });
+	cubeVerts.emplace_back(glm::vec3{ -0.5f, 0.5f, -0.5f }, glm::vec3{ -1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 1.0f });
+	
+	cubeVerts.emplace_back(glm::vec3{ -0.5f, -0.5f, 0.5f }, glm::vec3{ -1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
+	cubeVerts.emplace_back(glm::vec3{  0.5f, -0.5f, 0.5f }, glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 0.0f });
+	cubeVerts.emplace_back(glm::vec3{  0.5f,-0.5f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 1.0f });
+	cubeVerts.emplace_back(glm::vec3{ -0.5f, 0.5f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  0.0f, 1.0f });
+
 	//Vertex vertices[16];
 	//std::copy(pyramidVerts.begin(), pyramidVerts.end(), vertices);
 
@@ -137,17 +148,18 @@ int main() {
 
 
 	// Shader for light cube
-	Shader lightShader("default.vert", "solid_color.frag");
+	Shader cubeShader("default.vert", "lit_color.frag");
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	Cube lightCube{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
+	Cube lightCube{ cubeVerts, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
 
 
-	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
+	Cube redCube{ cubeVerts, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
 	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+
+	Cube blueCube{ cubeVerts, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-	Cube ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Cube ground{ cubeVerts, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
 
 	glm::vec3 objectPos{};
@@ -182,7 +194,6 @@ int main() {
 	double timer = 0.0;
 	bool increase = false;
 
-
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
 
@@ -200,9 +211,6 @@ int main() {
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
-		/*const auto r = 12 / 255.0f;
-		const auto g = 12 / 255.0f;
-		const auto b = 40 / 255.0f;*/
 		glClearColor(worldColor.r, worldColor.g, worldColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -239,14 +247,14 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		lightCube.draw(lightShader, camera);
+		lightCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
 
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, lightCube.pos, lightColor, worldColor);
 
-		ground.draw(lightShader, camera);
-		redCube.draw(lightShader, camera);
-		blueCube.draw(lightShader, camera);
+		ground.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
+		redCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
+		blueCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -258,7 +266,7 @@ int main() {
 	floor.free();
 	lightCube.free();
 	defaultShader.free();
-	lightShader.free();
+	cubeShader.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
