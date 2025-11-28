@@ -62,7 +62,10 @@
     <None Include="default.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="light.frag">
+    <None Include="solid_color.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="worldlight.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

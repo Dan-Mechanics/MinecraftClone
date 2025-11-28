@@ -25,7 +25,7 @@ GLuint indices[] = {
 	0, 3, 2
 };
 
-static void test(GLFWwindow* window, int focus) {
+static void setFocus(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
@@ -45,7 +45,7 @@ int main() {
 		return -1;
 	}
 
-	glfwSetWindowFocusCallback(window, &test);
+	glfwSetWindowFocusCallback(window, &setFocus);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -56,15 +56,16 @@ int main() {
 	glViewport(0, 0, width, height);
 
 	// ===
+	glm::vec4 worldColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	Texture textures[]{
 		Texture("planks.png", "diffuse", 0),
-		Texture("planksSpec.png", "specular", 1)
+		Texture("_planksSpec.png", "specular", 1)
 	};
 
 
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader defaultShader("default.vert", "default.frag");
+	Shader defaultShader("default.vert", "worldlight.frag");
 	// Store mesh data in vectors for the mesh
 	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
 	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
@@ -74,14 +75,18 @@ int main() {
 
 
 	// Shader for light cube
-	Shader lightShader("default.vert", "light.frag");
+	Shader lightShader("default.vert", "solid_color.frag");
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	Cube lightCube{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
+
 
 	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
 	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+	Cube ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
 
 	glm::vec3 objectPos{};
 	glm::mat4 objectModel = glm::mat4{ 1.0f };
@@ -136,7 +141,7 @@ int main() {
 		/*const auto r = 12 / 255.0f;
 		const auto g = 12 / 255.0f;
 		const auto b = 40 / 255.0f;*/
-		glClearColor(0.5, 0.5, 0.5, 1.0f);
+		glClearColor(worldColor.r, worldColor.g, worldColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		timer += deltaTime;
@@ -175,8 +180,9 @@ int main() {
 		lightCube.draw(lightShader, camera);
 
 		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, lightCube.pos, lightColor);
+			glm::vec3{ 1.0f }, lightCube.pos, lightColor, worldColor);
 
+		ground.draw(lightShader, camera);
 		redCube.draw(lightShader, camera);
 		blueCube.draw(lightShader, camera);
 

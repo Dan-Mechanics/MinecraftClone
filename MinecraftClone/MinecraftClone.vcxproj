@@ -162,7 +162,8 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
-    <None Include="light.frag" />
+    <None Include="worldlight.frag" />
+    <None Include="solid_color.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />

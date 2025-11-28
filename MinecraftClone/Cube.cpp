@@ -27,6 +27,9 @@ Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) :
 	std::vector <GLuint> tris(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
 	std::vector<Texture> tex{};
 	mesh = { verts, tris, tex };
+
+	// DEFAULT IS MAGENTA.
+	setColor(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
 }
 
 void Cube::draw(const Shader& shader, const Camera& camera) {
@@ -62,7 +65,7 @@ void Cube::draw(const Shader& shader, const Camera& camera) {
 	glm::quat rotation = glm::quatLookAt(direction, up);
 
 	glm::mat4 matrix{ 1.0f };
-	mesh.draw(shader, camera, matrix, pos, rotation, scale, { 0.0f, 0.0f, 0.0f }, color);
+	mesh.draw(shader, camera, matrix, pos, rotation, scale, { 0.0f, 0.0f, 0.0f }, color, glm::vec4{ 0.0f });
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {

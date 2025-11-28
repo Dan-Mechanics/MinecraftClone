@@ -22,7 +22,7 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 }
 
 void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
-	glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor) const {
+	glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor, glm::vec4 worldColor) const {
 	shader.activate();
 	vao.bind();
 
@@ -67,6 +67,7 @@ void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
 
 	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

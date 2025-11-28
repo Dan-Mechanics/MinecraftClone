@@ -14,5 +14,6 @@ public:
 	void draw(const Shader& shader, const Camera& camera);
 	void move(const glm::vec3& vel, const double dt);
 	void setColor(const glm::vec4& color);
+	void setTexture(); // IS THIS ALLOWED EVEN ??
 	void free() const;
 };
