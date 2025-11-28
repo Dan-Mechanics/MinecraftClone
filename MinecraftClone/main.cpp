@@ -127,7 +127,7 @@ int main() {
 	std::copy(pyramidVerts.begin(), pyramidVerts.end(), vertices);
 
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader defaultShader("default.vert", "worldlight.frag");
+	Shader defaultShader("default.vert", "default.frag");
 	// Store mesh data in vectors for the mesh
 	std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
 	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
