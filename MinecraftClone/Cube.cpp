@@ -1,32 +1,32 @@
 #include "Cube.h"
 
-Vertex cubeVerts[] = { 
-	//     COORDINATES     //
-	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
-	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
-	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
-};
-
-GLuint cubeTris[] = {
-	0, 1, 3, 3, 1, 2,
-	1, 5, 2, 2, 5, 6,
-	5, 4, 6, 6, 4, 7,
-	4, 0, 7, 7, 0, 3,
-	3, 2, 7, 7, 2, 6,
-	4, 5, 0, 0, 5, 1
-};
+//Vertex cubeVerts[] = { 
+//	//     COORDINATES     //
+//	Vertex{glm::vec3(-0.5f, -0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f, -0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f, -0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f, -0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f,  0.5f,  0.5f)},
+//	Vertex{glm::vec3(-0.5f,  0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f,  0.5f, -0.5f)},
+//	Vertex{glm::vec3(0.5f,  0.5f,  0.5f)}
+//};
+//
+//GLuint cubeTris[] = {
+//	0, 1, 3, 3, 1, 2,
+//	1, 5, 2, 2, 5, 6,
+//	5, 4, 6, 6, 4, 7,
+//	4, 0, 7, 7, 0, 3,
+//	3, 2, 7, 7, 2, 6,
+//	4, 5, 0, 0, 5, 1
+//};
 
 Cube::Cube() = default;
 Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
-	std::vector <Vertex> verts(cubeVerts, cubeVerts + sizeof(cubeVerts) / sizeof(Vertex));
-	std::vector <GLuint> tris(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
+	//std::vector <Vertex> verts(cubeVerts, cubeVerts + sizeof(cubeVerts) / sizeof(Vertex));
+	//std::vector <GLuint> tris(cubeTris, cubeTris + sizeof(cubeTris) / sizeof(GLuint));
 	std::vector<Texture> tex{};
-	mesh = { verts, tris, tex };
+//	mesh = { verts, tris, tex };
 
 	// DEFAULT IS MAGENTA.
 	setColor(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
