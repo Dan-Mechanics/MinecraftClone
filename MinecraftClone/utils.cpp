@@ -7,49 +7,46 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	int faceCount = 0;
 	int vertIndexOffset = 0;
 
-	float low = -0.5f;
-	float high = 0.5f;
-
 	// UP !!
-	verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 	faceCount++;
 
 	// DOWN !!
-	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 	faceCount++;
 
 	// FORWARD !!
-	verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-	verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-	verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-	verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 	faceCount++;
 
 	// RIGHT !!
-	verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 0.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 1.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 1.0f }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 	faceCount++;
 
 	// BACK !!
-	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-	verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-	verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-	verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 1.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+	verts.emplace_back(glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 	faceCount++;
 
 	// LEFT !!
-	verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 1.0f }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+	verts.emplace_back(glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 	faceCount++;
 
 	for (int i = 0; i < faceCount; ++i) {

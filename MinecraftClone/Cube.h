@@ -7,7 +7,6 @@ public:
 	glm::vec3 rot{};
 	glm::vec3 scale{};
 	glm::vec4 color{};
-	glm::mat4 modelMatrix = glm::mat4{ 1.0f };
 	Mesh mesh{};
 
 	Cube();

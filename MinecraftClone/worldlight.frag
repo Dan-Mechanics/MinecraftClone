@@ -47,14 +47,14 @@ vec4 direcLight()
 	return (texture(diffuse0, texCoord) * (diffuse + ambient) + texture(specular0, texCoord).r * specular) * lightColor;
 }
 
-vec4 test()
+vec4 testDiffuse()
 {
-	vec3 lightVec = lightPos - crntPos;
+	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightVec);
+	vec3 lightDirection = normalize(vec3(1.0f, 1.0f, 0.0f));
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
-	return vec4(color.x, color.y, color.z, 1.0f) * (diffuse * lightColor + worldColor);
+	return vec4(diffuse, diffuse, diffuse, 1.0f);
 }
 
 vec4 worldLight()
@@ -70,5 +70,5 @@ vec4 worldLight()
 void main()
 {
 	// outputs final color
-	FragColor = test();
+	FragColor = worldLight();
 }

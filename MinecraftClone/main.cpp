@@ -63,10 +63,6 @@ int main() {
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
 	pyramidMatrix = glm::translate(pyramidMatrix, pyramidPivot);
 
-	//glm::vec3 cubePivot{};
-	//glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, pyramidPivot);
-//	glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, glm::vec3{ -0.5f, -0.5f, -0.5f });
-
 	// ===
 
 	Shader cubeShader("default.vert", "worldlight.frag");
@@ -78,19 +74,16 @@ int main() {
 
 	Cube sunCube{ cubeVerts, cubeTris, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f}};
 	sunCube.setColor(sunColor);
-//	sunCube.modelMatrix = cubeMatrix;
 
 	Cube ground{ cubeVerts, cubeTris, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
-	//ground.modelMatrix = cubeMatrix;
 
 	Cube redCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
 	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-//	redCube.modelMatrix = cubeMatrix;
 
-	Cube blueCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+	Cube blueCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 4.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-//	blueCube.modelMatrix = cubeMatrix;
+
 
 	// ===
 
@@ -162,7 +155,7 @@ int main() {
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
 
 		ground.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
+		sunCube.draw(sunShader, camera, sunColor, sunCube.pos, skyColor);
 		redCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
 		blueCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
 
