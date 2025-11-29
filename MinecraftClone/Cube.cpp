@@ -2,15 +2,15 @@
 
 Cube::Cube() = default;
 Cube::Cube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } {
-	std::vector<Texture> tex{};
-	mesh = { verts, tris, tex };
+	std::vector<Texture> textures{};
+	mesh = { verts, tris, textures };
 
 	// DEFAULT IS MAGENTA.
 	setColor(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
 }
 
-Cube::Cube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, std::vector<Texture>& tex, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) {
-	mesh = { verts, tris, tex };
+Cube::Cube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, std::vector<Texture>& textures, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) {
+	mesh = { verts, tris, textures };
 
 	// DEFAULT IS MAGENTA.
 	setColor(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
@@ -48,8 +48,8 @@ void Cube::draw(const Shader& shader, const Camera& camera, glm::vec4 lightColor
 
 	glm::quat rotation = glm::quatLookAt(direction, up);
 
-	//glm::mat4 matrix{ 1.0f };
-	mesh.draw(shader, camera, modelMatrix, pos, rotation, scale, lightPos, lightColor, worldColor);
+	glm::mat4 matrix{ 1.0f };
+	mesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor);
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {

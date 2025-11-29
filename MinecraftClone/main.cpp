@@ -43,6 +43,7 @@ int main() {
 
 	glm::vec4 skyColor = glm::vec4((float)110 / 255, (float)164 / 255, (float)230 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	// glm::vec3 lightPos{ 0.5f, 0.5f, 0.5f };
 
 	// ===
 
@@ -58,39 +59,33 @@ int main() {
 	};
 
 	Mesh pyramid(pyramidVerts, pyramidTris, textures);
+	Mesh pyramid2(pyramidVerts, pyramidTris, textures);
 	
 	glm::vec3 pyramidPivot{};
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
 	pyramidMatrix = glm::translate(pyramidMatrix, pyramidPivot);
+	glm::mat4 pyramidMatrix2 = glm::translate(pyramidMatrix, glm::vec3{0.0f, 2.0f, 0.0f});
 
 	//glm::vec3 cubePivot{};
 	//glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, pyramidPivot);
-//	glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, glm::vec3{ -0.5f, -0.5f, -0.5f });
+	//	glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, glm::vec3{ -0.5f, -0.5f, -0.5f });
 
 	// ===
 
-	Shader cubeShader("default.vert", "worldlight.frag");
+	//Shader cubeShader("default.vert", "default.frag");
 	//Shader sunShader("default.vert", "unlit_color.frag");
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	getCube(cubeVerts, cubeTris);
 
-	Cube sunCube{ cubeVerts, cubeTris, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f}};
-	sunCube.setColor(sunColor);
-//	sunCube.modelMatrix = cubeMatrix;
+	//Mesh cube1(cubeVerts, cubeTris, textures);
+	//Mesh cube2(cubeVerts, cubeTris, textures);
 
-	Cube ground{ cubeVerts, cubeTris, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
-	//ground.modelMatrix = cubeMatrix;
-
-	Cube redCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
-	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-//	redCube.modelMatrix = cubeMatrix;
-
-	Cube blueCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
-	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-//	blueCube.modelMatrix = cubeMatrix;
+	Cube sunCube (cubeVerts, cubeTris, textures, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f});
+	Cube ground  (cubeVerts, cubeTris, textures, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} );
+	Cube redCube (cubeVerts, cubeTris, textures, glm::vec3{0.0f, 0.0f, 1.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} );
+	Cube blueCube(cubeVerts, cubeTris, textures, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} );
 
 	// ===
 
@@ -157,14 +152,23 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-
 		pyramid.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
 
-		ground.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		redCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		blueCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
+		pyramid2.draw(defaultShader, camera, pyramidMatrix2, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
+
+		/*cube1.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
+
+		cube2.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 2.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
+		ground.draw(defaultShader, camera, sunColor, sunCube.pos, skyColor);
+		sunCube.draw(defaultShader, camera, sunColor, sunCube.pos, skyColor);
+		redCube.draw(defaultShader, camera, sunColor, sunCube.pos, skyColor);
+		blueCube.draw(defaultShader, camera, sunColor, sunCube.pos, skyColor);
+
+		//cube.draw(cubeShader, )
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -174,9 +178,9 @@ int main() {
 	}
 
 	pyramid.free();
-	sunCube.free();
+	//sunCube.free();
+	//defaultShader.free();
 	defaultShader.free();
-	cubeShader.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
