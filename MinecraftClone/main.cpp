@@ -1,7 +1,6 @@
-// https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
-
 #include "Mesh.h"
 #include "Cube.h"
+#include "utils.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -10,38 +9,9 @@ const double minDtForFrame = 1.0 / fpsCap;
 const double tickInterval = 0.02;
 
 bool hasFocus = true;
-
-//std::vector<GLuint> cubeIndices =
-//{
-//	0, 1, 2,
-//	0, 2, 3,
-//	0, 4, 7,
-//	0, 7, 3,
-//	3, 7, 6,
-//	3, 6, 2,
-//	2, 6, 5,
-//	2, 5, 1,
-//	1, 5, 4,
-//	1, 4, 0,
-//	4, 5, 6,
-//	4, 6, 7
-//};
-
-GLuint pyramidIndices[] =
-{
-	0, 1, 2, // Bottom side
-	0, 2, 3, // Bottom side
-	4, 6, 5, // Left side
-	7, 9, 8, // Non-facing side
-	10, 12, 11, // Right side
-	13, 15, 14 // Facing side
-};
-
 static void setFocus(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
-
-
 
 int main() {
 	if (!glfwInit())
@@ -71,65 +41,49 @@ int main() {
 
 	// ===
 
-	glm::vec4 worldColor = glm::vec4((float)110/255, (float)164/255, (float)230 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4((float)110 / 255, (float)164 / 255, (float)230 / 255, 1.0f);
+	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	Texture textures[]{
+	// ===
+
+	Shader defaultShader("default.vert", "default.frag");
+
+	std::vector<Vertex> pyramidVerts{};
+	std::vector<GLuint> pyramidTris{};
+	getPyramid(pyramidVerts, pyramidTris);
+
+	std::vector <Texture> textures = {
 		Texture("planks.png", "diffuse", 0),
 		Texture("_planksSpec.png", "specular", 1)
 	};
 
-	std::vector<Vertex> pyramidVerts{};
-	// (const glm::vec3 & position, const glm::vec3 & normal, const glm::vec3 & color, const glm::vec2 & texUv)
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f, 0.5f }, glm::vec3{  0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 5.0f });
-	pyramidVerts.emplace_back(glm::vec3{ 0.5f, 0.0f, -0.5f }, glm::vec3{  0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 5.0f });
-	pyramidVerts.emplace_back(glm::vec3{ 0.5f, 0.0f,  0.5f }, glm::vec3{  0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 0.0f });
+	Mesh pyramid(pyramidVerts, pyramidTris, textures);
 	
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f,  0.5f }, glm::vec3{  -0.8f, 0.5f,  0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{  -0.8f, 0.5f,  0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f }, glm::vec3{  -0.8f, 0.5f,  0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 2.5f, 5.0f });
+	glm::vec3 pyramidPivot{};
+	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
+	pyramidMatrix = glm::translate(pyramidMatrix, pyramidPivot);
 
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, 0.5f, -0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{  0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, 0.5f, -0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f}, glm::vec3{ 0.0f, 0.5f, -0.8f}, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{   2.5f, 5.0f });
+	// ===
 
-	pyramidVerts.emplace_back(glm::vec3{ 0.5f, 0.0f, -0.5f }, glm::vec3{ 0.8f, 0.5f,  0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{ 0.5f, 0.0f,  0.5f }, glm::vec3{ 0.8f, 0.5f,  0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{ 0.0f, 0.8f,  0.0f}, glm::vec3{  0.8f, 0.5f,  0.0f }, glm::vec3{ 0.92f, 0.86f, 0.76f }, glm::vec2{ 2.5f, 5.0f });
-
-	pyramidVerts.emplace_back(glm::vec3{  0.5f, 0.0f,  0.5f }, glm::vec3{ 0.0f, 0.5f,  0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{ -0.5f, 0.0f,  0.5f }, glm::vec3{ 0.0f, 0.5f,  0.8f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f}, glm::vec3{  0.0f, 0.5f,  0.8f }, glm::vec3{ 0.92f, 0.86f, 0.76f }, glm::vec2{ 2.5f, 5.0f });
+	Shader cubeShader("default.vert", "worldlight.frag");
+	//Shader sunShader("default.vert", "unlit_color.frag");
 
 	std::vector<Vertex> cubeVerts{};
-	std::vector<GLuint> tris{};
+	std::vector<GLuint> cubeTris{};
+	getCube(cubeVerts, cubeTris);
 
-	Shader defaultShader("default.vert", "worldlight.frag");
+	Cube sunCube{ cubeVerts, cubeTris, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f}};
+	sunCube.setColor(sunColor);
 
-	std::vector <GLuint> ind(pyramidIndices, pyramidIndices + sizeof(pyramidIndices) / sizeof(GLuint));
-	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-	Mesh pyramid(pyramidVerts, ind, tex);
-
-
-	// Shader for light cube
-	Shader cubeShader("default.vert", "lit_color.frag");
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	Cube lightCube{ cubeVerts, tris, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
-
-
-	Cube redCube{ cubeVerts, tris, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
-	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-
-	Cube blueCube{ cubeVerts, tris, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
-	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-
-	Cube ground{ cubeVerts, tris, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Cube ground{ cubeVerts, cubeTris, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
 
-	glm::vec3 objectPos{};
-	glm::mat4 objectModel = glm::mat4{ 1.0f };
-	objectModel = glm::translate(objectModel, objectPos);
+	Cube redCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
+	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+
+	Cube blueCube{ cubeVerts, cubeTris, glm::vec3{0.0f, 0.0f, 4.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
 
 	// ===
 
@@ -167,28 +121,28 @@ int main() {
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
-		glClearColor(worldColor.r, worldColor.g, worldColor.b, 1.0f);
+		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			lightColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
-			if (lightColor.r > 1.0f) {
-				lightColor.r = 1.0f;
+			/*sunColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
+			if (sunColor.r > 1.0f) {
+				sunColor.r = 1.0f;
 				increase = !increase;
 			}
 
-			if (lightColor.r < 0.0f) {
-				lightColor.r = 0.0f;
+			if (sunColor.r < 0.0f) {
+				sunColor.r = 0.0f;
 				increase = !increase;
 			}
 
-			lightColor.g = lightColor.r;
-			lightCube.setColor(lightColor);
+			sunColor.g = sunColor.r;
+			sunCube.setColor(sunColor);*/
 
-			redCube.rot.y += 1.0f;
-			blueCube.rot.y -= 1.0f;
+			//redCube.rot.y += 1.0f;
+			//blueCube.rot.y -= 1.0f;
 		}
 
 		camera.hasFocus = hasFocus;
@@ -196,14 +150,14 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		lightCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
 
-		pyramid.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, lightCube.pos, lightColor, worldColor);
+		pyramid.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
 
-		ground.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
-		redCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
-		blueCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
+		ground.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
+		sunCube.draw(sunShader, camera, sunColor, sunCube.pos, skyColor);
+		redCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
+		blueCube.draw(cubeShader, camera, sunColor, sunCube.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -213,7 +167,7 @@ int main() {
 	}
 
 	pyramid.free();
-	lightCube.free();
+	sunCube.free();
 	defaultShader.free();
 	cubeShader.free();
 

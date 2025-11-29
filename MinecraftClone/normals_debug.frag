@@ -19,7 +19,7 @@ uniform sampler2D diffuse0;
 uniform sampler2D specular0;
 // Gets the color of the light from the main function
 uniform vec4 lightColor;
-uniform vec4 selfColor;
+
 uniform vec4 worldColor;
 
 // Gets the position of the light from the main function
@@ -27,18 +27,14 @@ uniform vec3 lightPos;
 // Gets the position of the camera from the main function
 uniform vec3 camPos;
 
-vec4 worldLight()
+vec4 getColor()
 {
-	vec3 lightVec = lightPos - crntPos;
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightVec);
-	float diffuse = max(dot(normal, lightDirection), 0.0f);
-
-	return vec4(normal.x, normal.y + 1.0f, normal.z, 1.0f);
+	return vec4((normal.x + 1.0f) / 2.0f, (normal.y + 1.0f) / 2.0f, (normal.z + 1.0f) / 2.0f, 1.0f);
 }
 
 void main()
 {
 	// outputs final color
-	FragColor = worldLight();
+	FragColor = getColor();
 }
