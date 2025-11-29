@@ -48,8 +48,8 @@ void Cube::draw(const Shader& shader, const Camera& camera, glm::vec4 lightColor
 
 	glm::quat rotation = glm::quatLookAt(direction, up);
 
-	glm::mat4 matrix{ 1.0f };
-	mesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor);
+	//glm::mat4 matrix{ 1.0f };
+	mesh.draw(shader, camera, modelMatrix, pos, rotation, scale, lightPos, lightColor, worldColor);
 }
 
 void Cube::move(const glm::vec3& vel, const double dt) {
