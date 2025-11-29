@@ -93,7 +93,8 @@ int main() {
 	glViewport(0, 0, width, height);
 
 	// ===
-	glm::vec4 worldColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+
+	glm::vec4 worldColor = glm::vec4((float)110/255, (float)164/255, (float)230 / 255, 1.0f);
 
 	Texture textures[]{
 		Texture("planks.png", "diffuse", 0),
