@@ -10,47 +10,24 @@ const double minDtForFrame = 1.0 / fpsCap;
 const double tickInterval = 0.02;
 
 bool hasFocus = true;
-//Vertex vertices[] = { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-//	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-//	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-//	Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-//	Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
+
+//std::vector<GLuint> cubeIndices =
+//{
+//	0, 1, 2,
+//	0, 2, 3,
+//	0, 4, 7,
+//	0, 7, 3,
+//	3, 7, 6,
+//	3, 6, 2,
+//	2, 6, 5,
+//	2, 5, 1,
+//	1, 5, 4,
+//	1, 4, 0,
+//	4, 5, 6,
+//	4, 6, 7
 //};
 
-//Vertex vertices[] = { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-//	Vertex{glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-//	Vertex{glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-//	Vertex{glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-//	Vertex{glm::vec3(1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
-//};
-
-// Vertices coordinates
-//GLfloat vertices[] =
-//{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, 
-//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, 
-//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f,		
-//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f,	
-//
-//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f,	
-//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f,	
-//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, 	
-//
-//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, 
-//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, 
-//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, 	
-//
-//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, 	
-//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, 	
-//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f,	
-//
-//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, 	
-//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, 
-//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  	
-//};
-
-// Indices for vertices order
-GLuint indices[] =
+GLuint pyramidIndices[] =
 {
 	0, 1, 2, // Bottom side
 	0, 2, 3, // Bottom side
@@ -125,56 +102,34 @@ int main() {
 	pyramidVerts.emplace_back(glm::vec3{  0.0f, 0.8f,  0.0f}, glm::vec3{  0.0f, 0.5f,  0.8f }, glm::vec3{ 0.92f, 0.86f, 0.76f }, glm::vec2{ 2.5f, 5.0f });
 
 	std::vector<Vertex> cubeVerts{};
-	cubeVerts.emplace_back(glm::vec3{ -0.5f, -0.5f, -0.5f }, glm::vec3{ 0.0f, 0.0f, 1.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	cubeVerts.emplace_back(glm::vec3{ 0.5f, -0.5f, -0.5f }, glm::vec3{ 1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 0.0f });
-	cubeVerts.emplace_back(glm::vec3{ 0.5f, 0.5f, -0.5f }, glm::vec3{ 0.0f, 0.0f, -1.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 1.0f });
-	cubeVerts.emplace_back(glm::vec3{ -0.5f, 0.5f, -0.5f }, glm::vec3{ -1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 1.0f });
-	
-	cubeVerts.emplace_back(glm::vec3{ -0.5f, -0.5f, 0.5f }, glm::vec3{ -1.0f, 0.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
-	cubeVerts.emplace_back(glm::vec3{  0.5f, -0.5f, 0.5f }, glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 0.0f });
-	cubeVerts.emplace_back(glm::vec3{  0.5f,-0.5f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  1.0f, 1.0f });
-	cubeVerts.emplace_back(glm::vec3{ -0.5f, 0.5f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{  0.0f, 1.0f });
+	std::vector<GLuint> tris{};
 
-	//Vertex vertices[16];
-	//std::copy(pyramidVerts.begin(), pyramidVerts.end(), vertices);
-
-	// Generates Shader object using shaders default.vert and default.frag
 	Shader defaultShader("default.vert", "worldlight.frag");
-	// Store mesh data in vectors for the mesh
-	//std::vector <Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
+
+	std::vector <GLuint> ind(pyramidIndices, pyramidIndices + sizeof(pyramidIndices) / sizeof(GLuint));
 	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-	// Create floor mesh
-	Mesh floor(pyramidVerts, ind, tex);
+
+	Mesh pyramid(pyramidVerts, ind, tex);
 
 
 	// Shader for light cube
 	Shader cubeShader("default.vert", "lit_color.frag");
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	Cube lightCube{ cubeVerts, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
+	Cube lightCube{ cubeVerts, tris, glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f} , glm::vec3{0.25f} };
 
 
-	Cube redCube{ cubeVerts, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
+	Cube redCube{ cubeVerts, tris, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.5f} };
 	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Cube blueCube{ cubeVerts, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
+	Cube blueCube{ cubeVerts, tris, glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.51f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-	Cube ground{ cubeVerts, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Cube ground{ cubeVerts, tris, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	ground.setColor(glm::vec4{ 0.5f, 0.5f, 0.5f, 1.0f });
 
 	glm::vec3 objectPos{};
 	glm::mat4 objectModel = glm::mat4{ 1.0f };
 	objectModel = glm::translate(objectModel, objectPos);
-
-	/*lightShader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
-	glUniform4f(glGetUniformLocation(lightShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-
-	defaultShader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(defaultShader.id, "model"), 1, GL_FALSE, glm::value_ptr(objectModel));
-	glUniform4f(glGetUniformLocation(defaultShader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(defaultShader.id, "lightPos"), lightCube.pos.x, lightCube.pos.y, lightCube.pos.z);*/
 
 	// ===
 
@@ -233,14 +188,7 @@ int main() {
 			lightCube.setColor(lightColor);
 
 			redCube.rot.y += 1.0f;
-			/*redCube.pos.y += tickInterval;
-			if (redCube.pos.y > 3.0f)
-				redCube.pos.y = 0.0f;*/
-
 			blueCube.rot.y -= 1.0f;
-			/*blueCube.pos.y -= tickInterval;
-			if (blueCube.pos.y < -3.0f)
-				blueCube.pos.y = 0.0f;*/
 		}
 
 		camera.hasFocus = hasFocus;
@@ -250,7 +198,7 @@ int main() {
 
 		lightCube.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
 
-		floor.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+		pyramid.draw(defaultShader, camera, objectModel, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, lightCube.pos, lightColor, worldColor);
 
 		ground.draw(cubeShader, camera, lightColor, lightCube.pos, worldColor);
@@ -264,7 +212,7 @@ int main() {
 			break;
 	}
 
-	floor.free();
+	pyramid.free();
 	lightCube.free();
 	defaultShader.free();
 	cubeShader.free();

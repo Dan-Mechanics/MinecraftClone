@@ -162,6 +162,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="normals_debug.frag" />
     <None Include="worldlight.frag" />
     <None Include="unlit_color.frag" />
   </ItemGroup>
