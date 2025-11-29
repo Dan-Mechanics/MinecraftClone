@@ -27,8 +27,18 @@ uniform vec3 lightPos;
 // Gets the position of the camera from the main function
 uniform vec3 camPos;
 
+vec4 worldLight()
+{
+	vec3 lightVec = lightPos - crntPos;
+	vec3 normal = normalize(Normal);
+	vec3 lightDirection = normalize(lightVec);
+	float diffuse = max(dot(normal, lightDirection), 0.0f);
+
+	return selfColor * (diffuse * lightColor + worldColor);
+}
+
 void main()
 {
 	// outputs final color
-	FragColor = selfColor;
+	FragColor = worldLight();
 }

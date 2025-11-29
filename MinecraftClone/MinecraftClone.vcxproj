@@ -182,6 +182,9 @@
     <Image Include="planks.png" />
     <Image Include="planksSpec.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="lit_color.frag" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
