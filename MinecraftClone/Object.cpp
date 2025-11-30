@@ -4,7 +4,7 @@ Object::Object() = default;
 Object::Object(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } { }
 
 void Object::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
-	glFrontFace(GL_CCW);
+	//glFrontFace(withTheClock ? GL_CW : GL_CCW);
 	
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
@@ -44,6 +44,8 @@ void Object::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, 
 }
 
 void Object::drawColor(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
+	//glFrontFace(withTheClock ? GL_CW : GL_CCW);
+	
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
 	}

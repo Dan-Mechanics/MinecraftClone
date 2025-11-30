@@ -34,7 +34,13 @@ vec4 worldLight()
 	vec3 lightDirection = normalize(lightVec);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
-	return selfColor * (diffuse * lightColor + worldColor);
+	// vec4 light = texture(specular0, texCoord).r * diffuse * lightColor + worldColor;
+	vec4 light = diffuse * lightColor + worldColor;
+	light.x = min(light.x, 1.0f);
+	light.y = min(light.y, 1.0f);
+	light.z = min(light.z, 1.0f);
+
+	return selfColor * light;
 }
 
 void main()

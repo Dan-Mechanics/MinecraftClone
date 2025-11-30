@@ -40,8 +40,7 @@ int main() {
 
 	// ===
 
-	//glm::vec4 skyColor = glm::vec4((float)50 / 255, (float)50 / 255, (float)100 / 255, 1.0f);
-	glm::vec4 skyColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4((float)50 / 255, (float)50 / 255, (float)100 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// ===
@@ -54,7 +53,12 @@ int main() {
 
 	std::vector <Texture> textures = {
 		Texture("planks.png", "diffuse", 0),
-		Texture("_planksSpec.png", "specular", 1)
+		Texture("planksSpec.png", "specular", 1)
+	};
+
+	std::vector <Texture> grass = {
+		Texture("albedo.png", "diffuse", 0),
+		Texture("specular.png", "specular", 1)
 	};
 
 	Mesh pyramid{ pyramidVerts, pyramidTris, textures };
@@ -70,14 +74,20 @@ int main() {
 	std::vector<GLuint> cubeTris{};
 	getCube(cubeVerts, cubeTris);
 
-	Mesh cube{ cubeVerts, cubeTris, textures };
+	Mesh cube{ cubeVerts, cubeTris, grass };
 
-	Object sunCube{ glm::vec3{5.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	Object sunCube{ glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sunCube.setColor(sunColor);
-	Object ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Object redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 
-	Object blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+
+	Object redCube{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+
+	Object greenCube{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	greenCube.setColor(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+	Object blueCube{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
 	// ===
@@ -87,10 +97,10 @@ int main() {
 	// https://learnopengl.com/Advanced-OpenGL/Face-culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	//glFrontFace(GL_CCW);
+	glFrontFace(GL_CCW);
 
 	// METERS PER SECOND.
-	const auto standardSpeed = 1.0f;
+	const auto standardSpeed = 12.5f;
 	const auto sensitivity = 0.1f;
 	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
@@ -137,7 +147,12 @@ int main() {
 			sunCube.setColor(sunColor);*/
 
 			redCube.rot.y += 1.0f;
-			blueCube.rot.y -= 1.0f;
+			greenCube.rot.x += 1.0f;
+			blueCube.rot.y += 1.0f;
+
+			skyColor.x = camera.position.x / 10.0f;
+			skyColor.y = camera.position.y / 10.0f;
+			skyColor.z = camera.position.z / 10.0f;
 		}
 
 		camera.hasFocus = hasFocus;
@@ -145,13 +160,15 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
+		/*pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
 
 		ground.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
 		sunCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
-		redCube.draw(pyramid, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		//blueCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
+
+		redCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		greenCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		blueCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
