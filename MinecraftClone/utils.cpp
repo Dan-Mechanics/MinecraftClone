@@ -61,10 +61,15 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 		tris.push_back(vertIndexOffset + i * 4 + 3);
 
 		// UV
-		verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
+		/*verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
 		verts[i * 4 + 1].texUv = { 0.0f, 1.0f };
 		verts[i * 4 + 2].texUv = { 1.0f, 1.0f };
-		verts[i * 4 + 3].texUv = { 1.0f, 0.0f };
+		verts[i * 4 + 3].texUv = { 1.0f, 0.0f };*/
+
+		verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
+		verts[i * 4 + 1].texUv = { 1.0f, 0.0f };
+		verts[i * 4 + 2].texUv = { 1.0f, 1.0f };
+		verts[i * 4 + 3].texUv = { 0.0f, 1.0f };
 
 		// VERTEX COLOR ( NOT TEXTURE !! )
 		verts[i * 4 + 0].color = { 1.0f, 0.0f, 1.0f };

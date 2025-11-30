@@ -51,7 +51,7 @@ int main() {
 	std::vector<GLuint> pyramidTris{};
 	getPyramid(pyramidVerts, pyramidTris);
 
-	std::vector <Texture> textures = {
+	std::vector <Texture> wood = {
 		Texture("planks.png", "diffuse", 0),
 		Texture("planksSpec.png", "specular", 1)
 	};
@@ -61,7 +61,7 @@ int main() {
 		Texture("specular.png", "specular", 1)
 	};
 
-	Mesh pyramid{ pyramidVerts, pyramidTris, textures };
+	Mesh pyramid{ pyramidVerts, pyramidTris, wood };
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
 
 	// ===
@@ -75,6 +75,7 @@ int main() {
 	getCube(cubeVerts, cubeTris);
 
 	Mesh cube{ cubeVerts, cubeTris, grass };
+	Mesh groundMesh{ cubeVerts, cubeTris, wood };
 
 	Object sunCube{ glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sunCube.setColor(sunColor);
@@ -132,27 +133,8 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			/*sunColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
-			if (sunColor.r > 1.0f) {
-				sunColor.r = 1.0f;
-				increase = !increase;
-			}
 
-			if (sunColor.r < 0.0f) {
-				sunColor.r = 0.0f;
-				increase = !increase;
-			}
-
-			sunColor.g = sunColor.r;
-			sunCube.setColor(sunColor);*/
-
-			redCube.rot.y += 1.0f;
-			greenCube.rot.x += 1.0f;
-			blueCube.rot.y += 1.0f;
-
-			skyColor.x = camera.position.x / 10.0f;
-			skyColor.y = camera.position.y / 10.0f;
-			skyColor.z = camera.position.z / 10.0f;
+			// ..
 		}
 
 		camera.hasFocus = hasFocus;
@@ -163,7 +145,7 @@ int main() {
 		/*pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
 
-		ground.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		ground.draw(groundMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
 		sunCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
 
 		redCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
