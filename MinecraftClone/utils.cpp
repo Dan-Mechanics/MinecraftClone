@@ -52,6 +52,8 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 	faceCount++;
 
+
+
 	for (int i = 0; i < faceCount; ++i) {
 		tris.push_back(vertIndexOffset + i * 4);
 		tris.push_back(vertIndexOffset + i * 4 + 1);
@@ -60,18 +62,29 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 		tris.push_back(vertIndexOffset + i * 4 + 2);
 		tris.push_back(vertIndexOffset + i * 4 + 3);
 
-		// UV
-		/*verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
-		verts[i * 4 + 1].texUv = { 0.0f, 1.0f };
-		verts[i * 4 + 2].texUv = { 1.0f, 1.0f };
-		verts[i * 4 + 3].texUv = { 1.0f, 0.0f };*/
+		// UV ===
+		switch (i) {
+		case 0: // UP.
+			verts[i * 4 + 0].texUv = { 0.0f, 0.5f };
+			verts[i * 4 + 1].texUv = { 0.5f, 0.5f };
+			verts[i * 4 + 2].texUv = { 0.5f, 1.0f };
+			verts[i * 4 + 3].texUv = { 0.0f, 1.0f };
+			break;
+		case 1: // DOWN.
+			verts[i * 4 + 0].texUv = { 0.5f, 0.0f };
+			verts[i * 4 + 1].texUv = { 1.0f, 0.0f };
+			verts[i * 4 + 2].texUv = { 1.0f, 0.5f };
+			verts[i * 4 + 3].texUv = { 0.5f, 0.5f };
+			break;
+		default: // AROUND.
+			verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
+			verts[i * 4 + 1].texUv = { 0.5f, 0.0f };
+			verts[i * 4 + 2].texUv = { 0.5f, 0.5f };
+			verts[i * 4 + 3].texUv = { 0.0f, 0.5f };
+			break;
+		}
 
-		verts[i * 4 + 0].texUv = { 0.0f, 0.0f };
-		verts[i * 4 + 1].texUv = { 1.0f, 0.0f };
-		verts[i * 4 + 2].texUv = { 1.0f, 1.0f };
-		verts[i * 4 + 3].texUv = { 0.0f, 1.0f };
-
-		// VERTEX COLOR ( NOT TEXTURE !! )
+		// MAGENTA VERTEX COLOR, NOT TEXTURE, FOR DEBUG.
 		verts[i * 4 + 0].color = { 1.0f, 0.0f, 1.0f };
 		verts[i * 4 + 1].color = { 1.0f, 0.0f, 1.0f };
 		verts[i * 4 + 2].color = { 1.0f, 0.0f, 1.0f };

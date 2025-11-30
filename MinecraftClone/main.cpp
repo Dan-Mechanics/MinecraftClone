@@ -40,7 +40,7 @@ int main() {
 
 	// ===
 
-	glm::vec4 skyColor = glm::vec4((float)50 / 255, (float)50 / 255, (float)100 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// ===
@@ -57,7 +57,7 @@ int main() {
 	};
 
 	std::vector <Texture> grass = {
-		Texture("albedo.png", "diffuse", 0),
+		Texture("texture_atlas.png", "diffuse", 0),
 		Texture("specular.png", "specular", 1)
 	};
 
@@ -74,22 +74,24 @@ int main() {
 	std::vector<GLuint> cubeTris{};
 	getCube(cubeVerts, cubeTris);
 
-	Mesh cube{ cubeVerts, cubeTris, grass };
+	Mesh cubeMesh{ cubeVerts, cubeTris, grass };
 	Mesh groundMesh{ cubeVerts, cubeTris, wood };
 
-	Object sunCube{ glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	Object sunCube{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sunCube.setColor(sunColor);
 
-	Object ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 
-	Object redCube{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	redCube.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Object greenCube{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	greenCube.setColor(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-	Object blueCube{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+	Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+
+	Object cube3{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object cube4{ glm::vec3{0.0f, -2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+
+	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 
 	// ===
 
@@ -146,11 +148,14 @@ int main() {
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
 
 		ground.draw(groundMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
+		sunCube.drawColor(cubeMesh, unlitShader, camera, sunColor, sunCube.pos, skyColor);
 
-		redCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		greenCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		blueCube.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube1.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube2.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube3.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube4.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube5.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube6.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
