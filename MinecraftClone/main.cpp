@@ -21,7 +21,6 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	//GLFWwindow* window = glfwCreateWindow(width, height, "My Title", glfwGetPrimaryMonitor(), NULL);
 	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -41,10 +40,9 @@ int main() {
 
 	// ===
 
-	//glm::vec4 skyColor = glm::vec4((float)110 / 255, (float)164 / 255, (float)230 / 255, 1.0f);
-	glm::vec4 skyColor = glm::vec4((float)12 / 255, (float)12 / 255, (float)12 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)50 / 255, (float)50 / 255, (float)100 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	// glm::vec3 lightPos{ 0.5f, 0.5f, 0.5f };
 
 	// ===
 
@@ -59,36 +57,26 @@ int main() {
 		Texture("_planksSpec.png", "specular", 1)
 	};
 
-	Mesh pyramid(pyramidVerts, pyramidTris, textures);
-	Mesh pyramid2(pyramidVerts, pyramidTris, textures);
-	
-	//glm::vec3 pyramidPivot{};
+	Mesh pyramid{ pyramidVerts, pyramidTris, textures };
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
-	//pyramidMatrix = glm::translate(pyramidMatrix, pyramidPivot);
-	glm::mat4 pyramidMatrix2 = glm::mat4{ 1.0f };
-	//glm::mat4 pyramidMatrix2 = glm::translate(pyramidMatrix, glm::vec3{0.0f, 2.0f, 0.0f});
-
-	//glm::vec3 cubePivot{};
-	//glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, pyramidPivot);
-	//	glm::mat4 cubeMatrix = glm::translate(glm::mat4{ 1.0f }, glm::vec3{ -0.5f, -0.5f, -0.5f });
 
 	// ===
 
-	Shader cubeShader("default.vert", "worldlight.frag");
+	Shader textureLit("default.vert", "worldlight.frag");
 	Shader litShader("default.vert", "lit_color.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
-	//Shader sunShader("default.vert", "unlit_color.frag");
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	getCube(cubeVerts, cubeTris);
 
-	Mesh woodenCubeMesh(cubeVerts, cubeTris, textures);
-	//Mesh cube2(cubeVerts, cubeTris, textures);
+	Mesh cube{ cubeVerts, cubeTris, textures };
 
-	Cube sunCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	Cube sunCube{ glm::vec3{5.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	sunCube.setColor(sunColor);
 	Cube ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+
 	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
@@ -134,7 +122,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			sunColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
+			/*sunColor.r += (float)tickInterval * (increase ? 1.0f : -1.0f);
 			if (sunColor.r > 1.0f) {
 				sunColor.r = 1.0f;
 				increase = !increase;
@@ -146,7 +134,7 @@ int main() {
 			}
 
 			sunColor.g = sunColor.r;
-			sunCube.setColor(sunColor);
+			sunCube.setColor(sunColor);*/
 
 			redCube.rot.y += 1.0f;
 			blueCube.rot.y -= 1.0f;
@@ -157,22 +145,13 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		pyramid.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
+		pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
 
-		pyramid2.draw(defaultShader, camera, pyramidMatrix2, glm::vec3{ 0.0f, 3.0f, 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
-
-		/*cube1.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);
-
-		cube2.draw(defaultShader, camera, pyramidMatrix, glm::vec3{ 2.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
-		ground.draw(woodenCubeMesh, cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.drawColor(woodenCubeMesh, unlitShader, camera, sunColor, sunCube.pos, skyColor);
-		redCube.draw(woodenCubeMesh, cubeShader, camera, sunColor, sunCube.pos, skyColor);
-		blueCube.drawColor(woodenCubeMesh, litShader, camera, sunColor, sunCube.pos, skyColor);
-
+		ground.draw(cube, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		sunCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
+		redCube.draw(pyramid, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		//blueCube.drawColor(cube, unlitShader, camera, sunColor, sunCube.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
