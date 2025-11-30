@@ -1,9 +1,11 @@
-#include "Cube.h"
+#include "Object.h"
 
-Cube::Cube() = default;
-Cube::Cube(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } { }
+Object::Object() = default;
+Object::Object(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } { }
 
-void Cube::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
+void Object::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
+	glFrontFace(GL_CCW);
+	
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
 	}
@@ -41,7 +43,7 @@ void Cube::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, gl
 	mesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor);
 }
 
-void Cube::drawColor(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
+void Object::drawColor(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
 	}
@@ -79,14 +81,18 @@ void Cube::drawColor(const Mesh& mesh, const Shader& shader, const Camera& camer
 	mesh.drawColor(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor, color);
 }
 
-void Cube::move(const glm::vec3& vel, const double dt) {
+void Object::move(const glm::vec3& vel, const double dt) {
 	pos += vel * (float)dt;
 }
 
-void Cube::rotate(const glm::vec3& vel, const double dt) {
+void Object::rotate(const glm::vec3& vel, const double dt) {
 	rot += vel * (float)dt;
 }
 
-void Cube::setColor(const glm::vec4& color) {
+void Object::setColor(const glm::vec4& color) {
 	this->color = color;
+}
+
+void Object::setWithTheClock(bool value) {
+	withTheClock = value;
 }

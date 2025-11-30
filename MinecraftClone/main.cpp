@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "Cube.h"
+#include "Object.h"
 #include "utils.h"
 
 const unsigned int width = 1920;
@@ -72,12 +72,12 @@ int main() {
 
 	Mesh cube{ cubeVerts, cubeTris, textures };
 
-	Cube sunCube{ glm::vec3{5.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	Object sunCube{ glm::vec3{5.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sunCube.setColor(sunColor);
-	Cube ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Cube redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object ground{ glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Object redCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 
-	Cube blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object blueCube{ glm::vec3{0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	blueCube.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
 	// ===
@@ -85,9 +85,9 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	// https://learnopengl.com/Advanced-OpenGL/Face-culling
-	/*glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);*/
+	//glFrontFace(GL_CCW);
 
 	// METERS PER SECOND.
 	const auto standardSpeed = 1.0f;
