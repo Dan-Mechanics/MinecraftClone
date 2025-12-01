@@ -87,6 +87,20 @@ int main() {
 
 	// ===
 
+	std::unordered_set<BlockPos> world{};
+	world.emplace(0, 0, 0);
+	world.emplace(1, 0, 0);
+	world.emplace(0, 1, 0);
+	world.emplace(0, 0, 1);
+
+	for (auto const& pt : world) {
+		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
+	}
+
+	return 0;
+
+	// ===
+
 	Object sun{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sun.setColor(sunColor);
 
@@ -100,10 +114,6 @@ int main() {
 
 	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
-	// idk if this works.
-	std::unordered_set<glm::ivec3> world{ glm::ivec3{0,0,0} };
-	//world.insert(glm::ivec3{ 0,0,0 });
 
 	// ===
 

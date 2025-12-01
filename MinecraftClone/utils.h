@@ -2,9 +2,17 @@
 #include <vector>
 #include "vbo.h"
 #include <unordered_set>
+#include "BlockPos.h"
+
+extern const BlockPos UP;
+extern const BlockPos DOWN;
+extern const BlockPos LEFT;
+extern const BlockPos RIGHT;
+extern const BlockPos FORWARD;
+extern const BlockPos BACK;
 
 void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris);
-void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>& verts, std::vector<GLuint>& tris);
+void getChunk(const std::unordered_set<BlockPos>& blocks, std::vector<Vertex>& verts, std::vector<GLuint>& tris);
 
 /// <summary>
 /// Given that they are always the same.

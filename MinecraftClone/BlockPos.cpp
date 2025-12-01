@@ -1,13 +1,6 @@
 #include "BlockPos.h"
 #include <string>
 
-const BlockPos UP = { 0, 1, 0 };
-const BlockPos DOWN = { 0, -1, 0 };
-const BlockPos LEFT = { -1, 0, 0 };
-const BlockPos RIGHT = { 1, 0, 0 };
-const BlockPos FORWARD = { 0, 0, 1 };
-const BlockPos BACK = { 0, 0, -1 };
-
 BlockPos::BlockPos() = default;
 BlockPos::BlockPos(const int& x, const int& y, const int& z) : x{ x }, y{ y }, z{ z } { }
 BlockPos::BlockPos(const BlockPos& other) : x{ other.x }, y{ other.y }, z{ other.z } { }
@@ -28,15 +21,6 @@ bool BlockPos::operator<(const BlockPos& other) {
 		return true;
 
 	return *this == other;
-}
-
-std::size_t BlockPos::operator()(const BlockPos& blockPos) const noexcept {
-	std::size_t h1 = std::hash<int>{}(blockPos.x);
-	std::size_t h2 = std::hash<int>{}(blockPos.y);
-	std::size_t h3 = std::hash<int>{}(blockPos.z);
-
-	std::size_t c1 = h1 ^ (h2 << 1);
-	return c1 ^ (h3 << 1); // OR USE BOOST::HASH_COMBINE.
 }
 
 BlockPos BlockPos::operator+(const BlockPos& other) const {

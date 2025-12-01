@@ -1,5 +1,12 @@
 #include "utils.h"
 
+const BlockPos UP = { 0, 1, 0 };
+const BlockPos DOWN = { 0, -1, 0 };
+const BlockPos LEFT = { -1, 0, 0 };
+const BlockPos RIGHT = { 1, 0, 0 };
+const BlockPos FORWARD = { 0, 0, 1 };
+const BlockPos BACK = { 0, 0, -1 };
+
 void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	verts.clear();
 	tris.clear();
@@ -92,7 +99,7 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	}
 }
 
-void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
+void getChunk(const std::unordered_set<BlockPos>& blocks, std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	verts.clear();
 	tris.clear();
 
@@ -107,7 +114,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		auto faceCount = 0;
 
 		// UP !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 1, 0 })) {
+		if (!blocks.contains(*blockPos + UP)) {
 			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
@@ -124,7 +131,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		}
 
 		// DOWN !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ 0, -1 ,0 })) {
+		if (!blocks.contains(*blockPos + DOWN)) {
 			verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
@@ -140,7 +147,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		}
 
 		// FORWARD !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 0, 1 })) {
+		if (!blocks.contains(*blockPos + FORWARD)) {
 			verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
@@ -152,7 +159,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		}
 
 		// RIGHT !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ 1, 0, 0 })) {
+		if (!blocks.contains(*blockPos + RIGHT)) {
 			verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
@@ -164,7 +171,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		}
 
 		// BACK !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 0, -1 })) {
+		if (!blocks.contains(*blockPos + BACK)) {
 			verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
@@ -176,7 +183,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 		}
 
 		// LEFT !!
-		if (!blocks.contains(*blockPos + glm::ivec3{ -1, 0, 0 })) {
+		if (!blocks.contains(*blockPos + LEFT)) {
 			verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
@@ -196,6 +203,7 @@ void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>&
 			tris.push_back(blockStartVertIndex + i * 4 + 3);
 
 			// MAKE THE VERTEX COLOR MAGENTA FOR DEBUG.
+			// COULD REMOVE FOR PERFORMANCE IF REQUIRED.
 			verts[i * 4 + 0].color = { 1.0f, 0.0f, 1.0f };
 			verts[i * 4 + 1].color = { 1.0f, 0.0f, 1.0f };
 			verts[i * 4 + 2].color = { 1.0f, 0.0f, 1.0f };
