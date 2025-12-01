@@ -18,7 +18,7 @@ public:
 	bool operator<(const BlockPos& other); 
 
 	BlockPos operator+(const BlockPos& other) const;
-	glm::ivec3 getVec3() const;
+	glm::vec3 getVec3() const;
 };
 
 namespace std {

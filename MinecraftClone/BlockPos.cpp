@@ -27,7 +27,7 @@ BlockPos BlockPos::operator+(const BlockPos& other) const {
 	return { x + other.x, y + other.y, z + other.z };
 }
 
-glm::ivec3 BlockPos::getVec3() const {
+glm::vec3 BlockPos::getVec3() const {
 	return { x, y, z };
 }
 

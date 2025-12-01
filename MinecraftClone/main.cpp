@@ -71,33 +71,41 @@ int main() {
 
 	std::vector<Vertex> pyramidVerts{};
 	std::vector<GLuint> pyramidTris{};
-	getPyramid(pyramidVerts, pyramidTris);
+	glm::mat4 pyramidMatrix;
+	getPyramid(pyramidVerts, pyramidTris, pyramidMatrix);
 
-	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
 	Mesh pyramidMesh{ pyramidVerts, pyramidTris, pyramidMatrix };
 
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
-	getCube(cubeVerts, cubeTris);
+	glm::mat4 cubeMatrix;
+	getCube(cubeVerts, cubeTris, cubeMatrix);
 
-	glm::mat4 cubeMatrix = glm::mat4{ 1.0f };
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
 	std::unordered_set<BlockPos> world{};
-	world.emplace(0, 0, 0);
-	world.emplace(1, 0, 0);
-	world.emplace(0, 1, 0);
-	world.emplace(0, 0, 1);
+	for (int x = 0; x < 16; ++x) {
+		for (int z = 0; z < 16; ++z) {
+			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
+				world.emplace(x, y, z);
+			}
+		}
+	}
 
 	for (auto const& pt : world) {
 		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
 	}
 
-	return 0;
+	std::vector<Vertex> chunkVerts{};
+	std::vector<GLuint> chunkTris{};
+	glm::mat4 chunkMatrix;
+	getChunk(world, chunkVerts, chunkTris, chunkMatrix);
+
+	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===
 
@@ -114,6 +122,9 @@ int main() {
 
 	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+
+	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
+	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -170,12 +181,14 @@ int main() {
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+
+		chunkObject.drawWithMaterial(chunkMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
