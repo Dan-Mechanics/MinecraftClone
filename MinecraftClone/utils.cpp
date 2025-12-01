@@ -92,6 +92,128 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	}
 }
 
+void getChunk(const std::unordered_set<glm::ivec3>& blocks, std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
+	verts.clear();
+	tris.clear();
+
+	/*const auto low = -0.5f;
+	const auto high = 0.5f;*/
+	const auto low = 0.0f;
+	const auto high = 1.0f;
+
+	auto blockPos = blocks.begin();
+	while (blockPos != blocks.end()) {
+		const int blockStartVertIndex = verts.size();
+		auto faceCount = 0;
+
+		// UP !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 1, 0 })) {
+			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
+
+			// OR YOU COULD CHANGE THE VERT CONSTRUCTOR.
+			auto beginFaceVert = verts.size() - 4;
+			verts[beginFaceVert + 0].texUv = { 0.0f, 0.5f };
+			verts[beginFaceVert + 1].texUv = { 0.5f, 0.5f };
+			verts[beginFaceVert + 2].texUv = { 0.5f, 1.0f };
+			verts[beginFaceVert + 3].texUv = { 0.0f, 1.0f };
+
+			faceCount++;
+		}
+
+		// DOWN !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ 0, -1 ,0 })) {
+			verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
+
+			auto beginFaceVert = verts.size() - 4;
+			verts[beginFaceVert + 0].texUv = { 0.5f, 0.0f };
+			verts[beginFaceVert + 1].texUv = { 1.0f, 0.0f };
+			verts[beginFaceVert + 2].texUv = { 1.0f, 0.5f };
+			verts[beginFaceVert + 3].texUv = { 0.5f, 0.5f };
+
+			faceCount++;
+		}
+
+		// FORWARD !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 0, 1 })) {
+			verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+			verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+
+			writeAllAroundFaceUVs(verts);
+
+			faceCount++;
+		}
+
+		// RIGHT !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ 1, 0, 0 })) {
+			verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
+
+			writeAllAroundFaceUVs(verts);
+
+			faceCount++;
+		}
+
+		// BACK !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ 0, 0, -1 })) {
+			verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+			verts.emplace_back(glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+			verts.emplace_back(glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
+
+			writeAllAroundFaceUVs(verts);
+
+			faceCount++;
+		}
+
+		// LEFT !!
+		if (!blocks.contains(*blockPos + glm::ivec3{ -1, 0, 0 })) {
+			verts.emplace_back(glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+			verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
+
+			writeAllAroundFaceUVs(verts);
+
+			faceCount++;
+		}
+
+		for (int i = 0; i < faceCount; ++i) {
+			tris.push_back(blockStartVertIndex + i * 4);
+			tris.push_back(blockStartVertIndex + i * 4 + 1);
+			tris.push_back(blockStartVertIndex + i * 4 + 2);
+			tris.push_back(blockStartVertIndex + i * 4);
+			tris.push_back(blockStartVertIndex + i * 4 + 2);
+			tris.push_back(blockStartVertIndex + i * 4 + 3);
+
+			// MAKE THE VERTEX COLOR MAGENTA FOR DEBUG.
+			verts[i * 4 + 0].color = { 1.0f, 0.0f, 1.0f };
+			verts[i * 4 + 1].color = { 1.0f, 0.0f, 1.0f };
+			verts[i * 4 + 2].color = { 1.0f, 0.0f, 1.0f };
+			verts[i * 4 + 3].color = { 1.0f, 0.0f, 1.0f };
+		}
+
+		++blockPos;
+	}
+}
+
+void writeAllAroundFaceUVs(std::vector<Vertex>& verts) {
+	auto beginFaceVert = verts.size() - 4;
+	verts[beginFaceVert + 0].texUv = { 0.5f, 0.0f };
+	verts[beginFaceVert + 1].texUv = { 1.0f, 0.0f };
+	verts[beginFaceVert + 2].texUv = { 1.0f, 0.5f };
+	verts[beginFaceVert + 3].texUv = { 0.5f, 0.5f };
+}
+
 void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 5.0f });
