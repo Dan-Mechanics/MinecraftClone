@@ -13,22 +13,32 @@ class Mesh {
 public:
 	std::vector<Vertex> vertices{};
 	std::vector<GLuint> indices{};
-	std::vector<Texture> textures{};
+	glm::mat4 modelMatrix{};
 	vao vao{};
 	ebo ebo{};
 	vbo vbo{};
 
 	Mesh();
-	Mesh(std::vector<Vertex>& verticies, std::vector<GLuint>& indices, std::vector<Texture>& textures);
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
+	Mesh(const std::vector<Vertex>& verticies, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix);
 
-	void draw(const Shader& shader, const Camera& camera, glm::mat4 matrix, glm::vec3 translation,
-		glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor, glm::vec4 worldColor) const;
+	void drawTexture(const Shader& shader, const Camera& camera,
+		const glm::vec3& translation, const glm::quat& rotation,
+		const glm::vec3& scale, const glm::vec3& lightPos,
+		const glm::vec4& lightColor, const glm::vec4& worldColor,
+		const std::vector<Texture>& textures) const;
 
-	void drawColor(const Shader& shader, const Camera& camera, glm::mat4 matrix, glm::vec3 translation,
-		glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor, glm::vec4 worldColor, glm::vec4 selfColor) const;
+	void drawColor(const Shader& shader, const Camera& camera,
+		const glm::vec3& translation, const glm::quat& rotation,
+		const glm::vec3& scale, const glm::vec3& lightPos,
+		const glm::vec4& lightColor, const glm::vec4& worldColor,
+		const glm::vec4& selfColor) const;
+
+	void drawUnlit(const Shader& shader, const Camera& camera,
+		const glm::vec3& translation, const glm::quat& rotation,
+		const glm::vec3& scale, const glm::vec4& selfColor) const;
 
 	void free() const;
-
 
 };
 

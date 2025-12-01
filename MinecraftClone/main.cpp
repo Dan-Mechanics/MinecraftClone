@@ -41,48 +41,51 @@ int main() {
 	// ===
 
 	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
-	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
 
 	Shader defaultShader("default.vert", "default.frag");
+	Shader materialShader("default.vert", "material.frag");
+	Shader litShader("default.vert", "lit_color.frag");
+	Shader unlitShader("default.vert", "unlit_color.frag");
+
+	// ===
+
+	std::vector <Texture> woodMaterial = {
+		Texture("planks.png", "diffuse", 0),
+		Texture("planksSpec.png", "specular", 1)
+	};
+
+	std::vector <Texture> grassMaterial = {
+		Texture("texture_atlas.png", "diffuse", 0),
+		Texture("specular.png", "specular", 1)
+	};
+
+	// ===
 
 	std::vector<Vertex> pyramidVerts{};
 	std::vector<GLuint> pyramidTris{};
 	getPyramid(pyramidVerts, pyramidTris);
 
-	std::vector <Texture> wood = {
-		Texture("planks.png", "diffuse", 0),
-		Texture("planksSpec.png", "specular", 1)
-	};
-
-	std::vector <Texture> grass = {
-		Texture("texture_atlas.png", "diffuse", 0),
-		Texture("specular.png", "specular", 1)
-	};
-
-	Mesh pyramid{ pyramidVerts, pyramidTris, wood };
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
+	Mesh pyramidPrimitive{ pyramidVerts, pyramidTris, pyramidMatrix };
 
 	// ===
-
-	Shader textureLit("default.vert", "worldlight.frag");
-	Shader litShader("default.vert", "lit_color.frag");
-	Shader unlitShader("default.vert", "unlit_color.frag");
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	getCube(cubeVerts, cubeTris);
 
-	Mesh cubeMesh{ cubeVerts, cubeTris, grass };
-	Mesh groundMesh{ cubeVerts, cubeTris, wood };
+	glm::mat4 cubeMatrix = glm::mat4{ 1.0f };
+	Mesh cubePrimitive{ cubeVerts, cubeTris, cubeMatrix };
 
-	Object sunCube{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
-	sunCube.setColor(sunColor);
+	// ===
+
+	Object sun{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-
-
 
 	Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
@@ -147,15 +150,15 @@ int main() {
 		/*pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
 			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
 
-		ground.draw(groundMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.drawColor(cubeMesh, unlitShader, camera, sunColor, sunCube.pos, skyColor);
+		ground.drawWithMaterial(groundMesh, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		sun.drawColor(cubePrimitive, unlitShader, camera, sunColor, sun.pos, skyColor);
 
-		cube1.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube2.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube3.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube4.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube5.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube6.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		cube1.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube2.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube3.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube4.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube5.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube6.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -164,7 +167,7 @@ int main() {
 			break;
 	}
 
-	pyramid.free();
+	pyramidPrimitive.free();
 	//sunCube.free();
 	//defaultShader.free();
 	defaultShader.free();

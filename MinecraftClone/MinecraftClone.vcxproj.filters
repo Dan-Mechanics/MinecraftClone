@@ -68,7 +68,7 @@
     <None Include="default.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="worldlight.frag">
+    <None Include="material.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="normals_debug.frag">
