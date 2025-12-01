@@ -69,7 +69,7 @@ int main() {
 	getPyramid(pyramidVerts, pyramidTris);
 
 	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
-	Mesh pyramidPrimitive{ pyramidVerts, pyramidTris, pyramidMatrix };
+	Mesh pyramidMesh{ pyramidVerts, pyramidTris, pyramidMatrix };
 
 	// ===
 
@@ -78,7 +78,7 @@ int main() {
 	getCube(cubeVerts, cubeTris);
 
 	glm::mat4 cubeMatrix = glm::mat4{ 1.0f };
-	Mesh cubePrimitive{ cubeVerts, cubeTris, cubeMatrix };
+	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
@@ -113,7 +113,6 @@ int main() {
 	double previousTime = 0.0;
 	double currentTime = 0.0;
 	double timer = 0.0;
-	bool increase = false;
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
@@ -132,6 +131,8 @@ int main() {
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
+		// ===
+
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -147,18 +148,15 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		/*pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
+		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		ground.drawWithMaterial(groundMesh, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		sun.drawColor(cubePrimitive, unlitShader, camera, sunColor, sun.pos, skyColor);
-
-		cube1.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube2.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube3.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube4.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube5.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube6.drawWithMaterial(cubePrimitive, _placeholder_, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube2.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube4.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -167,10 +165,27 @@ int main() {
 			break;
 	}
 
-	pyramidPrimitive.free();
-	//sunCube.free();
-	//defaultShader.free();
+	// ===
+
 	defaultShader.free();
+	materialShader.free();
+	litShader.free();
+	unlitShader.free();
+
+	auto it1 = woodMaterial.begin();
+	while (it1 != woodMaterial.end()) {
+		it1->free();
+		++it1;
+	}
+
+	auto it2 = grassMaterial.begin();
+	while (it2 != grassMaterial.end()) {
+		it2->free();
+		++it2;
+	}
+
+	pyramidMesh.free();
+	cubeMesh.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
