@@ -58,8 +58,8 @@ int main() {
 	};
 
 	std::vector <Texture> grassMaterial = {
-		Texture("texture_atlas.png", "diffuse", 0),
-		Texture("specular.png", "specular", 1)
+		Texture("atlas.png", "diffuse", 0),
+		Texture("atlasSpec.png", "specular", 1)
 	};
 
 	// ===
