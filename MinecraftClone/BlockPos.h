@@ -10,6 +10,7 @@ extern const BlockPos BACK;
 
 /// <summary>
 /// https://stackoverflow.com/questions/50888127/how-can-i-use-an-unordered-set-with-a-custom-struct
+/// https://en.cppreference.com/w/cpp/utility/hash.html
 /// </summary>
 struct BlockPos {
 public:
@@ -22,7 +23,11 @@ public:
 	BlockPos& operator=(const BlockPos& other);
 	bool operator==(const BlockPos& other) const;
 	bool operator<(const BlockPos& other); 
-	size_t operator()(const BlockPos& pointToHash) const noexcept;
+
+	/// <summary>
+	/// I sure hope this works.
+	/// </summary>
+	std::size_t operator()(const BlockPos& blockPos) const noexcept;
 
 	BlockPos operator+(const BlockPos& other) const;
 	glm::ivec3 getVec3() const;

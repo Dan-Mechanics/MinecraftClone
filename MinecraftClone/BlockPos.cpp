@@ -1,4 +1,5 @@
 #include "BlockPos.h"
+#include <string>
 
 const BlockPos UP = { 0, 1, 0 };
 const BlockPos DOWN = { 0, -1, 0 };
@@ -29,9 +30,13 @@ bool BlockPos::operator<(const BlockPos& other) {
 	return *this == other;
 }
 
-size_t BlockPos::operator()(const BlockPos& pointToHash) const noexcept {
-	size_t hash = pointToHash.x + 10 * pointToHash.y + 20 * pointToHash.z;
-	return hash;
+std::size_t BlockPos::operator()(const BlockPos& blockPos) const noexcept {
+	std::size_t h1 = std::hash<int>{}(blockPos.x);
+	std::size_t h2 = std::hash<int>{}(blockPos.y);
+	std::size_t h3 = std::hash<int>{}(blockPos.z);
+
+	std::size_t c1 = h1 ^ (h2 << 1);
+	return c1 ^ (h3 << 1); // OR USE BOOST::HASH_COMBINE.
 }
 
 BlockPos BlockPos::operator+(const BlockPos& other) const {
