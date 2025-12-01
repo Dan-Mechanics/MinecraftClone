@@ -148,7 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
@@ -156,27 +157,35 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="vao.cpp" />
     <ClCompile Include="vbo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
-    <None Include="light.frag" />
+    <None Include="normals_debug.frag" />
+    <None Include="worldlight.frag" />
+    <None Include="unlit_color.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="ebo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="vao.h" />
     <ClInclude Include="vbo.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="planks.png" />
     <Image Include="planksSpec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="lit_color.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
