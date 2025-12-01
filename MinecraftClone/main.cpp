@@ -62,6 +62,11 @@ int main() {
 		Texture("spec.png", "specular", 1)
 	};
 
+	std::vector <Texture> diamondMaterial = {
+		Texture("diamond.png", "diffuse", 0),
+		Texture("spec.png", "specular", 1)
+	};
+
 	// ===
 
 	std::vector<Vertex> pyramidVerts{};
@@ -152,9 +157,9 @@ int main() {
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube2.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		cube4.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
