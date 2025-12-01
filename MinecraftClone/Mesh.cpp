@@ -2,9 +2,13 @@
 
 Mesh::Mesh() = default;
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices) : vertices{ vertices }, indices{ indices },
-vao{}, vbo{ vertices }, ebo{ indices }, modelMatrix{ 1.0f } {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices) {
+	this->vertices = vertices;
+	this->indices = indices;
+
 	vao.bind();
+	vbo = { vertices };
+	ebo = { indices };
 
 	vao.linkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
 	vao.linkAttribute(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
@@ -16,9 +20,14 @@ vao{}, vbo{ vertices }, ebo{ indices }, modelMatrix{ 1.0f } {
 	ebo.unbind();
 }
 
-Mesh::Mesh(const std::vector<Vertex>& verticies, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix) : vertices{ vertices }, indices{ indices },
-vao{}, vbo{ vertices }, ebo{ indices }, modelMatrix{ modelMatrix } {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix) {
+	this->vertices = vertices;
+	this->indices = indices;
+	this->modelMatrix = modelMatrix;
+
 	vao.bind();
+	vbo = { vertices };
+	ebo = { indices };
 
 	vao.linkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
 	vao.linkAttribute(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));

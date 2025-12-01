@@ -20,7 +20,7 @@ public:
 
 	Mesh();
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
-	Mesh(const std::vector<Vertex>& verticies, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix);
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix);
 
 	void drawTexture(const Shader& shader, const Camera& camera,
 		const glm::vec3& translation, const glm::quat& rotation,
