@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
+#include <unordered_map>
+#include "BlockType.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -87,25 +89,44 @@ int main() {
 
 	// ===
 
-	std::unordered_set<BlockPos> world{};
+	std::unordered_set<BlockPos> chunkData{};
 	for (int x = 0; x < 16; ++x) {
 		for (int z = 0; z < 16; ++z) {
 			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
-				world.emplace(x, y, z);
+				chunkData.emplace(x, y, z);
 			}
 		}
 	}
 
-	for (auto const& pt : world) {
-		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
+	std::unordered_set<BlockPos> chunkData2{};
+	for (int x = 0; x < 16; ++x) {
+		for (int z = 0; z < 16; ++z) {
+			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
+				chunkData2.emplace(x, y, z);
+			}
+		}
 	}
+
+	/*for (auto const& pt : world) {
+		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
+	}*/
+	// or we could have some other bullshit idk
+	std::unordered_map<BlockPos, BlockType> world{
+		{ {0,0,0}, BlockType::GRASS }
+	};
+
+	world.insert({ {0,-1,0}, BlockType::DIAMOND });
+	std::cout << world[{0, -1, 0}] << std::endl;
+
+	//world.insert({ 0,0,0 }, BlockType::DIAMOND);
 
 	std::vector<Vertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
-	getChunk(world, chunkVerts, chunkTris, chunkMatrix);
+	getChunk(chunkData, chunkVerts, chunkTris, chunkMatrix);
 
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
+	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===
 
@@ -125,6 +146,8 @@ int main() {
 
 	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunkObject2{ glm::vec3{ 0.0f, 0.0f, 16.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunkObject3{ glm::vec3{ 16.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -151,6 +174,8 @@ int main() {
 		currentTime = glfwGetTime();
 		double deltaTime = currentTime - previousTime;
 
+		// MAYBE USE THREAD.SLEEP FOR THIS?
+		// SINCE WE WANT TO AVOID BUSY WAITING ...
 		if (deltaTime < minDtForFrame)
 			continue;
 
@@ -189,6 +214,8 @@ int main() {
 		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		chunkObject.drawWithMaterial(chunkMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject2.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject3.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

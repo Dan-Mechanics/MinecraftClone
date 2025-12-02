@@ -22,10 +22,8 @@ public:
 };
 
 namespace std {
-	template<> struct hash<BlockPos>
-	{
-		std::size_t operator()(const BlockPos& blockPos) const noexcept
-		{
+	template<> struct hash<BlockPos> {
+		std::size_t operator()(const BlockPos& blockPos) const noexcept {
 			std::size_t h1 = std::hash<int>{}(blockPos.x);
 			std::size_t h2 = std::hash<int>{}(blockPos.y);
 			std::size_t h3 = std::hash<int>{}(blockPos.z);
