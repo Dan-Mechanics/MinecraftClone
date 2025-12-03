@@ -95,7 +95,7 @@ int main() {
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
 
-	getChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0,0,0 }), world);
+	getChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
 
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
 
