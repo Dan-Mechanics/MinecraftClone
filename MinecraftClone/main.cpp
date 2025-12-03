@@ -48,9 +48,7 @@ int main() {
 
 	// ===
 
-	Shader defaultShader("default.vert", "default.frag");
 	Shader materialShader("default.vert", "material.frag");
-	Shader litShader("default.vert", "lit_color.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 
 	// ===
@@ -64,15 +62,6 @@ int main() {
 		Texture("texture_atlas.png", "diffuse", 0),
 		Texture("texture_atlas_specular.png", "specular", 1)
 	};
-
-	// ===
-
-	std::vector<Vertex> pyramidVerts{};
-	std::vector<GLuint> pyramidTris{};
-	glm::mat4 pyramidMatrix;
-	getPyramid(pyramidVerts, pyramidTris, pyramidMatrix);
-
-	Mesh pyramidMesh{ pyramidVerts, pyramidTris, pyramidMatrix };
 
 	// ===
 
@@ -101,15 +90,6 @@ int main() {
 	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-
-	/*Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
-	Object cube3{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube4{ glm::vec3{0.0f, -2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
-	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };*/
 
 	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
@@ -170,13 +150,6 @@ int main() {
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		//cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-
 		chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
@@ -188,18 +161,14 @@ int main() {
 
 	// ===
 
-	defaultShader.free();
 	materialShader.free();
-	litShader.free();
 	unlitShader.free();
 
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);
 
-	pyramidMesh.free();
 	cubeMesh.free();
-
-	// DONT FORGET TO FREE THE CHUNKS !!
+	chunkMesh.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
