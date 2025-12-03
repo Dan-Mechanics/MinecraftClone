@@ -3,6 +3,7 @@
 #include "vbo.h"
 #include <unordered_set>
 #include "BlockPos.h"
+#include "BlockType.h"
 
 extern const BlockPos UP;
 extern const BlockPos DOWN;
@@ -24,5 +25,10 @@ int randomInclusive(const int min, const int max);
 /// Given that they are always the same.
 /// </summary>
 void writeAllAroundFaceUVs(std::vector<Vertex>& verts);
+
+/// <summary>
+/// Rule: this can only be called after 4 verts have been added.
+/// </summary>
+void setCurrentFaceUvs(std::vector<Vertex>& verts, const std::vector<glm::vec2>& uvs);
 
 void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix);

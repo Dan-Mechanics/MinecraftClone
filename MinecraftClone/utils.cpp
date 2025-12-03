@@ -229,6 +229,25 @@ void writeAllAroundFaceUVs(std::vector<Vertex>& verts) {
 	verts[beginFaceVert + 3].texUv = { 0.0f, 0.5f };
 }
 
+void setCurrentFaceUvs(std::vector<Vertex>& verts, const std::vector<glm::vec2>& uvs) {
+	auto beginFaceVert = verts.size() - 4;
+	glm::vec3 magenta{ 1.0f, 0.0f, 1.0f };
+
+	for (int i = 0; i < 4; ++i) {
+		verts[beginFaceVert + i].texUv = uvs[i];
+		verts[beginFaceVert + i].texUv = uvs[i];
+		verts[beginFaceVert + i].texUv = uvs[i];
+		verts[beginFaceVert + i].texUv = uvs[i];
+
+		// MAKE THE VERTEX COLOR MAGENTA FOR DEBUG.
+		// WE WON'T SEE THIS BECAUSE OF THE TEXTURE.
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
+	}
+}
+
 void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 5.0f });
