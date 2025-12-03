@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
-#include "mesh_utils.h"
+#include "world_mesh.h"
 #include <unordered_map>
 #include "BlockType.h"
 
@@ -16,21 +16,35 @@ static void setFocus(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
+/// <summary>
+/// https://www.glfw.org/docs/latest/quick.html
+/// </summary>
+static void errorCallback(int error, const char* description) {
+	fprintf(stderr, "Error: %s\n", description);
+}
+
+static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 int main() {
+	glfwSetErrorCallback(errorCallback);
 	if (!glfwInit())
-		return -1;
+		exit(EXIT_FAILURE);
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	
 	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
-	if (window == NULL) {
+	if (!window) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 
+	glfwSetKeyCallback(window, keyCallback);
 	glfwSetWindowFocusCallback(window, &setFocus);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -68,7 +82,7 @@ int main() {
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	glm::mat4 cubeMatrix;
-	getCube(cubeVerts, cubeTris, cubeMatrix);
+	getCubeMesh(cubeVerts, cubeTris, cubeMatrix);
 
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
@@ -81,7 +95,7 @@ int main() {
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
 
-	getChunk(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0,0,0 }), world);
+	getChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0,0,0 }), world);
 
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
 
@@ -122,6 +136,8 @@ int main() {
 
 		// MAYBE USE THREAD.SLEEP FOR THIS?
 		// SINCE WE WANT TO AVOID BUSY WAITING ...
+		// https://discourse.glfw.org/t/frame-limiting/70/4
+		// MAYBE THAT'S FINE IDK
 		if (deltaTime < minDtForFrame)
 			continue;
 
@@ -155,12 +171,7 @@ int main() {
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			break;
 	}
-
-	// ===
 
 	materialShader.free();
 	unlitShader.free();
@@ -174,5 +185,5 @@ int main() {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
-	return 0;
+	exit(EXIT_SUCCESS);
 }

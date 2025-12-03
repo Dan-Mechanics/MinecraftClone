@@ -149,8 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BlockPos.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Direction.cpp" />
-    <ClCompile Include="mesh_utils.cpp" />
+    <ClCompile Include="world_mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="glad.c" />
@@ -175,7 +174,7 @@
     <ClInclude Include="BlockType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Direction.h" />
-    <ClInclude Include="mesh_utils.h" />
+    <ClInclude Include="world_mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ebo.h" />
     <ClInclude Include="Mesh.h" />

@@ -1,4 +1,4 @@
-#include "mesh_utils.h"
+#include "world_mesh.h"
 
 const BlockPos UP = { 0, 1, 0 };
 const BlockPos DOWN = { 0, -1, 0 };
@@ -7,7 +7,7 @@ const BlockPos RIGHT = { 1, 0, 0 };
 const BlockPos FORWARD = { 0, 0, 1 };
 const BlockPos BACK = { 0, 0, -1 };
 
-void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
+void getChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
 	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world) {
 	verts.clear();
 	tris.clear();
@@ -32,7 +32,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::UP]);
-
 			faceCount++;
 		}
 
@@ -44,7 +43,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::DOWN]);
-
 			faceCount++;
 		}
 
@@ -56,7 +54,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::FORWARD]);
-
 			faceCount++;
 		}
 
@@ -68,7 +65,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::RIGHT]);
-
 			faceCount++;
 		}
 
@@ -80,7 +76,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::BACK]);
-
 			faceCount++;
 		}
 
@@ -92,7 +87,6 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 
 			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::LEFT]);
-
 			faceCount++;
 		}
 
@@ -161,44 +155,32 @@ ATLAS generateAtlas() {
 	ATLAS atlas{};
 
 	// NYCELIUM ===
-	atlas.insert({ BlockType::NYCELIUM, generateFillUvs() });
-
-	atlas[BlockType::NYCELIUM][Direction::FORWARD] = tilePositionToUvs(0, 0);
-	setEquatorUvs(atlas[BlockType::NYCELIUM][Direction::FORWARD], atlas[BlockType::NYCELIUM]);
+	atlas.insert({ BlockType::NYCELIUM, generateFillerMap() });
+	setEquatorUvs(atlas[BlockType::NYCELIUM], tilePositionToUvs(0, 0));
 	atlas[BlockType::NYCELIUM][Direction::UP] = tilePositionToUvs(0, 3);
 	atlas[BlockType::NYCELIUM][Direction::DOWN] = tilePositionToUvs(0, 1);
 
 	// DYCELIUM ==
-	atlas.insert({ BlockType::DYCELIUM, generateFillUvs() });
-
-	atlas[BlockType::DYCELIUM][Direction::FORWARD] = tilePositionToUvs(1, 0);
-	setEquatorUvs(atlas[BlockType::NYCELIUM][Direction::FORWARD], atlas[BlockType::NYCELIUM]);
+	atlas.insert({ BlockType::DYCELIUM, generateFillerMap() });
+	setEquatorUvs(atlas[BlockType::DYCELIUM], tilePositionToUvs(1, 0));
 	atlas[BlockType::DYCELIUM][Direction::UP] = tilePositionToUvs(1, 3);
 	atlas[BlockType::DYCELIUM][Direction::DOWN] = tilePositionToUvs(1, 1);
 
 	// DIRT ==
-	atlas.insert({ BlockType::DIRT, generateFillUvs() });
-
-	atlas[BlockType::DIRT][Direction::UP] = tilePositionToUvs(0, 1);
-	setAllUvs(atlas[BlockType::DIRT][Direction::UP], atlas[BlockType::DIRT]);
+	atlas.insert({ BlockType::DIRT, generateFillerMap() });
+	setAllUvs(atlas[BlockType::DIRT], tilePositionToUvs(0, 1));
 
 	// GRAVEL ==
-	atlas.insert({ BlockType::GRAVEL, generateFillUvs() });
-
-	atlas[BlockType::GRAVEL][Direction::UP] = tilePositionToUvs(1, 1);
-	setAllUvs(atlas[BlockType::GRAVEL][Direction::UP], atlas[BlockType::GRAVEL]);
+	atlas.insert({ BlockType::GRAVEL, generateFillerMap() });
+	setAllUvs(atlas[BlockType::GRAVEL], tilePositionToUvs(1, 1));
 
 	// SAPPHIRE ==
-	atlas.insert({ BlockType::SAPPHIRE, generateFillUvs() });
-
-	atlas[BlockType::SAPPHIRE][Direction::UP] = tilePositionToUvs(0, 1);
-	setAllUvs(atlas[BlockType::SAPPHIRE][Direction::UP], atlas[BlockType::SAPPHIRE]);
+	atlas.insert({ BlockType::SAPPHIRE, generateFillerMap() });
+	setAllUvs(atlas[BlockType::SAPPHIRE], tilePositionToUvs(0, 1));
 
 	// DIAMOND ==
-	atlas.insert({ BlockType::DIAMOND, generateFillUvs() });
-
-	atlas[BlockType::DIAMOND][Direction::UP] = tilePositionToUvs(1, 1);
-	setAllUvs(atlas[BlockType::DIAMOND][Direction::UP], atlas[BlockType::DIAMOND]);
+	atlas.insert({ BlockType::DIAMOND, generateFillerMap() });
+	setAllUvs(atlas[BlockType::DIAMOND], tilePositionToUvs(1, 1));
 
 	return atlas;
 }
@@ -216,24 +198,28 @@ WORLD generateWorld() {
 	return world;
 }
 
-void setAllUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs) {
-	allUvs[Direction::UP] = uvs;
-	allUvs[Direction::DOWN] = uvs;
-	setEquatorUvs(uvs, allUvs);
+void setAllUvs(MAP& map, const std::vector<glm::vec2>& to) {
+	setPoleUvs(map, to);
+	setEquatorUvs(map, to);
 }
 
-void setEquatorUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs) {
-	allUvs[Direction::FORWARD] = uvs;
-	allUvs[Direction::BACK] = uvs;
-	allUvs[Direction::LEFT] = uvs;
-	allUvs[Direction::RIGHT] = uvs;
+void setEquatorUvs(MAP& map, const std::vector<glm::vec2>& to) {
+	map[Direction::FORWARD] = to;
+	map[Direction::BACK] = to;
+	map[Direction::LEFT] = to;
+	map[Direction::RIGHT] = to;
 }
 
-std::vector<std::vector<glm::vec2>> generateFillUvs() {
-	std::vector<std::vector<glm::vec2>> uvs{};
+void setPoleUvs(MAP& map, const std::vector<glm::vec2>& to) {
+	map[Direction::UP] = to;
+	map[Direction::DOWN] = to;
+}
+
+MAP generateFillerMap() {
+	MAP map{};
 	for (int i = 0; i < 6; ++i) {
-		uvs.emplace_back();
+		map.emplace_back();
 	}
 
-	return uvs;
+	return map;
 }

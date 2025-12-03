@@ -60,10 +60,7 @@
     <ClCompile Include="BlockPos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Direction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_utils.cpp">
+    <ClCompile Include="world_mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -121,7 +118,7 @@
     <ClInclude Include="Direction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_utils.h">
+    <ClInclude Include="world_mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
