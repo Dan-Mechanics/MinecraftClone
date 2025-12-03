@@ -44,4 +44,8 @@ void setAllUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::v
 void setEquatorUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs);
 std::vector<std::vector<glm::vec2>> generateFillUvs();
 ATLAS generateAtlas();
+
+/// <summary>
+/// Placeholder code.
+/// </summary>
 WORLD generateWorld();

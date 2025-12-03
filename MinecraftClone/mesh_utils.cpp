@@ -31,7 +31,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::UP]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::UP]);
 
 			faceCount++;
 		}
@@ -43,7 +43,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::DOWN]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::DOWN]);
 
 			faceCount++;
 		}
@@ -55,7 +55,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::FORWARD]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::FORWARD]);
 
 			faceCount++;
 		}
@@ -67,7 +67,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::RIGHT]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::RIGHT]);
 
 			faceCount++;
 		}
@@ -79,7 +79,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::BACK]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::BACK]);
 
 			faceCount++;
 		}
@@ -91,7 +91,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 
-			setCurrentFaceUvs(verts, atlas[blockType][Direction::LEFT]);
+			setCurrentFaceUvs(verts, atlas.at(blockType)[Direction::LEFT]);
 
 			faceCount++;
 		}
@@ -117,10 +117,11 @@ bool has(const BlockPos& blockPos, const WORLD& world) {
 	if (!world.contains(chunkPos))
 		return false;
 
-	return world[chunkPos].contains(blockPos);
+	return world.at(chunkPos).contains(blockPos);
 }
 
 std::vector<glm::vec2> tilePositionToUvs(const int x, const int y) {
+	// BECAUSE 256 / 16 !!
 	const auto TILE_COUNT_SIDE = 16.0f;
 	const auto margin = 0.001f;
 	std::vector<glm::vec2> uvs{
@@ -203,8 +204,6 @@ ATLAS generateAtlas() {
 }
 
 WORLD generateWorld() {
-	// EXAMPLE !!
-
 	CHUNK chunk1 {
 		{ { 0, 0, 0 }, BlockType::DIRT },
 		{ { 0, 1, 0 }, BlockType::NYCELIUM }

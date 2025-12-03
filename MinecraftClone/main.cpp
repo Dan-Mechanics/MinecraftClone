@@ -80,7 +80,8 @@ int main() {
 	std::vector<Vertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
-	getChunk(chunkVerts, chunkTris, chunkMatrix, atlas, world[{ 0, 0, 0 }], world);
+
+	getChunk(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0,0,0 }), world);
 
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
 
