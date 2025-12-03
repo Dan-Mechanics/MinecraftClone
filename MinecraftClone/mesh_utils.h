@@ -21,17 +21,13 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 	const std::unordered_map<BlockPos, BlockType>& chunk,
 	const std::unordered_map<BlockPos, std::unordered_map<BlockPos, BlockType>>& allChunks);
 
-bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos, std::unordered_map<BlockPos, BlockType>>& allChunks);
+bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos,
+	std::unordered_map<BlockPos, BlockType>>& allChunks);
 
-// REMOVE LATER   ----->
-
-void getNyceliumChunk(const std::unordered_set<BlockPos>& blocks, std::vector<Vertex>& verts,
-	std::vector<GLuint>& tris, glm::mat4& modelMatrix);
-
-void writeAllAroundFaceUVs(std::vector<Vertex>& verts);
+/// <summary>
+/// https://github.com/samhogan/Minecraft-Unity3D/blob/master/Assets/Scripts/TilePos.cs
+/// </summary>
 std::vector<glm::vec2> tilePositionToUvs(const int x, const int y);
-
-// END REMOVE LATER < ------
 
 /// <summary>
 /// Rule: this can only be called after 4 verts have been added.
@@ -39,8 +35,7 @@ std::vector<glm::vec2> tilePositionToUvs(const int x, const int y);
 void setCurrentFaceUvs(std::vector<Vertex>& verts, const std::vector<glm::vec2>& uvs);
 
 /// <summary>
-/// I hope this works.
-/// It should work because rounding lore.
+/// This should work because of rounding lore.
 /// </summary>
 BlockPos blockPosToChunkPos(const BlockPos& blockPos);
 

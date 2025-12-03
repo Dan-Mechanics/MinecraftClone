@@ -23,90 +23,82 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		auto faceCount = 0;
 
 		const BlockPos blockPos = current->first;
-		const auto blockType = current->second;
-		auto pos = blockPos.getVec3();
+		const BlockType blockType = current->second;
+		const glm::vec3 pos = blockPos.getVec3();
 
-		// UP !!
-		if (!has(blockPos, chunk, (*current->first + UP)) {
+		// UP. ===
+		if (!has(blockPos + UP, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 
-			auto beginFaceVert = verts.size() - 4;
-			verts[beginFaceVert + 0].texUv = { 0.0f, 0.5f };
-			verts[beginFaceVert + 1].texUv = { 0.5f, 0.5f };
-			verts[beginFaceVert + 2].texUv = { 0.5f, 1.0f };
-			verts[beginFaceVert + 3].texUv = { 0.0f, 1.0f };
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::UP]);
 
 			faceCount++;
 		}
 
-		// DOWN !!
-		if (!blocks.contains(*current + DOWN)) {
+		// DOWN. ===
+		if (!has(blockPos + DOWN, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 
-			auto beginFaceVert = verts.size() - 4;
-			verts[beginFaceVert + 0].texUv = { 0.5f, 0.0f };
-			verts[beginFaceVert + 1].texUv = { 1.0f, 0.0f };
-			verts[beginFaceVert + 2].texUv = { 1.0f, 0.5f };
-			verts[beginFaceVert + 3].texUv = { 0.5f, 0.5f };
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::DOWN]);
 
 			faceCount++;
 		}
 
-		// FORWARD !!
-		if (!blocks.contains(*current + FORWARD)) {
+		// FORWARD. ===
+		if (!has(blockPos + FORWARD, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 
-			writeAllAroundFaceUVs(verts);
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::FORWARD]);
 
 			faceCount++;
 		}
 
-		// RIGHT !!
-		if (!blocks.contains(*current + RIGHT)) {
+		// RIGHT. ===
+		if (!has(blockPos + RIGHT, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 
-			writeAllAroundFaceUVs(verts);
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::RIGHT]);
 
 			faceCount++;
 		}
 
-		// BACK !!
-		if (!blocks.contains(*current + BACK)) {
+		// BACK. ===
+		if (!has(blockPos + BACK, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 
-			writeAllAroundFaceUVs(verts);
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::BACK]);
 
 			faceCount++;
 		}
 
-		// LEFT !!
-		if (!blocks.contains(*current + LEFT)) {
+		// LEFT. ===
+		if (!has(blockPos + LEFT, allChunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 
-			writeAllAroundFaceUVs(verts);
+			setCurrentFaceUvs(verts, atlas[blockType][Direction::LEFT]);
 
 			faceCount++;
 		}
 
-		// GENERATE TRIANGLES.
+		// GENERATE TRIANGLES. ===
 		for (int i = 0; i < faceCount; ++i) {
 			tris.push_back(blockStartVertIndex + i * 4);
 			tris.push_back(blockStartVertIndex + i * 4 + 1);
@@ -127,126 +119,7 @@ bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos, std::unord
 	if (!allChunks.contains(chunkPos))
 		return false;
 
-	// !FIX
 	return allChunks[chunkPos].contains(blockPos);
-}
-
-void getNyceliumChunk(const std::unordered_set<BlockPos>& blocks, std::vector<Vertex>& verts,
-	std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
-	verts.clear();
-	tris.clear();
-
-	const auto low = 0.0f;
-	const auto high = 1.0f;
-
-	auto blockPos = blocks.begin();
-	while (blockPos != blocks.end()) {
-		const int blockStartVertIndex = verts.size();
-		auto faceCount = 0;
-		auto pos = blockPos->getVec3();
-
-		// UP !!
-		if (!blocks.contains(*blockPos + UP)) {
-			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
-
-			auto beginFaceVert = verts.size() - 4;
-			verts[beginFaceVert + 0].texUv = { 0.0f, 0.5f };
-			verts[beginFaceVert + 1].texUv = { 0.5f, 0.5f };
-			verts[beginFaceVert + 2].texUv = { 0.5f, 1.0f };
-			verts[beginFaceVert + 3].texUv = { 0.0f, 1.0f };
-
-			faceCount++;
-		}
-
-		// DOWN !!
-		if (!blocks.contains(*blockPos + DOWN)) {
-			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
-
-			auto beginFaceVert = verts.size() - 4;
-			verts[beginFaceVert + 0].texUv = { 0.5f, 0.0f };
-			verts[beginFaceVert + 1].texUv = { 1.0f, 0.0f };
-			verts[beginFaceVert + 2].texUv = { 1.0f, 0.5f };
-			verts[beginFaceVert + 3].texUv = { 0.5f, 0.5f };
-
-			faceCount++;
-		}
-
-		// FORWARD !!
-		if (!blocks.contains(*blockPos + FORWARD)) {
-			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-
-			writeAllAroundFaceUVs(verts);
-
-			faceCount++;
-		}
-
-		// RIGHT !!
-		if (!blocks.contains(*blockPos + RIGHT)) {
-			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
-
-			writeAllAroundFaceUVs(verts);
-
-			faceCount++;
-		}
-
-		// BACK !!
-		if (!blocks.contains(*blockPos + BACK)) {
-			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
-
-			writeAllAroundFaceUVs(verts);
-
-			faceCount++;
-		}
-
-		// LEFT !!
-		if (!blocks.contains(*blockPos + LEFT)) {
-			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
-
-			writeAllAroundFaceUVs(verts);
-
-			faceCount++;
-		}
-
-		// GENERATE TRIANGLES.
-		for (int i = 0; i < faceCount; ++i) {
-			tris.push_back(blockStartVertIndex + i * 4);
-			tris.push_back(blockStartVertIndex + i * 4 + 1);
-			tris.push_back(blockStartVertIndex + i * 4 + 2);
-			tris.push_back(blockStartVertIndex + i * 4);
-			tris.push_back(blockStartVertIndex + i * 4 + 2);
-			tris.push_back(blockStartVertIndex + i * 4 + 3);
-		}
-
-		++blockPos;
-	}
-
-	modelMatrix = glm::mat4{ 1.0f };
-}
-
-void writeAllAroundFaceUVs(std::vector<Vertex>& verts) {
-	auto beginFaceVert = verts.size() - 4;
-	verts[beginFaceVert + 0].texUv = { 0.0f, 0.0f };
-	verts[beginFaceVert + 1].texUv = { 0.5f, 0.0f };
-	verts[beginFaceVert + 2].texUv = { 0.5f, 0.5f };
-	verts[beginFaceVert + 3].texUv = { 0.0f, 0.5f };
 }
 
 std::vector<glm::vec2> tilePositionToUvs(const int x, const int y) {
@@ -258,14 +131,6 @@ std::vector<glm::vec2> tilePositionToUvs(const int x, const int y) {
 		{ (x + 1) / TILE_COUNT_SIDE - margin, (y + 1) / TILE_COUNT_SIDE - margin },
 		{ (x + 1) / TILE_COUNT_SIDE - margin, y / TILE_COUNT_SIDE + margin }
 	};
-
-	// uvs = new Vector2[]
-	// {
-	// 	new Vector2(xPos / 16f + .001f, yPos / 16f + .001f),
-	// 	new Vector2(xPos / 16f + .001f, (yPos + 1) / 16f - .001f),
-	// 	new Vector2((xPos + 1) / 16f - .001f, (yPos + 1) / 16f - .001f),
-	// 	new Vector2((xPos + 1) / 16f - .001f, yPos / 16f + .001f),
-	// };
 
 	return uvs;
 }
