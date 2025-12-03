@@ -8,9 +8,7 @@ const BlockPos FORWARD = { 0, 0, 1 };
 const BlockPos BACK = { 0, 0, -1 };
 
 void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>>& atlas,
-	const std::unordered_map<BlockPos, BlockType>& chunk,
-	const std::unordered_map<BlockPos, std::unordered_map<BlockPos, BlockType>>& allChunks) {
+	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world) {
 	verts.clear();
 	tris.clear();
 
@@ -27,7 +25,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		const glm::vec3 pos = blockPos.getVec3();
 
 		// UP. ===
-		if (!has(blockPos + UP, allChunks)) {
+		if (!has(blockPos + UP, world)) {
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
@@ -39,7 +37,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		}
 
 		// DOWN. ===
-		if (!has(blockPos + DOWN, allChunks)) {
+		if (!has(blockPos + DOWN, world)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
@@ -51,7 +49,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		}
 
 		// FORWARD. ===
-		if (!has(blockPos + FORWARD, allChunks)) {
+		if (!has(blockPos + FORWARD, world)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
@@ -63,7 +61,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		}
 
 		// RIGHT. ===
-		if (!has(blockPos + RIGHT, allChunks)) {
+		if (!has(blockPos + RIGHT, world)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
@@ -75,7 +73,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		}
 
 		// BACK. ===
-		if (!has(blockPos + BACK, allChunks)) {
+		if (!has(blockPos + BACK, world)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
@@ -87,7 +85,7 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 		}
 
 		// LEFT. ===
-		if (!has(blockPos + LEFT, allChunks)) {
+		if (!has(blockPos + LEFT, world)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
@@ -114,12 +112,12 @@ void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& 
 	modelMatrix = glm::mat4{ 1.0f };
 }
 
-bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos, std::unordered_map<BlockPos, BlockType>>& allChunks) {
+bool has(const BlockPos& blockPos, const WORLD& world) {
 	BlockPos chunkPos = blockPosToChunkPos(blockPos);
-	if (!allChunks.contains(chunkPos))
+	if (!world.contains(chunkPos))
 		return false;
 
-	return allChunks[chunkPos].contains(blockPos);
+	return world[chunkPos].contains(blockPos);
 }
 
 std::vector<glm::vec2> tilePositionToUvs(const int x, const int y) {
@@ -158,8 +156,8 @@ BlockPos blockPosToChunkPos(const BlockPos& blockPos) {
 	return { blockPos.x / 16.0f, blockPos.y / 16.0f, blockPos.z / 16.0f };
 }
 
-std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>> generateAtlas() {
-	std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>> atlas{};
+ATLAS generateAtlas() {
+	ATLAS atlas{};
 
 	// NYCELIUM ===
 	atlas.insert({ BlockType::NYCELIUM, generateFillUvs() });
@@ -202,6 +200,21 @@ std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>> generateAtlas
 	setAllUvs(atlas[BlockType::DIAMOND][Direction::UP], atlas[BlockType::DIAMOND]);
 
 	return atlas;
+}
+
+WORLD generateWorld() {
+	// EXAMPLE !!
+
+	CHUNK chunk1 {
+		{ { 0, 0, 0 }, BlockType::DIRT },
+		{ { 0, 1, 0 }, BlockType::NYCELIUM }
+	};
+
+	WORLD world {
+		{ { 0, 0, 0 }, chunk1 }
+	};
+
+	return world;
 }
 
 void setAllUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs) {

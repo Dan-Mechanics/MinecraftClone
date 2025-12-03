@@ -150,7 +150,6 @@
     <ClCompile Include="BlockPos.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Direction.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="mesh_utils.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ebo.cpp" />
@@ -176,7 +175,6 @@
     <ClInclude Include="BlockType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Direction.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ebo.h" />

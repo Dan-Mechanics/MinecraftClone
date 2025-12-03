@@ -133,3 +133,11 @@ void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4
 
 	modelMatrix = glm::mat4{ 1.0f };
 }
+
+void freeMaterial(const std::vector<Texture>& material) {
+	auto it = material.begin();
+	while (it != material.end()) {
+		it->free();
+		++it;
+	}
+}

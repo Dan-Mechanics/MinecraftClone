@@ -6,8 +6,11 @@
 #include "BlockType.h"
 #include "Direction.h"
 
-constexpr auto CHUNK_SIZE_FLOAT = 16.0f;
-constexpr auto CHUNK_SIZE_INT = 16;
+// TOOD: RENAME THIS FILE TO world_generation   ...
+
+#define CHUNK std::unordered_map<BlockPos, BlockType>
+#define WORLD std::unordered_map<BlockPos, CHUNK>
+#define ATLAS std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>>
 
 extern const BlockPos UP;
 extern const BlockPos DOWN;
@@ -17,12 +20,9 @@ extern const BlockPos FORWARD;
 extern const BlockPos BACK;
 
 void getChunk(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>>& atlas,
-	const std::unordered_map<BlockPos, BlockType>& chunk,
-	const std::unordered_map<BlockPos, std::unordered_map<BlockPos, BlockType>>& allChunks);
+	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world);
 
-bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos,
-	std::unordered_map<BlockPos, BlockType>>& allChunks);
+bool has(const BlockPos& blockPos, const WORLD& world);
 
 /// <summary>
 /// https://github.com/samhogan/Minecraft-Unity3D/blob/master/Assets/Scripts/TilePos.cs
@@ -43,4 +43,5 @@ void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4
 void setAllUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs);
 void setEquatorUvs(const std::vector<glm::vec2>& uvs, std::vector<std::vector<glm::vec2>>& allUvs);
 std::vector<std::vector<glm::vec2>> generateFillUvs();
-std::unordered_map<BlockType, std::vector<std::vector<glm::vec2>>> generateAtlas();
+ATLAS generateAtlas();
+WORLD generateWorld();

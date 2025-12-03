@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
+#include "mesh_utils.h"
 #include <unordered_map>
 #include "BlockType.h"
 
@@ -59,14 +60,9 @@ int main() {
 		Texture("planksSpec.png", "specular", 1)
 	};
 
-	std::vector <Texture> grassMaterial = {
-		Texture("grass.png", "diffuse", 0),
-		Texture("spec.png", "specular", 1)
-	};
-
-	std::vector <Texture> diamondMaterial = {
-		Texture("diamond.png", "diffuse", 0),
-		Texture("spec.png", "specular", 1)
+	std::vector <Texture> atlasMaterial = {
+		Texture("texture_atlas.png", "diffuse", 0),
+		Texture("texture_atlas_specular.png", "specular", 1)
 	};
 
 	// ===
@@ -89,44 +85,15 @@ int main() {
 
 	// ===
 
-	std::unordered_set<BlockPos> chunkData{};
-	for (int x = 0; x < 16; ++x) {
-		for (int z = 0; z < 16; ++z) {
-			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
-				chunkData.emplace(x, y, z);
-			}
-		}
-	}
-
-	std::unordered_set<BlockPos> chunkData2{};
-	for (int x = 0; x < 16; ++x) {
-		for (int z = 0; z < 16; ++z) {
-			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
-				chunkData2.emplace(x, y, z);
-			}
-		}
-	}
-
-	/*for (auto const& pt : world) {
-		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
-	}*/
-	// or we could have some other bullshit idk
-	std::unordered_map<BlockPos, BlockType> world{
-		{ {0,0,0}, BlockType::GRASS }
-	};
-
-	world.insert({ {0,-1,0}, BlockType::DIAMOND });
-	std::cout << world[{0, -1, 0}] << std::endl;
-
-	//world.insert({ 0,0,0 }, BlockType::DIAMOND);
+	const auto atlas = generateAtlas();
+	const auto world = generateWorld();
 
 	std::vector<Vertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
-	getChunk(chunkData, chunkVerts, chunkTris, chunkMatrix);
+	getChunk(chunkVerts, chunkTris, chunkMatrix, atlas, world[{ 0, 0, 0 }], world);
 
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
-	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===
 
@@ -135,19 +102,17 @@ int main() {
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 
-	Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	/*Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 
 	Object cube3{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube4{ glm::vec3{0.0f, -2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 
 	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };*/
 
 	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	Object chunkObject2{ glm::vec3{ 0.0f, 0.0f, 16.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	Object chunkObject3{ glm::vec3{ 16.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -194,8 +159,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-
-			// ..
+			// ...
 		}
 
 		camera.hasFocus = hasFocus;
@@ -213,9 +177,7 @@ int main() {
 		//cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
-		chunkObject.drawWithMaterial(chunkMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunkObject2.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunkObject3.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -231,20 +193,13 @@ int main() {
 	litShader.free();
 	unlitShader.free();
 
-	auto it1 = woodMaterial.begin();
-	while (it1 != woodMaterial.end()) {
-		it1->free();
-		++it1;
-	}
-
-	auto it2 = grassMaterial.begin();
-	while (it2 != grassMaterial.end()) {
-		it2->free();
-		++it2;
-	}
+	freeMaterial(woodMaterial);
+	freeMaterial(atlasMaterial);
 
 	pyramidMesh.free();
 	cubeMesh.free();
+
+	// DONT FORGET TO FREE THE CHUNKS !!
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
