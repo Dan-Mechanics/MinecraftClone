@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
+#include <unordered_map>
+#include "BlockType.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -41,48 +43,97 @@ int main() {
 	// ===
 
 	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
-	glm::vec4 sunColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
 
 	Shader defaultShader("default.vert", "default.frag");
+	Shader materialShader("default.vert", "material.frag");
+	Shader litShader("default.vert", "lit_color.frag");
+	Shader unlitShader("default.vert", "unlit_color.frag");
 
-	std::vector<Vertex> pyramidVerts{};
-	std::vector<GLuint> pyramidTris{};
-	getPyramid(pyramidVerts, pyramidTris);
+	// ===
 
-	std::vector <Texture> wood = {
+	std::vector <Texture> woodMaterial = {
 		Texture("planks.png", "diffuse", 0),
 		Texture("planksSpec.png", "specular", 1)
 	};
 
-	std::vector <Texture> grass = {
-		Texture("texture_atlas.png", "diffuse", 0),
-		Texture("specular.png", "specular", 1)
+	std::vector <Texture> grassMaterial = {
+		Texture("grass.png", "diffuse", 0),
+		Texture("spec.png", "specular", 1)
 	};
 
-	Mesh pyramid{ pyramidVerts, pyramidTris, wood };
-	glm::mat4 pyramidMatrix = glm::mat4{ 1.0f };
+	std::vector <Texture> diamondMaterial = {
+		Texture("diamond.png", "diffuse", 0),
+		Texture("spec.png", "specular", 1)
+	};
 
 	// ===
 
-	Shader textureLit("default.vert", "worldlight.frag");
-	Shader litShader("default.vert", "lit_color.frag");
-	Shader unlitShader("default.vert", "unlit_color.frag");
+	std::vector<Vertex> pyramidVerts{};
+	std::vector<GLuint> pyramidTris{};
+	glm::mat4 pyramidMatrix;
+	getPyramid(pyramidVerts, pyramidTris, pyramidMatrix);
+
+	Mesh pyramidMesh{ pyramidVerts, pyramidTris, pyramidMatrix };
+
+	// ===
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
-	getCube(cubeVerts, cubeTris);
+	glm::mat4 cubeMatrix;
+	getCube(cubeVerts, cubeTris, cubeMatrix);
 
-	Mesh cubeMesh{ cubeVerts, cubeTris, grass };
-	Mesh groundMesh{ cubeVerts, cubeTris, wood };
+	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
-	Object sunCube{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
-	sunCube.setColor(sunColor);
+	// ===
+
+	std::unordered_set<BlockPos> chunkData{};
+	for (int x = 0; x < 16; ++x) {
+		for (int z = 0; z < 16; ++z) {
+			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
+				chunkData.emplace(x, y, z);
+			}
+		}
+	}
+
+	std::unordered_set<BlockPos> chunkData2{};
+	for (int x = 0; x < 16; ++x) {
+		for (int z = 0; z < 16; ++z) {
+			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
+				chunkData2.emplace(x, y, z);
+			}
+		}
+	}
+
+	/*for (auto const& pt : world) {
+		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
+	}*/
+	// or we could have some other bullshit idk
+	std::unordered_map<BlockPos, BlockType> world{
+		{ {0,0,0}, BlockType::GRASS }
+	};
+
+	world.insert({ {0,-1,0}, BlockType::DIAMOND });
+	std::cout << world[{0, -1, 0}] << std::endl;
+
+	//world.insert({ 0,0,0 }, BlockType::DIAMOND);
+
+	std::vector<Vertex> chunkVerts{};
+	std::vector<GLuint> chunkTris{};
+	glm::mat4 chunkMatrix;
+	getChunk(chunkData, chunkVerts, chunkTris, chunkMatrix);
+
+	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
+	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
+
+	// ===
+
+	Object sun{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-
-
 
 	Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
@@ -92,6 +143,11 @@ int main() {
 
 	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
 	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
+
+	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
+	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunkObject2{ glm::vec3{ 0.0f, 0.0f, 16.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunkObject3{ glm::vec3{ 16.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -110,7 +166,6 @@ int main() {
 	double previousTime = 0.0;
 	double currentTime = 0.0;
 	double timer = 0.0;
-	bool increase = false;
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
@@ -119,6 +174,8 @@ int main() {
 		currentTime = glfwGetTime();
 		double deltaTime = currentTime - previousTime;
 
+		// MAYBE USE THREAD.SLEEP FOR THIS?
+		// SINCE WE WANT TO AVOID BUSY WAITING ...
 		if (deltaTime < minDtForFrame)
 			continue;
 
@@ -128,6 +185,8 @@ int main() {
 		std::string ms = std::to_string(deltaTime * 1000);
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
+
+		// ===
 
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -144,18 +203,19 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		/*pyramid.draw(textureLit, camera, pyramidMatrix, glm::vec3{ 0.0f }, glm::quat{ 1.0f, 0.0f, 0.0f, 0.0f },
-			glm::vec3{ 1.0f }, sunCube.pos, sunColor, skyColor);*/
+		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		ground.draw(groundMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		sunCube.drawColor(cubeMesh, unlitShader, camera, sunColor, sunCube.pos, skyColor);
+		//cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
-		cube1.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube2.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube3.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube4.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube5.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
-		cube6.draw(cubeMesh, textureLit, camera, sunColor, sunCube.pos, skyColor);
+		chunkObject.drawWithMaterial(chunkMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject2.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject3.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -164,10 +224,27 @@ int main() {
 			break;
 	}
 
-	pyramid.free();
-	//sunCube.free();
-	//defaultShader.free();
+	// ===
+
 	defaultShader.free();
+	materialShader.free();
+	litShader.free();
+	unlitShader.free();
+
+	auto it1 = woodMaterial.begin();
+	while (it1 != woodMaterial.end()) {
+		it1->free();
+		++it1;
+	}
+
+	auto it2 = grassMaterial.begin();
+	while (it2 != grassMaterial.end()) {
+		it2->free();
+		++it2;
+	}
+
+	pyramidMesh.free();
+	cubeMesh.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

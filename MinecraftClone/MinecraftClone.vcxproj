@@ -92,8 +92,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,8 +122,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,8 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlockPos.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="mesh_utils.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="glad.c" />
@@ -165,12 +168,16 @@
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="normals_debug.frag" />
-    <None Include="worldlight.frag" />
+    <None Include="material.frag" />
     <None Include="unlit_color.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlockPos.h" />
+    <ClInclude Include="BlockType.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Direction.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ebo.h" />
     <ClInclude Include="Mesh.h" />

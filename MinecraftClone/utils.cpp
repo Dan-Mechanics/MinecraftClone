@@ -1,6 +1,10 @@
 #include "utils.h"
 
-void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
+int randomInclusive(const int min, const int max) {
+	return rand() % (max - min + 1) + min;
+}
+
+void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.clear();
 	tris.clear();
 
@@ -52,8 +56,6 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	verts.emplace_back(glm::vec3{ low, low, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 	faceCount++;
 
-
-
 	for (int i = 0; i < faceCount; ++i) {
 		tris.push_back(vertIndexOffset + i * 4);
 		tris.push_back(vertIndexOffset + i * 4 + 1);
@@ -90,9 +92,11 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 		verts[i * 4 + 2].color = { 1.0f, 0.0f, 1.0f };
 		verts[i * 4 + 3].color = { 1.0f, 0.0f, 1.0f };
 	}
+
+	modelMatrix = glm::mat4{ 1.0f };
 }
 
-void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
+void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 5.0f });
 	verts.emplace_back(glm::vec3{ 0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 5.0f });
@@ -126,4 +130,6 @@ void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris) {
 	for (size_t i = 0; i < sizeof(pyramidIndices) / sizeof(GLuint); ++i) {
 		tris.push_back(pyramidIndices[i]);
 	}
+
+	modelMatrix = glm::mat4{ 1.0f };
 }

@@ -50,7 +50,7 @@ void Camera::moveCamera(GLFWwindow* window, const double dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		movement -= up;
 
-	const auto currentSpeed = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? standardSpeed * 3.0f : standardSpeed;
+	const auto currentSpeed = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? standardSpeed * 2.5f : standardSpeed;
 	position += (float)dt * currentSpeed * movement;
 }
 

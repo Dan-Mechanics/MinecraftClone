@@ -1,93 +1,31 @@
 #include "Object.h"
 
 Object::Object() = default;
-Object::Object(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot }, scale{ scale } { }
+Object::Object(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale) : pos{ pos }, rot{ rot },
+scale{ scale }, color{ glm::vec4{1.0f, 0.0f, 1.0f, 1.0f} } { }
 
-void Object::draw(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
-	//glFrontFace(withTheClock ? GL_CW : GL_CCW);
-	
-	while (rot.x >= 360.0f) {
-		rot.x -= 360.0f;
-	}
-	while (rot.y >= 360.0f) {
-		rot.y -= 360.0f;
-	}
-	while (rot.y >= 360.0f) {
-		rot.y -= 360.0f;
-	}
-
-	while (rot.x < 0.0f) {
-		rot.x += 360.0f;
-	}
-	while (rot.y < 0.0f) {
-		rot.y += 360.0f;
-	}
-	while (rot.y < 0.0f) {
-		rot.y += 360.0f;
-	}
-
-	glm::vec3 right{ 1.0f, 0.0f, 0.0f };
-	glm::vec3 up{ 0.0f, 1.0f, 0.0f };
-	glm::vec3 forward{ 0.0f, 0.0f, 1.0f };
-
-	glm::vec3 direction{ 0.0f, 0.0f, 1.0f };
-	direction = glm::rotate(direction, glm::radians(rot.x), right);
-	direction = glm::rotate(direction, glm::radians(rot.y), up);
-	direction = glm::rotate(direction, glm::radians(rot.z), forward);
-
-	glm::quat rotation = glm::quatLookAt(direction, up);
-
-	// IN THE FUTURE THIS MAY BE DIFFERENT.
-	glm::mat4 matrix{ 1.0f };
-
-	mesh.draw(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor);
+void Object::drawWithMaterial(const Mesh& mesh, const std::vector<Texture>& material, const Shader& shader, const Camera& camera, const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
+	// glFrontFace(withTheClock ? GL_CW : GL_CCW);
+	glm::quat rotation = calculateQuat();
+	mesh.drawTexture(shader, camera, pos, rotation, scale, lightPos, lightColor, worldColor, material);
 }
 
-void Object::drawColor(const Mesh& mesh, const Shader& shader, const Camera& camera, glm::vec4 lightColor, glm::vec3 lightPos, glm::vec4 worldColor) {
-	//glFrontFace(withTheClock ? GL_CW : GL_CCW);
-	
-	while (rot.x >= 360.0f) {
-		rot.x -= 360.0f;
-	}
-	while (rot.y >= 360.0f) {
-		rot.y -= 360.0f;
-	}
-	while (rot.y >= 360.0f) {
-		rot.y -= 360.0f;
-	}
-
-	while (rot.x < 0.0f) {
-		rot.x += 360.0f;
-	}
-	while (rot.y < 0.0f) {
-		rot.y += 360.0f;
-	}
-	while (rot.y < 0.0f) {
-		rot.y += 360.0f;
-	}
-
-	glm::vec3 right{ 1.0f, 0.0f, 0.0f };
-	glm::vec3 up{ 0.0f, 1.0f, 0.0f };
-	glm::vec3 forward{ 0.0f, 0.0f, 1.0f };
-
-	glm::vec3 direction{ 0.0f, 0.0f, 1.0f };
-	direction = glm::rotate(direction, glm::radians(rot.x), right);
-	direction = glm::rotate(direction, glm::radians(rot.y), up);
-	direction = glm::rotate(direction, glm::radians(rot.z), forward);
-
-	glm::quat rotation = glm::quatLookAt(direction, up);
-
-	// IN THE FUTURE THIS MAY BE DIFFERENT.
-	glm::mat4 matrix{ 1.0f };
-
-	mesh.drawColor(shader, camera, matrix, pos, rotation, scale, lightPos, lightColor, worldColor, color);
+void Object::drawAsColor(const Mesh& mesh, const Shader& shader, const Camera& camera,
+	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
+	glm::quat rotation = calculateQuat();
+	mesh.drawColor(shader, camera, pos, rotation, scale, lightPos, lightColor, worldColor, color);
 }
 
-void Object::move(const glm::vec3& vel, const double dt) {
+void Object::drawAsUnlitColor(const Mesh& mesh, const Shader& shader, const Camera& camera) {
+	glm::quat rotation = calculateQuat();
+	mesh.drawUnlit(shader, camera, pos, rotation, scale, color);
+}
+
+void Object::move(const glm::vec3& vel, const double& dt) {
 	pos += vel * (float)dt;
 }
 
-void Object::rotate(const glm::vec3& vel, const double dt) {
+void Object::rotate(const glm::vec3& vel, const double& dt) {
 	rot += vel * (float)dt;
 }
 
@@ -95,6 +33,36 @@ void Object::setColor(const glm::vec4& color) {
 	this->color = color;
 }
 
-void Object::setWithTheClock(bool value) {
-	withTheClock = value;
+glm::quat Object::calculateQuat() {
+	while (rot.x >= 360.0f) {
+		rot.x -= 360.0f;
+	}
+	while (rot.y >= 360.0f) {
+		rot.y -= 360.0f;
+	}
+	while (rot.y >= 360.0f) {
+		rot.y -= 360.0f;
+	}
+
+	while (rot.x < 0.0f) {
+		rot.x += 360.0f;
+	}
+	while (rot.y < 0.0f) {
+		rot.y += 360.0f;
+	}
+	while (rot.y < 0.0f) {
+		rot.y += 360.0f;
+	}
+
+	glm::vec3 right{ 1.0f, 0.0f, 0.0f };
+	glm::vec3 up{ 0.0f, 1.0f, 0.0f };
+	glm::vec3 forward{ 0.0f, 0.0f, 1.0f };
+
+	glm::vec3 direction{ 0.0f, 0.0f, 1.0f };
+	direction = glm::rotate(direction, glm::radians(rot.x), right);
+	direction = glm::rotate(direction, glm::radians(rot.y), up);
+	direction = glm::rotate(direction, glm::radians(rot.z), forward);
+
+	glm::quat rotation = glm::quatLookAt(direction, up);
+	return rotation;
 }

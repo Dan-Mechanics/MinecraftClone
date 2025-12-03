@@ -2,10 +2,9 @@
 
 Mesh::Mesh() = default;
 
-Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector<Texture>& textures) {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices) {
 	this->vertices = vertices;
 	this->indices = indices;
-	this->textures = textures;
 
 	vao.bind();
 	vbo = { vertices };
@@ -21,9 +20,30 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	ebo.unbind();
 }
 
-void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
-	glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, 
-	glm::vec4 lightColor, glm::vec4 worldColor) const {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix) {
+	this->vertices = vertices;
+	this->indices = indices;
+	this->modelMatrix = modelMatrix;
+
+	vao.bind();
+	vbo = { vertices };
+	ebo = { indices };
+
+	vao.linkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
+	vao.linkAttribute(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
+	vao.linkAttribute(vbo, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
+	vao.linkAttribute(vbo, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float)));
+
+	vao.unbind();
+	vbo.unbind();
+	ebo.unbind();
+}
+
+void Mesh::drawTexture(const Shader& shader, const Camera& camera,
+	const glm::vec3& translation, const glm::quat& rotation,
+	const glm::vec3& scale, const glm::vec3& lightPos,
+	const glm::vec4& lightColor, const glm::vec4& worldColor,
+	const std::vector<Texture>& textures) const {
 	shader.activate();
 	vao.bind();
 
@@ -63,7 +83,7 @@ void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
 	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -73,8 +93,11 @@ void Mesh::draw(const Shader & shader, const Camera & camera, glm::mat4 matrix,
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void Mesh::drawColor(const Shader& shader, const Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale, glm::vec3 lightPos, glm::vec4 lightColor, glm::vec4 worldColor, glm::vec4 selfColor) const
-{
+void Mesh::drawColor(const Shader& shader, const Camera& camera,
+	const glm::vec3& translation, const glm::quat& rotation,
+	const glm::vec3& scale, const glm::vec3& lightPos,
+	const glm::vec4& lightColor, const glm::vec4& worldColor,
+	const glm::vec4& selfColor) const {
 	shader.activate();
 	vao.bind();
 
@@ -96,11 +119,41 @@ void Mesh::drawColor(const Shader& shader, const Camera& camera, glm::mat4 matri
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
 	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
+	glUniform4f(glGetUniformLocation(shader.id, "selfColor"), selfColor.x, selfColor.y, selfColor.z, selfColor.w);
+
+	// Draw the actual mesh
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+void Mesh::drawUnlit(const Shader& shader, const Camera& camera, const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale, const glm::vec4& selfColor) const {
+	shader.activate();
+	vao.bind();
+
+	// Take care of the camera Matrix
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+
+	// Initialize matrices
+	glm::mat4 trans = glm::mat4(1.0f);
+	glm::mat4 rot = glm::mat4(1.0f);
+	glm::mat4 sca = glm::mat4(1.0f);
+
+	// Transform the matrices to their correct form
+	trans = glm::translate(trans, translation);
+	rot = glm::mat4_cast(rotation);
+	sca = glm::scale(sca, scale);
+
+	// Push the matrices to the vertex shader
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
 	glUniform4f(glGetUniformLocation(shader.id, "selfColor"), selfColor.x, selfColor.y, selfColor.z, selfColor.w);
 
 	// Draw the actual mesh
