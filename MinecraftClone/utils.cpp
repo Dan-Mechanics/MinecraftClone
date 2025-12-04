@@ -4,7 +4,7 @@ int randomInclusive(const int min, const int max) {
 	return rand() % (max - min + 1) + min;
 }
 
-void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
+void getCubeMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.clear();
 	tris.clear();
 
@@ -96,7 +96,7 @@ void getCube(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& m
 	modelMatrix = glm::mat4{ 1.0f };
 }
 
-void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
+void getPyramidMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, 0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 0.0f });
 	verts.emplace_back(glm::vec3{ -0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 0.0f, 5.0f });
 	verts.emplace_back(glm::vec3{ 0.5f, 0.0f, -0.5f }, glm::vec3{ 0.0f, -1.0f, 0.0f }, glm::vec3{ 0.83f, 0.70f, 0.44f }, glm::vec2{ 5.0f, 5.0f });
@@ -132,4 +132,12 @@ void getPyramid(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4
 	}
 
 	modelMatrix = glm::mat4{ 1.0f };
+}
+
+void freeMaterial(const std::vector<Texture>& material) {
+	auto it = material.begin();
+	while (it != material.end()) {
+		it->free();
+		++it;
+	}
 }

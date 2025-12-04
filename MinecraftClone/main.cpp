@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
+#include "world_mesh.h"
 #include <unordered_map>
 #include "BlockType.h"
 
@@ -15,21 +16,35 @@ static void setFocus(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
+/// <summary>
+/// https://www.glfw.org/docs/latest/quick.html
+/// </summary>
+static void errorCallback(int error, const char* description) {
+	fprintf(stderr, "Error: %s\n", description);
+}
+
+static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 int main() {
+	glfwSetErrorCallback(errorCallback);
 	if (!glfwInit())
-		return -1;
+		exit(EXIT_FAILURE);
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // THIS SHOULD BE 4, BUT THIS WORKS.
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	
 	GLFWwindow* window = glfwCreateWindow(width, height, "Minecraft Clone", NULL, NULL);
-	if (window == NULL) {
+	if (!window) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 
+	glfwSetKeyCallback(window, keyCallback);
 	glfwSetWindowFocusCallback(window, &setFocus);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -43,13 +58,14 @@ int main() {
 	// ===
 
 	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)150 / 255, (float)90 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)128 / 255, (float)0 / 255, (float)0 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
+	//glm::vec4 sunColor = glm::vec4((float)0 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
 
-	Shader defaultShader("default.vert", "default.frag");
 	Shader materialShader("default.vert", "material.frag");
-	Shader litShader("default.vert", "lit_color.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 
 	// ===
@@ -59,74 +75,30 @@ int main() {
 		Texture("planksSpec.png", "specular", 1)
 	};
 
-	std::vector <Texture> grassMaterial = {
-		Texture("grass.png", "diffuse", 0),
-		Texture("spec.png", "specular", 1)
+	std::vector <Texture> atlasMaterial = {
+		Texture("texture_atlas.png", "diffuse", 0),
+		Texture("texture_atlas_specular.png", "specular", 1)
 	};
-
-	std::vector <Texture> diamondMaterial = {
-		Texture("diamond.png", "diffuse", 0),
-		Texture("spec.png", "specular", 1)
-	};
-
-	// ===
-
-	std::vector<Vertex> pyramidVerts{};
-	std::vector<GLuint> pyramidTris{};
-	glm::mat4 pyramidMatrix;
-	getPyramid(pyramidVerts, pyramidTris, pyramidMatrix);
-
-	Mesh pyramidMesh{ pyramidVerts, pyramidTris, pyramidMatrix };
 
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	glm::mat4 cubeMatrix;
-	getCube(cubeVerts, cubeTris, cubeMatrix);
-
+	getCubeMesh(cubeVerts, cubeTris, cubeMatrix);
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
-	std::unordered_set<BlockPos> chunkData{};
-	for (int x = 0; x < 16; ++x) {
-		for (int z = 0; z < 16; ++z) {
-			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
-				chunkData.emplace(x, y, z);
-			}
-		}
-	}
-
-	std::unordered_set<BlockPos> chunkData2{};
-	for (int x = 0; x < 16; ++x) {
-		for (int z = 0; z < 16; ++z) {
-			for (int y = 0; y <= randomInclusive(0, 3); ++y) {
-				chunkData2.emplace(x, y, z);
-			}
-		}
-	}
-
-	/*for (auto const& pt : world) {
-		std::cout << "(" << pt.x << ", " << pt.y << ", " << pt.z << ")" << std::endl;
-	}*/
-	// or we could have some other bullshit idk
-	std::unordered_map<BlockPos, BlockType> world{
-		{ {0,0,0}, BlockType::GRASS }
-	};
-
-	world.insert({ {0,-1,0}, BlockType::DIAMOND });
-	std::cout << world[{0, -1, 0}] << std::endl;
-
-	//world.insert({ 0,0,0 }, BlockType::DIAMOND);
+	const auto atlas = generateAtlas();
+	const auto world = generateDemoWorld();
 
 	std::vector<Vertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
-	getChunk(chunkData, chunkVerts, chunkTris, chunkMatrix);
 
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
-	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===
 
@@ -135,19 +107,8 @@ int main() {
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 
-	Object cube1{ glm::vec3{2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube2{ glm::vec3{-2.0f, 0.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
-	Object cube3{ glm::vec3{0.0f, 2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube4{ glm::vec3{0.0f, -2.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
-	Object cube5{ glm::vec3{0.0f, 0.0f, 2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-	Object cube6{ glm::vec3{0.0f, 0.0f, -2.0f}, glm::vec3{0.0f}, glm::vec3{1.0f} };
-
 	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	Object chunkObject2{ glm::vec3{ 0.0f, 0.0f, 16.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	Object chunkObject3{ glm::vec3{ 16.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -176,6 +137,8 @@ int main() {
 
 		// MAYBE USE THREAD.SLEEP FOR THIS?
 		// SINCE WE WANT TO AVOID BUSY WAITING ...
+		// https://discourse.glfw.org/t/frame-limiting/70/4
+		// MAYBE THAT'S FINE IDK
 		if (deltaTime < minDtForFrame)
 			continue;
 
@@ -194,8 +157,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-
-			// ..
+			// ...
 		}
 
 		camera.hasFocus = hasFocus;
@@ -206,48 +168,23 @@ int main() {
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		//cube1.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube2.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube3.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube4.drawWithMaterial(cubeMesh, diamondMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube5.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//cube6.drawWithMaterial(cubeMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-
-		chunkObject.drawWithMaterial(chunkMesh, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunkObject2.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunkObject3.drawWithMaterial(chunkMesh2, grassMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			break;
 	}
 
-	// ===
-
-	defaultShader.free();
 	materialShader.free();
-	litShader.free();
 	unlitShader.free();
 
-	auto it1 = woodMaterial.begin();
-	while (it1 != woodMaterial.end()) {
-		it1->free();
-		++it1;
-	}
+	freeMaterial(woodMaterial);
+	freeMaterial(atlasMaterial);
 
-	auto it2 = grassMaterial.begin();
-	while (it2 != grassMaterial.end()) {
-		it2->free();
-		++it2;
-	}
-
-	pyramidMesh.free();
 	cubeMesh.free();
+	chunkMesh.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
-	return 0;
+	exit(EXIT_SUCCESS);
 }

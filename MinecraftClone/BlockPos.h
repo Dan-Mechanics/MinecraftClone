@@ -15,7 +15,6 @@ public:
 	BlockPos(const BlockPos& other);
 	BlockPos& operator=(const BlockPos& other);
 	bool operator==(const BlockPos& other) const;
-	bool operator<(const BlockPos& other); 
 
 	BlockPos operator+(const BlockPos& other) const;
 	glm::vec3 getVec3() const;
