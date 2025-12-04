@@ -117,7 +117,7 @@ bool has(const BlockPos& blockPos, const WORLD& world) {
 }
 
 std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
-	const auto scale = 1.0f / 16.0f;
+	const auto scale = 16.0f;
 	const auto low = 0.0f;
 	const auto high = 1.0f;
 
@@ -129,8 +129,10 @@ std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
 	};
 
 	translateUVs(uvs, 0.0f, -1.0f);
-	scaleUVs(uvs, 1.0f / 16.0f);
-	translateUVs(uvs, x * scale, -y * scale);
+	scaleUVs(uvs, scale);
+	translateUVs(uvs, x / scale, -y / scale);
+
+	// rotateUVsClockwise(uvs);
 
 	return uvs;
 }
@@ -138,7 +140,7 @@ std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
 void scaleUVs(std::vector<glm::vec2>& uvs, const float scale) {
 	auto it = uvs.begin();
 	while (it != uvs.end()) {
-		*it *= scale;
+		*it /= scale;
 		++it;
 	}
 }
@@ -150,6 +152,10 @@ void translateUVs(std::vector<glm::vec2>& uvs, const float x, const float y) {
 		it->y += x;
 		++it;
 	}
+}
+
+void rotateUVsClockwise(std::vector<glm::vec2>& uvs) {
+	std::rotate(uvs.begin(), uvs.begin() + 1, uvs.end());
 }
 
 void setCurrentFaceUVs(std::vector<Vertex>& verts, const std::vector<glm::vec2>& uvs) {
@@ -199,6 +205,7 @@ ATLAS generateAtlas() {
 	atlas[BlockType::GRAVEL] = generateUniformMap(tilePositionToUVs(1, 1));
 	atlas[BlockType::SAPPHIRE] = generateUniformMap(tilePositionToUVs(0, 2));
 	atlas[BlockType::DIAMOND] = generateUniformMap(tilePositionToUVs(1, 2));
+	atlas[BlockType::REACTOR] = generateUniformMap(tilePositionToUVs(2, 0));
 
 	return atlas;
 }
@@ -210,8 +217,17 @@ WORLD generateDemoWorld() {
 	chunk[{0, 4, 0}] = BlockType::SAPPHIRE;
 	chunk[{0, 6, 0}] = BlockType::GRAVEL;*/
 
-	for (int i = BlockType::NYCELIUM; i <= BlockType::DIAMOND; ++i) {
+	/*for (int i = BlockType::NYCELIUM; i <= BlockType::REACTOR; ++i) {
 		chunk[{0, i * 2, 0}] = static_cast<BlockType>(i);
+	}*/
+
+	for (int x = 0; x < 16; ++x) {
+		for (int y = 0; y < 16; ++y) {
+			for (int z = 0; z < 16; ++z) {
+				if (randomInclusive(0, 1))
+					chunk[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+			}
+		}
 	}
 
 	WORLD world{};

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "BlockType.h"
 #include "Direction.h"
+#include "utils.h"
 
 #define CHUNK std::unordered_map<BlockPos, BlockType>
 #define WORLD std::unordered_map<BlockPos, CHUNK>
@@ -18,12 +19,17 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 bool has(const BlockPos& blockPos, const WORLD& world);
 
 /// <summary>
-/// https://github.com/samhogan/Minecraft-Unity3D/blob/master/Assets/Scripts/TilePos.cs
+/// This UV code is a little strange but it works.
 /// </summary>
 std::vector<glm::vec2> tilePositionToUVs(const int x, const int y);
 
 void scaleUVs(std::vector<glm::vec2>& uvs, const float scale);
 void translateUVs(std::vector<glm::vec2>& uvs, const float x, const float y);
+
+/// <summary>
+/// https://stackoverflow.com/questions/26346056/move-first-element-of-vector-to-last-element
+/// </summary>
+void rotateUVsClockwise(std::vector<glm::vec2>& uvs);
 
 
 /// <summary>

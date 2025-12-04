@@ -6,5 +6,6 @@ enum BlockType {
     SAPPHIRE = 2,
     DYCELIUM = 3,
     GRAVEL = 4,
-    DIAMOND = 5
+    DIAMOND = 5,
+    REACTOR = 6
 };
