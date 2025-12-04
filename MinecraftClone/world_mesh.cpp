@@ -116,34 +116,13 @@ bool has(const BlockPos& blockPos, const WORLD& world) {
 	return world.at(chunkPos).contains(blockPos);
 }
 
-std::vector<glm::vec2> tilePositionToUVs(const unsigned int x, const unsigned int y) {
-	const auto tileCountSide = 16.0f;
-	const auto margin = 0.001f;
-	//x ^= y ^= x;
+std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
+	const auto scale = 1.0f / 16.0f;
+	const auto low = 0.0f;
+	const auto high = 1.0f;
 
-	const auto lowX = x / tileCountSide + margin;
-	const auto highX = (x + 1) / tileCountSide - margin;
-	const auto lowY = y / tileCountSide + margin;
-	const auto highY = (y + 1) / tileCountSide - margin;
-
-	std::vector<glm::vec2> UVs{
-		{ lowX, lowY },
-		{ lowX, highY },
-		{ highX, highY },
-		{ highX, lowY }
-	};
-
-	return UVs;
-}
-
-std::vector<glm::vec2> getDebugUVs() {
-	float low = 0;
-	float high = 1;
-	
-	// flipping low and high flips the thing on all axis.
-
-	std::vector<glm::vec2> uvs{
-		{ high , high },
+	std::vector<glm::vec2> uvs {
+		{ high, high },
 		{ low,  high },
 		{ low, low },
 		{ high, low },
@@ -151,12 +130,7 @@ std::vector<glm::vec2> getDebugUVs() {
 
 	translateUVs(uvs, 0.0f, -1.0f);
 	scaleUVs(uvs, 1.0f / 16.0f);
-
-	int x = 1;
-	int y = 0;
-	float offset = 1.0f / 16.0f;
-
-	translateUVs(uvs, x * offset, y * offset);
+	translateUVs(uvs, x * scale, -y * scale);
 
 	return uvs;
 }
@@ -221,7 +195,7 @@ ATLAS generateAtlas() {
 	atlas[BlockType::DYCELIUM][Direction::DOWN] = tilePositionToUVs(1, 1);
 
 	// ===
-	atlas[BlockType::DIRT] = generateUniformMap(getDebugUVs());
+	atlas[BlockType::DIRT] = generateUniformMap(tilePositionToUVs(0, 1));
 	atlas[BlockType::GRAVEL] = generateUniformMap(tilePositionToUVs(1, 1));
 	atlas[BlockType::SAPPHIRE] = generateUniformMap(tilePositionToUVs(0, 2));
 	atlas[BlockType::DIAMOND] = generateUniformMap(tilePositionToUVs(1, 2));
@@ -231,10 +205,14 @@ ATLAS generateAtlas() {
 
 WORLD generateDemoWorld() {
 	CHUNK chunk{};
-	chunk[{0, 0, 0}] = BlockType::DIRT;
+	/*chunk[{0, 0, 0}] = BlockType::DIRT;
 	chunk[{0, 2, 0}] = BlockType::DIAMOND;
 	chunk[{0, 4, 0}] = BlockType::SAPPHIRE;
-	chunk[{0, 6, 0}] = BlockType::GRAVEL;
+	chunk[{0, 6, 0}] = BlockType::GRAVEL;*/
+
+	for (int i = BlockType::NYCELIUM; i <= BlockType::DIAMOND; ++i) {
+		chunk[{0, i * 2, 0}] = static_cast<BlockType>(i);
+	}
 
 	WORLD world{};
 	world[{0, 0, 0}] = chunk;
