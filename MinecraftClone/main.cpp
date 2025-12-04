@@ -73,7 +73,7 @@ int main() {
 	};
 
 	std::vector <Texture> atlasMaterial = {
-		Texture("texture_atlas.png", "diffuse", 0),
+		Texture("temp.png", "diffuse", 0),
 		Texture("texture_atlas_specular.png", "specular", 1)
 	};
 
@@ -83,20 +83,18 @@ int main() {
 	std::vector<GLuint> cubeTris{};
 	glm::mat4 cubeMatrix;
 	getCubeMesh(cubeVerts, cubeTris, cubeMatrix);
-
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
 	const auto atlas = generateAtlas();
-	const auto world = generateWorld();
+	const auto world = generateDemoWorld();
 
 	std::vector<Vertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
 
-	getChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
-
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
 	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===

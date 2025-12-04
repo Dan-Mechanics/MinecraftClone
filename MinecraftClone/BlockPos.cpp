@@ -16,13 +16,6 @@ bool BlockPos::operator==(const BlockPos& other) const {
 	return x == other.x && y == other.y && z == other.z;
 }
 
-bool BlockPos::operator<(const BlockPos& other) {
-	if (x < other.x)
-		return true;
-
-	return *this == other;
-}
-
 BlockPos BlockPos::operator+(const BlockPos& other) const {
 	return { x + other.x, y + other.y, z + other.z };
 }
