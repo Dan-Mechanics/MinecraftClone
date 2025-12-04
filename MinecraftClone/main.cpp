@@ -58,7 +58,10 @@ int main() {
 	// ===
 
 	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)150 / 255, (float)90 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)128 / 255, (float)0 / 255, (float)0 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
+	//glm::vec4 sunColor = glm::vec4((float)0 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
 
