@@ -20,7 +20,10 @@ bool has(const BlockPos& blockPos, const WORLD& world);
 /// <summary>
 /// https://github.com/samhogan/Minecraft-Unity3D/blob/master/Assets/Scripts/TilePos.cs
 /// </summary>
-std::vector<glm::vec2> tilePositionToUVs(unsigned int x, unsigned int y);
+std::vector<glm::vec2> tilePositionToUVs(const unsigned int x, const unsigned int y);
+
+void scaleUVs(std::vector<glm::vec2>& uvs, const float scale);
+void translateUVs(std::vector<glm::vec2>& uvs, const float x, const float y);
 std::vector<glm::vec2> getDebugUVs();
 
 

@@ -73,7 +73,7 @@ int main() {
 	};
 
 	std::vector <Texture> atlasMaterial = {
-		Texture("temp.png", "diffuse", 0),
+		Texture("texture_atlas.png", "diffuse", 0),
 		Texture("texture_atlas_specular.png", "specular", 1)
 	};
 

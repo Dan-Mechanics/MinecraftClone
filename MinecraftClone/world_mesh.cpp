@@ -116,7 +116,7 @@ bool has(const BlockPos& blockPos, const WORLD& world) {
 	return world.at(chunkPos).contains(blockPos);
 }
 
-std::vector<glm::vec2> tilePositionToUVs(unsigned int x, unsigned int y) {
+std::vector<glm::vec2> tilePositionToUVs(const unsigned int x, const unsigned int y) {
 	const auto tileCountSide = 16.0f;
 	const auto margin = 0.001f;
 	//x ^= y ^= x;
@@ -137,14 +137,45 @@ std::vector<glm::vec2> tilePositionToUVs(unsigned int x, unsigned int y) {
 }
 
 std::vector<glm::vec2> getDebugUVs() {
-	std::vector<glm::vec2> UVs{
-		{ 1, 1 },
-		{ 0, 1 },
-		{ 0, 0 },
-		{ 1, 0 },
+	float low = 0;
+	float high = 1;
+	
+	// flipping low and high flips the thing on all axis.
+
+	std::vector<glm::vec2> uvs{
+		{ high , high },
+		{ low,  high },
+		{ low, low },
+		{ high, low },
 	};
 
-	return UVs;
+	translateUVs(uvs, 0.0f, -1.0f);
+	scaleUVs(uvs, 1.0f / 16.0f);
+
+	int x = 1;
+	int y = 0;
+	float offset = 1.0f / 16.0f;
+
+	translateUVs(uvs, x * offset, y * offset);
+
+	return uvs;
+}
+
+void scaleUVs(std::vector<glm::vec2>& uvs, const float scale) {
+	auto it = uvs.begin();
+	while (it != uvs.end()) {
+		*it *= scale;
+		++it;
+	}
+}
+
+void translateUVs(std::vector<glm::vec2>& uvs, const float x, const float y) {
+	auto it = uvs.begin();
+	while (it != uvs.end()) {
+		it->x += y;
+		it->y += x;
+		++it;
+	}
 }
 
 void setCurrentFaceUVs(std::vector<Vertex>& verts, const std::vector<glm::vec2>& uvs) {
@@ -190,7 +221,6 @@ ATLAS generateAtlas() {
 	atlas[BlockType::DYCELIUM][Direction::DOWN] = tilePositionToUVs(1, 1);
 
 	// ===
-	//atlas[BlockType::DIRT] = generateUniformMap(tilePositionToUVs(0, 1));
 	atlas[BlockType::DIRT] = generateUniformMap(getDebugUVs());
 	atlas[BlockType::GRAVEL] = generateUniformMap(tilePositionToUVs(1, 1));
 	atlas[BlockType::SAPPHIRE] = generateUniformMap(tilePositionToUVs(0, 2));
@@ -202,7 +232,9 @@ ATLAS generateAtlas() {
 WORLD generateDemoWorld() {
 	CHUNK chunk{};
 	chunk[{0, 0, 0}] = BlockType::DIRT;
-	//chunk[{0, 2, 2}] = BlockType::DYCELIUM;
+	chunk[{0, 2, 0}] = BlockType::DIAMOND;
+	chunk[{0, 4, 0}] = BlockType::SAPPHIRE;
+	chunk[{0, 6, 0}] = BlockType::GRAVEL;
 
 	WORLD world{};
 	world[{0, 0, 0}] = chunk;
