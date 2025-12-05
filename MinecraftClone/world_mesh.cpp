@@ -179,10 +179,7 @@ void setCurrentFaceUVs(std::vector<Vertex>& verts, const std::vector<glm::vec2>&
 
 BlockPos blockPosToChunkPos(const BlockPos& blockPos) {
 	// ROUNDING DOWN.
-	int x = (float)blockPos.x / 16.0f;
-	int y = (float)blockPos.y / 16.0f;
-	int z = (float)blockPos.z / 16.0f;
-	return { x, y, z };
+	return { blockPos.x / 16, blockPos.y / 16, blockPos.z / 16 };
 }
 
 ATLAS generateAtlas() {
@@ -221,7 +218,7 @@ WORLD generateDemoWorld() {
 		chunk[{0, i * 2, 0}] = static_cast<BlockType>(i);
 	}*/
 
-	for (int x = 0; x < 16; ++x) {
+	for (int x = -3; x < 16; ++x) {
 		for (int y = 0; y < 16; ++y) {
 			for (int z = 0; z < 16; ++z) {
 				if (randomInclusive(0, 1))

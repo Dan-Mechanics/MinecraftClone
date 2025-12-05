@@ -31,7 +31,6 @@ void translateUVs(std::vector<glm::vec2>& uvs, const float x, const float y);
 /// </summary>
 void rotateUVsClockwise(std::vector<glm::vec2>& uvs);
 
-
 /// <summary>
 /// Rule: this can only be called after 4 verts have been added.
 /// </summary>
