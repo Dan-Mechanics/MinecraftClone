@@ -25,7 +25,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		const BlockPos blockPos = current->first;
 		const BlockType blockType = current->second;
 		const glm::vec3 pos = blockPos.getVec3();
-
+		std::cout << pos.z << std::endl;
 		// UP. ===
 		if (!has(blockPos + up, world)) {
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
@@ -209,26 +209,13 @@ ATLAS generateAtlas() {
 
 WORLD generateDemoWorld() {
 	CHUNK chunk{};
-	/*chunk[{0, 0, 0}] = BlockType::DIRT;
-	chunk[{0, 2, 0}] = BlockType::DIAMOND;
-	chunk[{0, 4, 0}] = BlockType::SAPPHIRE;
-	chunk[{0, 6, 0}] = BlockType::GRAVEL;*/
-
-	/*for (int i = BlockType::NYCELIUM; i <= BlockType::REACTOR; ++i) {
-		chunk[{0, i * 2, 0}] = static_cast<BlockType>(i);
-	}*/
-
-	/*for (int x = -3; x < 16; ++x) {
+	for (int x = 0; x < 16; ++x) {
 		for (int y = 0; y < 16; ++y) {
 			for (int z = 0; z < 16; ++z) {
 				if (randomInclusive(0, 1))
 					chunk[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 			}
 		}
-	}*/
-
-	for (int i = 0; i < 100; i++) {
-		chunk[{randomInclusive(-10, 10), randomInclusive(-10, 10), randomInclusive(-10, 10)}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 	}
 
 	WORLD world{};
