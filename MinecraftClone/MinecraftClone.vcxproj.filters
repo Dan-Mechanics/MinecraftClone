@@ -80,6 +80,9 @@
     <None Include="unlit_color.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="shadow_map.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -132,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </Text>
+    <Text Include="shadow_map.frag">
       <Filter>Resource Files\Shaders</Filter>
     </Text>
   </ItemGroup>

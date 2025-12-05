@@ -100,7 +100,7 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{8.0f, 12.0f, 8.0f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
+	Object sun{ glm::vec3{0.5f, 0.5f, 0.5f}, glm::vec3{0.0f}, glm::vec3{0.25f} };
 	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
@@ -154,6 +154,13 @@ int main() {
 	// Needed since we don't touch the color buffer
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		std::cout << "shadow framebuffer broken!!" << std::endl;
+		return -1;
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Matrices needed for the light's perspective
@@ -185,12 +192,26 @@ int main() {
 		// ===
 
 		glEnable(GL_DEPTH_TEST);
+
 		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
+		// DRAW SCENE FOR SHADOW MAP !!
+
+		ground.drawWithMaterial(cubeMesh, woodMaterial, shadowMapShader, camera, sunColor, sun.pos, skyColor);
+		chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, shadowMapShader, camera, sunColor, sun.pos, skyColor);
+
+		// Switch back to the default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// Switch back to the default viewport
+		glViewport(0, 0, width, height);
+		// Bind the custom framebuffer
+		//glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
 
 		timer += deltaTime;
 		while (timer >= tickInterval) {
@@ -202,6 +223,14 @@ int main() {
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+
+		materialShader.activate();
+		glUniformMatrix4fv(glGetUniformLocation(materialShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+
+		// Bind the Shadow Map
+		glActiveTexture(GL_TEXTURE0 + 2);
+		glBindTexture(GL_TEXTURE_2D, shadowMap);
+		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
