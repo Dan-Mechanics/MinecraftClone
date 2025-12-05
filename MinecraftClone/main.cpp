@@ -101,15 +101,11 @@ int main() {
 	// ===
 
 	Object sun{ glm::vec3{ 10.0f, 20.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	sun.pos = glm::normalize(sun.pos);
 	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-
-	// HERE YOU CAN CHANGE THE LOOK OF THE CHUNK.
-	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-
-
-	Object testCube{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunk{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -168,7 +164,7 @@ int main() {
 
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
 
 	shadowMapShader.activate();
@@ -203,11 +199,7 @@ int main() {
 		// DRAW SCENE FOR SHADOW MAP !!
 
 		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-
-		testCube.pos.x = 0.0f;
-		testCube.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		testCube.pos.x = -1.0f;
-		testCube.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -240,14 +232,10 @@ int main() {
 		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		testCube.pos.x = 0.0f;
-		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		testCube.pos.x = -1.0f;
-		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		//chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunk.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
