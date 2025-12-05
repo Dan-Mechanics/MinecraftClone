@@ -109,7 +109,7 @@ int main() {
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 
-	Object testCube{ glm::vec3{ 2.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object testCube{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -168,7 +168,7 @@ int main() {
 
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightView = glm::lookAt(normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
 
 	shadowMapShader.activate();
@@ -203,6 +203,10 @@ int main() {
 		// DRAW SCENE FOR SHADOW MAP !!
 
 		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+
+		testCube.pos.x = 0.0f;
+		testCube.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		testCube.pos.x = -1.0f;
 		testCube.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
@@ -236,6 +240,9 @@ int main() {
 		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		testCube.pos.x = 0.0f;
+		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		testCube.pos.x = -1.0f;
 		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
