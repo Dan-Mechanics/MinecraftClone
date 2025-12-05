@@ -101,11 +101,10 @@ int main() {
 	// ===
 
 	Object sun{ glm::vec3{ 10.0f, 20.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	sun.pos = glm::normalize(sun.pos);
 	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Object chunk{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunk{ glm::vec3{ 10.0f, 0.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
