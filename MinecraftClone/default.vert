@@ -37,7 +37,8 @@ uniform mat4 lightProjection;
 void main()
 {
 	// Calculates current position
-	crntPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+	//crntPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+	crntPos = vec3(model * translation * scale * vec4(aPos, 1.0f));
 	// Assigns the normal from the Vertex Data to "Normal"
 	Normal = aNormal;
 	// Assigns the colors from the Vertex Data to "color"

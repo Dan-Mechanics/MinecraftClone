@@ -100,7 +100,7 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{ 10.0f, 2.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 10.0f, 20.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
@@ -109,7 +109,7 @@ int main() {
 	Object chunkObject{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 
-	Object testCube{ glm::vec3{ 5.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object testCube{ glm::vec3{ 2.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -168,7 +168,7 @@ int main() {
 
 	// Matrices needed for the light's perspective
 	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
 
 	shadowMapShader.activate();
@@ -202,9 +202,8 @@ int main() {
 
 		// DRAW SCENE FOR SHADOW MAP !!
 
-		ground.drawWithMaterial(cubeMesh, woodMaterial, shadowMapShader, camera, sunColor, sun.pos, skyColor);
-	//	chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, shadowMapShader, camera, sunColor, sun.pos, skyColor);
-		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		testCube.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -237,8 +236,9 @@ int main() {
 		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		testCube.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+
+		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		//chunkObject.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
@@ -254,6 +254,8 @@ int main() {
 
 	cubeMesh.free();
 	chunkMesh.free();
+
+	// make sure to delete the shadow map buffer
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
