@@ -58,15 +58,13 @@ int main() {
 	// ===
 
 	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
-	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)150 / 255, (float)90 / 255, 1.0f);
-	//glm::vec4 skyColor = glm::vec4((float)128 / 255, (float)0 / 255, (float)0 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
-	//glm::vec4 sunColor = glm::vec4((float)0 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
 
-	Shader materialShader("default.vert", "material.frag");
+	Shader materialShader("default.vert", "default.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
+	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
 
 	// ===
 
@@ -131,6 +129,41 @@ int main() {
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
 
+
+
+	// Framebuffer for Shadow Map
+	unsigned int shadowMapFBO;
+	glGenFramebuffers(1, &shadowMapFBO);
+
+	// Texture for Shadow Map FBO
+	unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
+	unsigned int shadowMap;
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_2D, shadowMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	// Prevents darkness outside the frustrum
+	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
+	// Needed since we don't touch the color buffer
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Matrices needed for the light's perspective
+	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+	glm::mat4 lightView = glm::lookAt(20.0f * sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 lightProjection = orthgonalProjection * lightView;
+
+	shadowMapShader.activate();
+	glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = glfwGetTime();
 		double deltaTime = currentTime - previousTime;
@@ -150,6 +183,11 @@ int main() {
 		glfwSetWindowTitle(window, newTitle.c_str());
 
 		// ===
+
+		glEnable(GL_DEPTH_TEST);
+		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
