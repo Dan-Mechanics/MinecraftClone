@@ -100,11 +100,20 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{ 10.0f, 20.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 1.0f, 0.5f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
+	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	center.setColor(glm::vec4{ 1.0f });
+
+	Object forward{ glm::vec3{ 0.0f, 0.0f, 3.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	forward.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Object chunk{ glm::vec3{ 10.0f, 0.0f, 10.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -162,8 +171,9 @@ int main() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Matrices needed for the light's perspective
-	glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+	glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
+	glm::mat4 lightView = glm::lookAt(glm::vec3{ sun.pos.x, sun.pos.y, sun.pos.z}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
 
 	shadowMapShader.activate();
@@ -182,7 +192,7 @@ int main() {
 
 		previousTime = currentTime;
 
-		std::string fps = std::to_string(1.0 / deltaTime);
+		std::string fps = std::to_string(1.0f / deltaTime);
 		std::string ms = std::to_string(deltaTime * 1000);
 		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
@@ -197,6 +207,9 @@ int main() {
 
 		// DRAW SCENE FOR SHADOW MAP !!
 
+		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
+		
 		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 
@@ -207,14 +220,21 @@ int main() {
 		// Bind the custom framebuffer
 		//glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// Switch back to the default viewport
+		glViewport(0, 0, width, height);
+		// Specify the color of the background
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
+		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
 		glEnable(GL_DEPTH_TEST);
 
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-		//	std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
+			//std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
+			//chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -233,6 +253,10 @@ int main() {
 		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+
+		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		chunk.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
