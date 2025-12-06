@@ -103,8 +103,8 @@ int main() {
 	Object sun{ glm::vec3{ 0.5f, 1.0f, 0.5f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
-	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	center.setColor(glm::vec4{ 1.0f });
+	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f } };
+	center.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
 	Object forward{ glm::vec3{ 0.0f, 0.0f, 3.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	forward.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
@@ -234,7 +234,7 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			//std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
-			//chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+			chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -269,6 +269,8 @@ int main() {
 
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);
+
+	glDeleteFramebuffers(1, &shadowMapFBO);
 
 	cubeMesh.free();
 	chunkMesh.free();

@@ -25,8 +25,8 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		const BlockPos blockPos = current->first;
 		const BlockType blockType = current->second;
 		glm::vec3 pos = blockPos.getVec3();
-		pos.x = -pos.x;
-		pos.z = -pos.z;
+		pos.x = -pos.x - 1.0f;
+		pos.z = -pos.z - 1.0f;
 
 		// UP. ===
 		if (!has(blockPos + up, world)) {

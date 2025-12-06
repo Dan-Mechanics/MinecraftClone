@@ -20,8 +20,8 @@ public:
 	
 	void drawAsUnlitColor(const Mesh& mesh, const Shader& shader, const Camera& camera);
 
-	void move(const glm::vec3& vel, const double& dt);
-	void rotate(const glm::vec3& vel, const double& dt);
+	void move(const glm::vec3& vel, const float dt);
+	void rotate(const glm::vec3& vel, const float dt);
 	void setColor(const glm::vec4& color);
 
 private:
