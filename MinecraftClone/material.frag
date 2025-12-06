@@ -11,51 +11,23 @@ in vec3 Normal;
 in vec3 color;
 // Imports the texture coordinates from the Vertex Shader
 in vec2 texCoord;
+// Imports the fragment position of the light
+in vec4 fragPosLight;
 
 
 
 // Gets the Texture Units from the main function
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
+uniform sampler2D shadowMap;
 // Gets the color of the light from the main function
 uniform vec4 lightColor;
-
 uniform vec4 worldColor;
-
 // Gets the position of the light from the main function
 uniform vec3 lightPos;
 // Gets the position of the camera from the main function
 uniform vec3 camPos;
 
-vec4 worldLight()
-{
-	vec3 lightVec = lightPos - crntPos;
-	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightVec);
-	float diffuse = max(dot(normal, lightDirection), 0.0f);
-
-	vec4 light = texture(specular0, texCoord).r * diffuse * lightColor + worldColor;
-	light.x = min(light.x, 1.0f);
-	light.y = min(light.y, 1.0f);
-	light.z = min(light.z, 1.0f);
-
-	return texture(diffuse0, texCoord) * light;
-}
-
-vec4 directionalLight()
-{
-	vec3 lightVec = lightPos - crntPos;
-	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightVec);
-	float diffuse = max(dot(normal, lightDirection), 0.0f);
-
-	vec4 light = texture(specular0, texCoord).r * diffuse * lightColor + worldColor;
-	light.x = min(light.x, 1.0f);
-	light.y = min(light.y, 1.0f);
-	light.z = min(light.z, 1.0f);
-
-	return texture(diffuse0, texCoord) * light;
-}
 
 vec4 shadowWorldLight()
 {

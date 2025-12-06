@@ -112,7 +112,7 @@ int main() {
 	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{500.0f, 1.0f, 500.0f} };
+	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
