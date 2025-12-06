@@ -57,8 +57,13 @@ int main() {
 
 	// ===
 
+	// 109, 155, 201
 	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
-	glm::vec4 skyColor = glm::vec4((float)0 / 255, (float)0 / 255, (float)0 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4(
+		(float)100 / 255,
+		(float)145 / 255,
+		(float)190 / 255,
+		1.0f);
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
@@ -101,7 +106,7 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f } };
@@ -153,6 +158,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	
 	// Prevents darkness outside the frustrum
 	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
@@ -214,7 +220,7 @@ int main() {
 		shadowMapShader.activate();
 		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
-		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
@@ -254,7 +260,7 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, shadowMap);
 		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
-		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
