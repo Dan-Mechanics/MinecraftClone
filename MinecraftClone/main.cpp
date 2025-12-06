@@ -7,9 +7,9 @@
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
-const double fpsCap = 300.0;
-const double minDtForFrame = 1.0 / fpsCap;
-const double tickInterval = 0.02;
+const float fpsCap = 300.0f;
+const float minDtForFrame = 1.0f / fpsCap;
+const float tickInterval = 0.02f;
 
 bool hasFocus = true;
 static void setFocus(GLFWwindow* window, int focus) {
@@ -129,9 +129,9 @@ int main() {
 	const auto sensitivity = 0.1f;
 	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
-	double previousTime = 0.0;
-	double currentTime = 0.0;
-	double timer = 0.0;
+	float previousTime = 0.0;
+	float currentTime = 0.0;
+	float timer = 0.0;
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
@@ -180,8 +180,8 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
 	while (!glfwWindowShouldClose(window)) {
-		currentTime = glfwGetTime();
-		double deltaTime = currentTime - previousTime;
+		currentTime = (float)glfwGetTime();
+		float deltaTime = currentTime - previousTime;
 
 		// MAYBE USE THREAD.SLEEP FOR THIS?
 		// SINCE WE WANT TO AVOID BUSY WAITING ...
