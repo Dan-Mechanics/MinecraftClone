@@ -33,12 +33,13 @@ uniform mat4 scale;
 // Imports the light matrix
 uniform mat4 lightProjection;
 
+
 void main()
 {
 	// Calculates current position
-	crntPos = vec3(model * translation * scale * rotation * vec4(aPos, 1.0f));
-	Normal = vec3(rotation * vec4(aNormal, 1.0f));
-
+	crntPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+	// Assigns the normal from the Vertex Data to "Normal"
+	Normal = aNormal;
 	// Assigns the colors from the Vertex Data to "color"
 	color = aColor;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
