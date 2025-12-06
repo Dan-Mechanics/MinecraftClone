@@ -167,6 +167,7 @@
     <None Include="default.vert" />
     <None Include="normals_debug.frag" />
     <None Include="material.frag" />
+    <None Include="shadow_map.vert" />
     <None Include="unlit_color.frag" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag" />
+    <Text Include="shadow_map.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

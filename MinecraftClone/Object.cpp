@@ -21,12 +21,12 @@ void Object::drawAsUnlitColor(const Mesh& mesh, const Shader& shader, const Came
 	mesh.drawUnlit(shader, camera, pos, rotation, scale, color);
 }
 
-void Object::move(const glm::vec3& vel, const double& dt) {
-	pos += vel * (float)dt;
+void Object::move(const glm::vec3& vel, const float dt) {
+	pos += vel * dt;
 }
 
-void Object::rotate(const glm::vec3& vel, const double& dt) {
-	rot += vel * (float)dt;
+void Object::rotate(const glm::vec3& vel, const float dt) {
+	rot += vel * dt;
 }
 
 void Object::setColor(const glm::vec4& color) {

@@ -80,19 +80,7 @@
     <None Include="unlit_color.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="skybox.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="skybox.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="normals.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="normals.geom">
+    <None Include="shadow_map.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -147,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </Text>
+    <Text Include="shadow_map.frag">
       <Filter>Resource Files\Shaders</Filter>
     </Text>
   </ItemGroup>
