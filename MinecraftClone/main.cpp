@@ -62,7 +62,7 @@ int main() {
 
 	// ===
 
-	Shader materialShader("default.vert", "default.frag");
+	Shader materialShader("default.vert", "material.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
 
