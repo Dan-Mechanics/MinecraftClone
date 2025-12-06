@@ -217,6 +217,7 @@ WORLD generateDemoWorld() {
 				if (randomInclusive(0, 1)) {
 					chunk[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 					chunk[{x + 50, y, z + 50}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+					chunk[{x + 50, y + 50, z + 50}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 				}
 			}
 		}

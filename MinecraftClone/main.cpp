@@ -175,12 +175,12 @@ int main() {
 
 	// FUTURE: SUN NEEDS TO MOVE WITH THE PLAYER SO WHERE
 	// THE PLAYER IS IS ALWAYS SHADOW
-	glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
+	/*glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
 	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
 
 	shadowMapShader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+	glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));*/
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -213,6 +213,16 @@ int main() {
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 		
+		glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
+		glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// I THINK THIS IS CORRECT, I DO NOT KNOW.
+		glm::mat4 translation = glm::translate(glm::mat4{ 1.0f }, -camera.position);
+		glm::mat4 lightProjection = orthgonalProjection * lightView * translation;
+
+		shadowMapShader.activate();
+		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+
 		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 
