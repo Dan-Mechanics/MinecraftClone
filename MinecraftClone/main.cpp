@@ -57,7 +57,8 @@ int main() {
 
 	// ===
 
-	glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
+	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
+	glm::vec4 skyColor = glm::vec4((float)0 / 255, (float)0 / 255, (float)0 / 255, 1.0f);
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
@@ -100,7 +101,7 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 1.0f, 0.5f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f } };
@@ -170,17 +171,6 @@ int main() {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Matrices needed for the light's perspective
-	//glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
-
-	// FUTURE: SUN NEEDS TO MOVE WITH THE PLAYER SO WHERE
-	// THE PLAYER IS IS ALWAYS SHADOW
-	/*glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
-	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 lightProjection = orthgonalProjection * lightView;
-
-	shadowMapShader.activate();
-	glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));*/
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -213,8 +203,9 @@ int main() {
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 		
-		glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
-		glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		const auto dist = 50.0f;
+		glm::mat4 orthgonalProjection = glm::ortho(-dist, dist, -dist, dist, -dist, dist);
+		glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// I THINK THIS IS CORRECT, I DO NOT KNOW.
 		glm::mat4 translation = glm::translate(glm::mat4{ 1.0f }, -camera.position);
