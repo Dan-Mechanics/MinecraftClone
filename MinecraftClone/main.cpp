@@ -112,7 +112,7 @@ int main() {
 	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{500.0f, 1.0f, 500.0f} };
 	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
@@ -172,6 +172,9 @@ int main() {
 
 	// Matrices needed for the light's perspective
 	//glm::mat4 orthgonalProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 75.0f);
+
+	// FUTURE: SUN NEEDS TO MOVE WITH THE PLAYER SO WHERE
+	// THE PLAYER IS IS ALWAYS SHADOW
 	glm::mat4 orthgonalProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -50.0f, 50.0f);
 	glm::mat4 lightView = glm::lookAt(sun.pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 lightProjection = orthgonalProjection * lightView;
@@ -234,7 +237,7 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			//std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
-			chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+			//chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
 		camera.hasFocus = hasFocus;

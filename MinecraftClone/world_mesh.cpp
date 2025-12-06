@@ -214,8 +214,10 @@ WORLD generateDemoWorld() {
 	for (int x = 0; x < 16; ++x) {
 		for (int y = 0; y < 16; ++y) {
 			for (int z = 0; z < 16; ++z) {
-				if (randomInclusive(0, 1))
+				if (randomInclusive(0, 1)) {
 					chunk[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+					chunk[{x + 50, y, z + 50}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+				}
 			}
 		}
 	}
