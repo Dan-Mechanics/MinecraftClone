@@ -1,7 +1,7 @@
 #pragma once
 #include "BlockPos.h"
 #include <unordered_set>
-#include "vbo.h"
+#include "VBO.h"
 #include <unordered_map>
 #include "BlockType.h"
 #include "Direction.h"

@@ -4,11 +4,11 @@
 #include <glad/glad.h>
 #include <vector>
 
-class ebo {
+class EBO {
 public:
 	GLuint id;
-	ebo();
-	ebo(const std::vector<GLuint>& indices);
+	EBO();
+	EBO(const std::vector<GLuint>& indices);
 
 	void bind() const;
 	void unbind() const;

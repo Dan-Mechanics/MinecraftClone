@@ -25,11 +25,11 @@ public:
 	Vertex() = default;
 };
 
-class vbo {
+class VBO {
 public:
 	GLuint id{};
-	vbo();
-	vbo(const std::vector<Vertex>& vertices);
+	VBO();
+	VBO(const std::vector<Vertex>& vertices);
 
 	void bind() const;
 	void unbind() const;

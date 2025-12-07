@@ -73,6 +73,12 @@ int main() {
 
 	// ===
 
+	glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glfwSwapBuffers(window);
+
+	// ===
+
 	Shader materialShader("default.vert", "material.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
