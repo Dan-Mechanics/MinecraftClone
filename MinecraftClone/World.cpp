@@ -3,7 +3,7 @@
 World::World() = default;
 World::World(const WORLD& world, const float maxViewingRange) : maxViewingRange{ maxViewingRange } {
 	this->world = world;
-	//chunkObject = { glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	chunkObject = { glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 }
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
