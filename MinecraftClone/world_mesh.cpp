@@ -210,7 +210,7 @@ ATLAS generateAtlas() {
 
 WORLD_DATA generateDemoWorldData() {
 	WORLD_DATA world{};
-	const int size = 3;
+	const int size = 2;
 	for (int i = -size; i < size; ++i) {
 		for (int j = -size; j < size; ++j) {
 			CHUNK chunk{};
@@ -218,12 +218,10 @@ WORLD_DATA generateDemoWorldData() {
 			for (int x = 0; x < CHUNK_SIZE; ++x) {
 				for (int y = 0; y < CHUNK_SIZE; ++y) {
 					for (int z = 0; z < CHUNK_SIZE; ++z) {
-						if (randomInclusive(0, 1))
+						if (randomInclusive(0, 2))
 							continue;
 
-						BlockType block = y >= 15 ? BlockType::NYCELIUM : BlockType::DIRT;
-						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = block;
-						
+						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
 					}
 				}
 			}

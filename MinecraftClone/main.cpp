@@ -66,10 +66,15 @@ int main() {
 	};
 
 	glm::vec4 skyColor = glm::vec4 {
+		(float)90 / 255,
+		(float)86 / 255,
+		(float)150 / 255, 1.0f
+	};
+	/*glm::vec4 skyColor = glm::vec4 {
 		(float)100 / 255,
 		(float)145 / 255,
 		(float)190 / 255, 1.0f 
-	};
+	};*/
 
 	// ===
 
@@ -115,7 +120,7 @@ int main() {
 	// ===
 
 	Object sun{};
-	sun.position(glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f);
+	sun.position(glm::vec3{ 0.5f, 0.4f, 0.5f } * 20.0f);
 	sun.color(sunColor);
 
 	Object centerLine{};
@@ -162,7 +167,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 2048, 2048, 30.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 20.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
