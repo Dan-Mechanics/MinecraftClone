@@ -10,7 +10,7 @@
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 const float fpsCap = 300.0f;
-const float minDtForFrame = 1.0f / fpsCap;
+const float minDeltaForFrame = 1.0f / fpsCap;
 const float tickInterval = 0.02f;
 
 bool hasFocus = true;
@@ -157,7 +157,7 @@ int main() {
 		// SINCE WE WANT TO AVOID BUSY WAITING ...
 		// https://discourse.glfw.org/t/frame-limiting/70/4
 		// MAYBE THAT'S FINE IDK
-		if (deltaTime < minDtForFrame)
+		if (deltaTime < minDeltaForFrame)
 			continue;
 
 		previousTime = currentTime;
@@ -194,7 +194,6 @@ int main() {
 
 		// =====================
 		
-
 		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
