@@ -57,13 +57,12 @@ int main() {
 
 	// ===
 
-	// 109, 155, 201
-	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
 	glm::vec4 skyColor = glm::vec4(
 		(float)100 / 255,
 		(float)145 / 255,
 		(float)190 / 255,
 		1.0f);
+
 	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
 
 	// ===
@@ -101,15 +100,23 @@ int main() {
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix;
 
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
+	/*generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
 	Mesh chunkMesh1{ chunkVerts, chunkTris, chunkMatrix };
 
 	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 1 }), world);
-	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
+	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };*/
+
+	std::vector<Mesh> chunks{};
+	auto it = world.begin();
+	while (it != world.end()) {
+		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, it->second, world);
+		chunks.emplace_back(chunkVerts, chunkTris, chunkMatrix);
+		++it;
+	}
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 0.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object centerLine{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f, 100.0f, 0.02f } };
@@ -129,7 +136,7 @@ int main() {
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	Object chunk2{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	//Object chunk2{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -233,8 +240,11 @@ int main() {
 		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		chunk.drawAsUnlitColor(chunkMesh1, shadowMapShader, camera);
-		chunk2.drawAsUnlitColor(chunkMesh2, shadowMapShader, camera);
+		auto it2 = chunks.begin();
+		while (it2 != chunks.end()) {
+			chunk.drawAsUnlitColor(*it2, shadowMapShader, camera);
+			++it2;
+		}
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -282,8 +292,14 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		chunk.drawWithMaterial(chunkMesh1, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunk2.drawWithMaterial(chunkMesh2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		/*chunk.drawWithMaterial(chunkMesh1, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunk2.drawWithMaterial(chunkMesh2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);*/
+
+		it2 = chunks.begin();
+		while (it2 != chunks.end()) {
+			chunk.drawWithMaterial(*it2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+			++it2;
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -298,7 +314,7 @@ int main() {
 	glDeleteFramebuffers(1, &shadowMapFBO);
 
 	cubeMesh.free();
-	chunkMesh1.free();
+	//chunkMesh1.free();
 
 	// make sure to delete the shadow map buffer
 

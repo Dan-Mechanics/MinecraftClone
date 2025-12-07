@@ -209,40 +209,27 @@ ATLAS generateAtlas() {
 }
 
 WORLD generateDemoWorld() {
-	CHUNK chunk1{};
-	for (int x = 0; x < CHUNK_SIZE; ++x) {
-		for (int y = 0; y < CHUNK_SIZE; ++y) {
-			for (int z = 0; z < CHUNK_SIZE; ++z) {
-				if (randomInclusive(0, 1)) 
-					chunk1[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-;			}
-		}
-	}
-
-	CHUNK chunk2{};
-	for (int x = 0; x < CHUNK_SIZE; ++x) {
-		for (int y = 0; y < CHUNK_SIZE; ++y) {
-			for (int z = 0; z < CHUNK_SIZE; ++z) {
-				if (randomInclusive(0, 1))
-					chunk2[{x, y, z + CHUNK_SIZE}] = static_cast<BlockType>(randomInclusive(BlockType::NYCELIUM, BlockType::SAPPHIRE));
-			}
-		}
-	}
-
-	CHUNK chunk3{};
-	for (int x = 0; x < CHUNK_SIZE; ++x) {
-		for (int y = 0; y < CHUNK_SIZE; ++y) {
-			for (int z = 0; z < CHUNK_SIZE; ++z) {
-				if (randomInclusive(0, 1))
-					chunk2[{x, y + CHUNK_SIZE, z + CHUNK_SIZE}] = BlockType::GRAVEL;
-			}
-		}
-	}
-
 	WORLD world{};
-	world[{0, 0, 0}] = chunk1;
-	world[{0, 0, 1}] = chunk2;
-	world[{0, 1, 1}] = chunk3;
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			CHUNK chunk{};
+
+			for (int x = 0; x < CHUNK_SIZE; ++x) {
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
+					for (int z = 0; z < CHUNK_SIZE; ++z) {
+						if (randomInclusive(0, 1))
+							continue;
+
+						BlockType block = y >= 15 ? BlockType::NYCELIUM : BlockType::DIRT;
+						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = block;
+						
+					}
+				}
+			}
+
+			world[{i, 0, j}] = chunk;
+		}
+	}
 
 	return world;
 }
