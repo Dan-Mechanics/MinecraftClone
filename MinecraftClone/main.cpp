@@ -102,15 +102,21 @@ int main() {
 	glm::mat4 chunkMatrix;
 
 	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
-	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
+	Mesh chunkMesh1{ chunkVerts, chunkTris, chunkMatrix };
+
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 1 }), world);
+	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };
 
 	// ===
 
 	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
-	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f } };
-	center.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Object centerLine{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f, 100.0f, 0.02f } };
+	centerLine.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+	
+	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.5f } };
+	center.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	Object forward{ glm::vec3{ 0.0f, 0.0f, 3.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	forward.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
@@ -118,8 +124,12 @@ int main() {
 	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
+	Object up{ glm::vec3{ 0.0f, 3.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	up.setColor(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object chunk2{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -221,7 +231,8 @@ int main() {
 		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
+		chunk.drawAsUnlitColor(chunkMesh1, shadowMapShader, camera);
+		chunk2.drawAsUnlitColor(chunkMesh2, shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -261,14 +272,16 @@ int main() {
 		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
 
 		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-
+		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		chunk.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunk.drawWithMaterial(chunkMesh1, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		chunk2.drawWithMaterial(chunkMesh2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -283,7 +296,7 @@ int main() {
 	glDeleteFramebuffers(1, &shadowMapFBO);
 
 	cubeMesh.free();
-	chunkMesh.free();
+	chunkMesh1.free();
 
 	// make sure to delete the shadow map buffer
 
