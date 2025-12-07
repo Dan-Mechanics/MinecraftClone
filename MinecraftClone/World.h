@@ -6,6 +6,8 @@
 
 class World {
 public:
+	World();
+	World(const WORLD& world, const float maxViewingRange);
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera, const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	void drawForShadowMap(const Shader& shader, const Camera& camera);
 
@@ -13,9 +15,7 @@ public:
 	/// For the time being.
 	/// </summary>
 	void generateChunkMeshes(const ATLAS& atlas);
-
-	World();
-	World(const WORLD& world, const float maxViewingRange);
+	void free() const;
 
 private:
 	WORLD world{};

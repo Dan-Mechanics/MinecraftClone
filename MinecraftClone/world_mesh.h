@@ -53,4 +53,4 @@ ATLAS generateAtlas();
 /// <summary>
 /// Placeholder code.
 /// </summary>
-WORLD generateDemoWorld();
+WORLD generateDemoWorldData();

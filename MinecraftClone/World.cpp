@@ -32,13 +32,25 @@ void World::generateChunkMeshes(const ATLAS& atlas) {
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix{};
 
+	const glm::vec3 chunkPosOffset {
+		(float)CHUNK_SIZE / 2.0f,
+		(float)CHUNK_SIZE / 2.0f,
+		(float)CHUNK_SIZE / 2.0f
+	};
+
 	auto it = world.begin();
 	while (it != world.end()) {
 		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, it->second, world);
 		chunkMeshes.emplace_back(chunkVerts, chunkTris, chunkMatrix);
-		chunkPositions.emplace_back(it->first.getVec3() * (float)CHUNK_SIZE);
+		chunkPositions.emplace_back(it->first.getVec3() * (float)CHUNK_SIZE + chunkPosOffset);
+		++it;
+	}
+}
 
-		logVec3(chunkPositions[chunkPositions.size() - 1]);
+void World::free() const {
+	auto it = chunkMeshes.begin();
+	while (it != chunkMeshes.end()) {
+		it->free();
 		++it;
 	}
 }

@@ -4,6 +4,7 @@
 #include "world_mesh.h"
 #include <unordered_map>
 #include "BlockType.h"
+#include "World.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -57,13 +58,17 @@ int main() {
 
 	// ===
 
-	glm::vec4 skyColor = glm::vec4(
+	glm::vec4 sunColor = glm::vec4 { 
+		(float)255 / 255,
+		(float)255 / 255,
+		(float)255 / 255, 1.0f 
+	};
+
+	glm::vec4 skyColor = glm::vec4 {
 		(float)100 / 255,
 		(float)145 / 255,
-		(float)190 / 255,
-		1.0f);
-
-	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
+		(float)190 / 255, 1.0f 
+	};
 
 	// ===
 
@@ -88,35 +93,20 @@ int main() {
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	glm::mat4 cubeMatrix;
+
 	getCubeMesh(cubeVerts, cubeTris, cubeMatrix);
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
 	const auto atlas = generateAtlas();
-	const auto world = generateDemoWorld();
-
-	std::vector<Vertex> chunkVerts{};
-	std::vector<GLuint> chunkTris{};
-	glm::mat4 chunkMatrix;
-
-	/*generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
-	Mesh chunkMesh1{ chunkVerts, chunkTris, chunkMatrix };
-
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 1 }), world);
-	Mesh chunkMesh2{ chunkVerts, chunkTris, chunkMatrix };*/
-
-	std::vector<Mesh> chunks{};
-	auto it = world.begin();
-	while (it != world.end()) {
-		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, it->second, world);
-		chunks.emplace_back(chunkVerts, chunkTris, chunkMatrix);
-		++it;
-	}
+	const auto worldData = generateDemoWorldData();
+	World world{ worldData, 25.0f };
+	world.generateChunkMeshes(atlas);
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 0.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 0.65f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object centerLine{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f, 100.0f, 0.02f } };
@@ -135,8 +125,6 @@ int main() {
 	up.setColor(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
 	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	//Object chunk2{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 
 	// ===
 
@@ -215,19 +203,27 @@ int main() {
 
 		// ===
 
+		timer += deltaTime;
+		while (timer >= tickInterval) {
+			timer -= tickInterval;
+			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+		}
+
+		camera.hasFocus = hasFocus;
+		camera.moveCamera(window, deltaTime);
+		camera.rotateCamera(window);
+		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+
+
 		glEnable(GL_DEPTH_TEST);
 
 		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		// DRAW SCENE FOR SHADOW MAP !!
-
-		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
+		// DRAW SCENE FOR SHADOW MAP !! ===
 		
-		// HERE YOU CAN CHANGE THE RESOLUTION
-		// OF THE SHADOWS.
+		// HERE YOU CAN CHANGE THE RESOLUTION OF THE SHADOWS.
 		const auto dist = 25.0f;
 		glm::mat4 orthgonalProjection = glm::ortho(-dist, dist, -dist, dist, -dist, dist);
 		glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -240,11 +236,7 @@ int main() {
 		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		auto it2 = chunks.begin();
-		while (it2 != chunks.end()) {
-			chunk.drawAsUnlitColor(*it2, shadowMapShader, camera);
-			++it2;
-		}
+		world.drawForShadowMap(shadowMapShader, camera);
 
 		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -263,17 +255,7 @@ int main() {
 		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
 		glEnable(GL_DEPTH_TEST);
 
-		timer += deltaTime;
-		while (timer >= tickInterval) {
-			timer -= tickInterval;
-			//std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
-			//chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
-		}
-
-		camera.hasFocus = hasFocus;
-		camera.moveCamera(window, deltaTime);
-		camera.rotateCamera(window);
-		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+		// =====================
 
 		materialShader.activate();
 		glUniformMatrix4fv(glGetUniformLocation(materialShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
@@ -292,14 +274,7 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		/*chunk.drawWithMaterial(chunkMesh1, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		chunk2.drawWithMaterial(chunkMesh2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);*/
-
-		it2 = chunks.begin();
-		while (it2 != chunks.end()) {
-			chunk.drawWithMaterial(*it2, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-			++it2;
-		}
+		world.draw(atlasMaterial, materialShader, camera, sun.color, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -311,12 +286,11 @@ int main() {
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);
 
+	// make sure to delete the shadow map buffer
 	glDeleteFramebuffers(1, &shadowMapFBO);
 
 	cubeMesh.free();
-	//chunkMesh1.free();
-
-	// make sure to delete the shadow map buffer
+	world.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
