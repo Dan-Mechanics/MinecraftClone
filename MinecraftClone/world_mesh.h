@@ -13,6 +13,8 @@
 #define MAP std::vector<std::vector<glm::vec2>>
 #define ATLAS std::unordered_map<BlockType, MAP>
 
+#define CHUNK_SIZE 16
+
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
 	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world);
 
@@ -51,4 +53,4 @@ ATLAS generateAtlas();
 /// <summary>
 /// Placeholder code.
 /// </summary>
-WORLD generateDemoWorld();
+WORLD generateDemoWorldData();

@@ -4,11 +4,13 @@
 #include "world_mesh.h"
 #include <unordered_map>
 #include "BlockType.h"
+#include "World.h"
+#include "ShadowMapFBO.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 const float fpsCap = 300.0f;
-const float minDtForFrame = 1.0f / fpsCap;
+const float minDeltaForFrame = 1.0f / fpsCap;
 const float tickInterval = 0.02f;
 
 bool hasFocus = true;
@@ -57,14 +59,17 @@ int main() {
 
 	// ===
 
-	// 109, 155, 201
-	//glm::vec4 skyColor = glm::vec4((float)90 / 255, (float)86 / 255, (float)150 / 255, 1.0f);
-	glm::vec4 skyColor = glm::vec4(
+	glm::vec4 sunColor = glm::vec4 { 
+		(float)255 / 255,
+		(float)255 / 255,
+		(float)255 / 255, 1.0f 
+	};
+
+	glm::vec4 skyColor = glm::vec4 {
 		(float)100 / 255,
 		(float)145 / 255,
-		(float)190 / 255,
-		1.0f);
-	glm::vec4 sunColor = glm::vec4((float)255 / 255, (float)255 / 255, (float)255 / 255, 1.0f);
+		(float)190 / 255, 1.0f 
+	};
 
 	// ===
 
@@ -74,12 +79,12 @@ int main() {
 
 	// ===
 
-	std::vector <Texture> woodMaterial = {
+	std::vector <Texture> woodMaterial {
 		Texture("planks.png", "diffuse", 0),
 		Texture("planksSpec.png", "specular", 1)
 	};
 
-	std::vector <Texture> atlasMaterial = {
+	std::vector <Texture> atlasMaterial {
 		Texture("texture_atlas.png", "diffuse", 0),
 		Texture("texture_atlas_specular.png", "specular", 1)
 	};
@@ -89,37 +94,45 @@ int main() {
 	std::vector<Vertex> cubeVerts{};
 	std::vector<GLuint> cubeTris{};
 	glm::mat4 cubeMatrix;
+
 	getCubeMesh(cubeVerts, cubeTris, cubeMatrix);
 	Mesh cubeMesh{ cubeVerts, cubeTris, cubeMatrix };
 
 	// ===
 
 	const auto atlas = generateAtlas();
-	const auto world = generateDemoWorld();
+	const auto worldData = generateDemoWorldData();
 
-	std::vector<Vertex> chunkVerts{};
-	std::vector<GLuint> chunkTris{};
-	glm::mat4 chunkMatrix;
-
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, world.at({ 0, 0, 0 }), world);
-	Mesh chunkMesh{ chunkVerts, chunkTris, chunkMatrix };
+	World world{ worldData, 50.0f };
+	world.generateChunkMeshes(atlas);
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	sun.setColor(sunColor);
+	Object sun{};
+	sun.position(glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f);
+	sun.color(sunColor);
 
-	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f } };
-	center.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Object centerLine{};
+	centerLine.scale(glm::vec3{ 0.2f, 100.0f, 0.02f });
+	centerLine.color(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+	
+	Object center{};
+	center.scale(glm::vec3{ 0.5f });
+	center.color(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	Object forward{ glm::vec3{ 0.0f, 0.0f, 3.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	forward.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+	Object forward{};
+	forward.position(glm::vec3{ 0.0f, 0.0f, 3.0f });
+	forward.color(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Object right{};
+	right.position(glm::vec3{ 3.0f, 0.0f, 0.0f });
+	right.color(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
-	Object chunk{ glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object up{};
+	up.position(glm::vec3{ 0.0f, 3.0f, 0.0f });
+	up.color(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+	//Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 
 	// ===
 
@@ -141,42 +154,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-
-
-
-	// Framebuffer for Shadow Map
-	unsigned int shadowMapFBO;
-	glGenFramebuffers(1, &shadowMapFBO);
-
-	// Texture for Shadow Map FBO
-	unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
-	unsigned int shadowMap;
-	glGenTextures(1, &shadowMap);
-	glBindTexture(GL_TEXTURE_2D, shadowMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	
-	// Prevents darkness outside the frustrum
-	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
-	// Needed since we don't touch the color buffer
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "shadow framebuffer broken!!" << std::endl;
-		return -1;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	ShadowMapFBO shadowMap{ 2048, 2048, 30.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -186,7 +164,7 @@ int main() {
 		// SINCE WE WANT TO AVOID BUSY WAITING ...
 		// https://discourse.glfw.org/t/frame-limiting/70/4
 		// MAYBE THAT'S FINE IDK
-		if (deltaTime < minDtForFrame)
+		if (deltaTime < minDeltaForFrame)
 			continue;
 
 		previousTime = currentTime;
@@ -198,53 +176,10 @@ int main() {
 
 		// ===
 
-		glEnable(GL_DEPTH_TEST);
-
-		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		// DRAW SCENE FOR SHADOW MAP !!
-
-		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
-		
-		const auto dist = 50.0f;
-		glm::mat4 orthgonalProjection = glm::ortho(-dist, dist, -dist, dist, -dist, dist);
-		glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		// I THINK THIS IS CORRECT, I DO NOT KNOW.
-		glm::mat4 translation = glm::translate(glm::mat4{ 1.0f }, -camera.position);
-		glm::mat4 lightProjection = orthgonalProjection * lightView * translation;
-
-		shadowMapShader.activate();
-		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
-
-		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
-
-		// Switch back to the default framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		// Switch back to the default viewport
-		glViewport(0, 0, width, height);
-		// Bind the custom framebuffer
-		//glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		// Switch back to the default viewport
-		glViewport(0, 0, width, height);
-		// Specify the color of the background
-		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
-		// Clean the back buffer and depth buffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
-		glEnable(GL_DEPTH_TEST);
-
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			//std::cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << std::endl;
-			//chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -252,23 +187,31 @@ int main() {
 		camera.rotateCamera(window);
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
-		materialShader.activate();
-		glUniformMatrix4fv(glGetUniformLocation(materialShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 
-		// Bind the Shadow Map
-		glActiveTexture(GL_TEXTURE0 + 2);
-		glBindTexture(GL_TEXTURE_2D, shadowMap);
-		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
+		shadowMap.bind(camera, sun, shadowMapShader);
 
+		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		world.drawForShadowMap(shadowMapShader, camera);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, width, height);
+		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+
+		// =====================
+		
 		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-
-		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		chunk.drawWithMaterial(chunkMesh, atlasMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		shadowMap.exportToShader(materialShader);
+		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -280,12 +223,9 @@ int main() {
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);
 
-	glDeleteFramebuffers(1, &shadowMapFBO);
-
 	cubeMesh.free();
-	chunkMesh.free();
-
-	// make sure to delete the shadow map buffer
+	world.free();
+	shadowMap.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

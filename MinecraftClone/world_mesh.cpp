@@ -133,7 +133,6 @@ std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
 	translateUVs(uvs, 0.0f, -1.0f);
 	scaleUVs(uvs, scale);
 	translateUVs(uvs, x / scale, -y / scale);
-
 	// rotateUVsClockwise(uvs);
 
 	return uvs;
@@ -181,7 +180,7 @@ void setCurrentFaceUVs(std::vector<Vertex>& verts, const std::vector<glm::vec2>&
 
 BlockPos blockPosToChunkPos(const BlockPos& blockPos) {
 	// ROUNDING DOWN.
-	return { blockPos.x / 16, blockPos.y / 16, blockPos.z / 16 };
+	return { blockPos.x / CHUNK_SIZE, blockPos.y / CHUNK_SIZE, blockPos.z / CHUNK_SIZE };
 }
 
 ATLAS generateAtlas() {
@@ -209,25 +208,29 @@ ATLAS generateAtlas() {
 	return atlas;
 }
 
-WORLD generateDemoWorld() {
-	CHUNK chunk{};
-	for (int x = 0; x < 16; ++x) {
-		for (int y = 0; y < 16; ++y) {
-			for (int z = 0; z < 16; ++z) {
-				//if (randomInclusive(0, 1)) {
-				//	chunk[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-				//	// chunk[{x + 50, y, z + 50}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-				//	// chunk[{x + 50, y + 50, z + 50}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-				//}
+WORLD generateDemoWorldData() {
+	WORLD world{};
+	const int size = 3;
+	for (int i = -size; i < size; ++i) {
+		for (int j = -size; j < size; ++j) {
+			CHUNK chunk{};
 
-				if (randomInclusive(0, 1))
-					chunk[{x, y, z}] = y >= 15 ? BlockType::NYCELIUM : BlockType::DIRT;
-;			}
+			for (int x = 0; x < CHUNK_SIZE; ++x) {
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
+					for (int z = 0; z < CHUNK_SIZE; ++z) {
+						if (randomInclusive(0, 1))
+							continue;
+
+						BlockType block = y >= 15 ? BlockType::NYCELIUM : BlockType::DIRT;
+						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = block;
+						
+					}
+				}
+			}
+
+			world[{i, 0, j}] = chunk;
 		}
 	}
-
-	WORLD world{};
-	world[{0, 0, 0}] = chunk;
 
 	return world;
 }

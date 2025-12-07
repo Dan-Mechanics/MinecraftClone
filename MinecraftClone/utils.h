@@ -10,6 +10,8 @@
 /// </summary>
 int randomInclusive(const int min, const int max);
 
+void logVec3(const glm::vec3& vec);
+
 void getCubeMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix);
 void getPyramidMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix);
 void freeMaterial(const std::vector<Texture>& material);
