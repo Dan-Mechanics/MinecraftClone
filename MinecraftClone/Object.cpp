@@ -39,7 +39,7 @@ void Object::rotate(const glm::vec3& to) {
 }
 
 void Object::scale(const glm::vec3& to) {
-	pos = to;
+	sca = to;
 }
 
 void Object::color(const glm::vec4& to) {

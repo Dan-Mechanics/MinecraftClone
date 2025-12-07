@@ -124,7 +124,7 @@ int main() {
 	forward.color(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
 	Object right{};
-	forward.position(glm::vec3{ 3.0f, 0.0f, 0.0f });
+	right.position(glm::vec3{ 3.0f, 0.0f, 0.0f });
 	right.color(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
 	Object up{};
@@ -204,9 +204,8 @@ int main() {
 		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
