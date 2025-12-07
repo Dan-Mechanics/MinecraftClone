@@ -107,25 +107,31 @@ int main() {
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	sun.setColor(sunColor);
+	Object sun{};
+	sun.position(glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f);
+	sun.color(sunColor);
 
-	Object centerLine{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f, 100.0f, 0.02f } };
-	centerLine.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+	Object centerLine{};
+	centerLine.scale(glm::vec3{ 0.2f, 100.0f, 0.02f });
+	centerLine.color(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	
-	Object center{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.5f } };
-	center.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+	Object center{};
+	center.scale(glm::vec3{ 0.5f });
+	center.color(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	Object forward{ glm::vec3{ 0.0f, 0.0f, 3.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	forward.setColor(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+	Object forward{};
+	forward.position(glm::vec3{ 0.0f, 0.0f, 3.0f });
+	forward.color(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-	Object right{ glm::vec3{ 3.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	right.setColor(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	Object right{};
+	forward.position(glm::vec3{ 3.0f, 0.0f, 0.0f });
+	right.color(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-	Object up{ glm::vec3{ 0.0f, 3.0f, 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-	up.setColor(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+	Object up{};
+	up.position(glm::vec3{ 0.0f, 3.0f, 0.0f });
+	up.color(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-	Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	//Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
 
 	// ===
 
@@ -205,7 +211,7 @@ int main() {
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.exportToShader(materialShader);
-		world.draw(atlasMaterial, materialShader, camera, sun.color, sun.pos, skyColor);
+		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
