@@ -219,7 +219,9 @@ int main() {
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		//chunk.drawAsUnlitColor(chunkMesh, shadowMapShader, camera);
 		
-		const auto dist = 50.0f;
+		// HERE YOU CAN CHANGE THE RESOLUTION
+		// OF THE SHADOWS.
+		const auto dist = 25.0f;
 		glm::mat4 orthgonalProjection = glm::ortho(-dist, dist, -dist, dist, -dist, dist);
 		glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 

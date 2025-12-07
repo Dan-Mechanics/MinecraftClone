@@ -133,7 +133,6 @@ std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
 	translateUVs(uvs, 0.0f, -1.0f);
 	scaleUVs(uvs, scale);
 	translateUVs(uvs, x / scale, -y / scale);
-
 	// rotateUVsClockwise(uvs);
 
 	return uvs;
@@ -181,7 +180,7 @@ void setCurrentFaceUVs(std::vector<Vertex>& verts, const std::vector<glm::vec2>&
 
 BlockPos blockPosToChunkPos(const BlockPos& blockPos) {
 	// ROUNDING DOWN.
-	return { blockPos.x / 16, blockPos.y / 16, blockPos.z / 16 };
+	return { blockPos.x / CHUNK_SIZE, blockPos.y / CHUNK_SIZE, blockPos.z / CHUNK_SIZE };
 }
 
 ATLAS generateAtlas() {
@@ -211,9 +210,9 @@ ATLAS generateAtlas() {
 
 WORLD generateDemoWorld() {
 	CHUNK chunk1{};
-	for (int x = 0; x < 16; ++x) {
-		for (int y = 0; y < 16; ++y) {
-			for (int z = 0; z < 16; ++z) {
+	for (int x = 0; x < CHUNK_SIZE; ++x) {
+		for (int y = 0; y < CHUNK_SIZE; ++y) {
+			for (int z = 0; z < CHUNK_SIZE; ++z) {
 				if (randomInclusive(0, 1)) 
 					chunk1[{x, y, z}] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 ;			}
@@ -221,21 +220,21 @@ WORLD generateDemoWorld() {
 	}
 
 	CHUNK chunk2{};
-	for (int x = 0; x < 16; ++x) {
-		for (int y = 0; y < 16; ++y) {
-			for (int z = 0; z < 16; ++z) {
+	for (int x = 0; x < CHUNK_SIZE; ++x) {
+		for (int y = 0; y < CHUNK_SIZE; ++y) {
+			for (int z = 0; z < CHUNK_SIZE; ++z) {
 				if (randomInclusive(0, 1))
-					chunk2[{x, y, z + 16}] = static_cast<BlockType>(randomInclusive(BlockType::NYCELIUM, BlockType::SAPPHIRE));
+					chunk2[{x, y, z + CHUNK_SIZE}] = static_cast<BlockType>(randomInclusive(BlockType::NYCELIUM, BlockType::SAPPHIRE));
 			}
 		}
 	}
 
 	CHUNK chunk3{};
-	for (int x = 0; x < 16; ++x) {
-		for (int y = 0; y < 16; ++y) {
-			for (int z = 0; z < 16; ++z) {
+	for (int x = 0; x < CHUNK_SIZE; ++x) {
+		for (int y = 0; y < CHUNK_SIZE; ++y) {
+			for (int z = 0; z < CHUNK_SIZE; ++z) {
 				if (randomInclusive(0, 1))
-					chunk2[{x, y + 16, z + 16}] = BlockType::GRAVEL;
+					chunk2[{x, y + CHUNK_SIZE, z + CHUNK_SIZE}] = BlockType::GRAVEL;
 			}
 		}
 	}
