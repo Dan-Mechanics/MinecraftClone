@@ -1,10 +1,8 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const WORLD& world, const float maxViewingRange) : maxViewingRange{ maxViewingRange } {
-	this->world = world;
-	//chunkObject = { glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
-}
+World::World(const WORLD& world, const float maxViewingRange)
+	: maxViewingRange{ maxViewingRange }, world{ world } { }
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {

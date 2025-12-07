@@ -79,12 +79,12 @@ int main() {
 
 	// ===
 
-	std::vector <Texture> woodMaterial = {
+	std::vector <Texture> woodMaterial {
 		Texture("planks.png", "diffuse", 0),
 		Texture("planksSpec.png", "specular", 1)
 	};
 
-	std::vector <Texture> atlasMaterial = {
+	std::vector <Texture> atlasMaterial {
 		Texture("texture_atlas.png", "diffuse", 0),
 		Texture("texture_atlas_specular.png", "specular", 1)
 	};
@@ -102,6 +102,7 @@ int main() {
 
 	const auto atlas = generateAtlas();
 	const auto worldData = generateDemoWorldData();
+
 	World world{ worldData, 50.0f };
 	world.generateChunkMeshes(atlas);
 
@@ -153,7 +154,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 30.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();

@@ -210,8 +210,9 @@ ATLAS generateAtlas() {
 
 WORLD generateDemoWorldData() {
 	WORLD world{};
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
+	const int size = 3;
+	for (int i = -size; i < size; ++i) {
+		for (int j = -size; j < size; ++j) {
 			CHUNK chunk{};
 
 			for (int x = 0; x < CHUNK_SIZE; ++x) {
