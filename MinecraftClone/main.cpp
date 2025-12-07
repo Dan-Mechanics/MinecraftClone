@@ -167,7 +167,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 2048, 2048, 20.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
