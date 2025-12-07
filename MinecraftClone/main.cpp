@@ -138,9 +138,9 @@ int main() {
 	up.position(glm::vec3{ 0.0f, 3.0f, 0.0f });
 	up.color(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-	Object ground{};
-	ground.position(glm::vec3{ 0.0f, -3.0f, 0.0f });
-	ground.scale(glm::vec3{ 100.0f, 1.0f, 100.0f });
+	// Object ground{};
+	// ground.position(glm::vec3{ 0.0f, -3.0f, 0.0f });
+	// ground.scale(glm::vec3{ 100.0f, 1.0f, 100.0f });
 
 	// ===
 
@@ -198,7 +198,7 @@ int main() {
 
 		shadowMap.bind(camera, sun, shadowMapShader);
 
-		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		// ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		world.drawForShadowMap(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -209,8 +209,8 @@ int main() {
 
 		// ===
 		
-		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
