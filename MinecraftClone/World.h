@@ -7,7 +7,7 @@
 class World {
 public:
 	World();
-	World(const WORLD& world, const float maxViewingRange);
+	World(const WORLD_DATA& world, const float maxViewingRange);
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera, const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	void drawForShadowMap(const Shader& shader, const Camera& camera);
 
@@ -18,7 +18,7 @@ public:
 	void free() const;
 
 private:
-	WORLD world{};
+	WORLD_DATA world{};
 	std::vector<Mesh> chunkMeshes{};
 	std::vector<glm::vec3> chunkPositions{};
 	float maxViewingRange{};

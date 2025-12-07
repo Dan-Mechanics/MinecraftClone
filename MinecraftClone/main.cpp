@@ -66,10 +66,21 @@ int main() {
 	};
 
 	glm::vec4 skyColor = glm::vec4 {
+		(float)90 / 255,
+		(float)86 / 255,
+		(float)150 / 255, 1.0f
+	};
+	/*glm::vec4 skyColor = glm::vec4 {
 		(float)100 / 255,
 		(float)145 / 255,
 		(float)190 / 255, 1.0f 
-	};
+	};*/
+
+	// ===
+
+	glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glfwSwapBuffers(window);
 
 	// ===
 
@@ -109,7 +120,7 @@ int main() {
 	// ===
 
 	Object sun{};
-	sun.position(glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f);
+	sun.position(glm::vec3{ 0.5f, 0.4f, 0.5f } * 20.0f);
 	sun.color(sunColor);
 
 	Object centerLine{};
@@ -132,7 +143,9 @@ int main() {
 	up.position(glm::vec3{ 0.0f, 3.0f, 0.0f });
 	up.color(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-	//Object ground{ glm::vec3{0.0f, -3.0f, 0.0f}, glm::vec3{0.0f}, glm::vec3{100.0f, 1.0f, 100.0f} };
+	// Object ground{};
+	// ground.position(glm::vec3{ 0.0f, -3.0f, 0.0f });
+	// ground.scale(glm::vec3{ 100.0f, 1.0f, 100.0f });
 
 	// ===
 
@@ -154,7 +167,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 2048, 2048, 30.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -190,7 +203,7 @@ int main() {
 
 		shadowMap.bind(camera, sun, shadowMapShader);
 
-		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		// ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		world.drawForShadowMap(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -199,10 +212,10 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		// =====================
+		// ===
 		
-		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);

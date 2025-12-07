@@ -1,7 +1,7 @@
 #include "world_mesh.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world) {
+	const ATLAS& atlas, const CHUNK& chunk, const WORLD_DATA& world) {
 	verts.clear();
 	tris.clear();
 
@@ -110,7 +110,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 	modelMatrix = glm::mat4{ 1.0f };
 }
 
-bool has(const BlockPos& blockPos, const WORLD& world) {
+bool has(const BlockPos& blockPos, const WORLD_DATA& world) {
 	BlockPos chunkPos = blockPosToChunkPos(blockPos);
 	if (!world.contains(chunkPos))
 		return false;
@@ -208,9 +208,9 @@ ATLAS generateAtlas() {
 	return atlas;
 }
 
-WORLD generateDemoWorldData() {
-	WORLD world{};
-	const int size = 3;
+WORLD_DATA generateDemoWorldData() {
+	WORLD_DATA world{};
+	const int size = 2;
 	for (int i = -size; i < size; ++i) {
 		for (int j = -size; j < size; ++j) {
 			CHUNK chunk{};
@@ -218,12 +218,10 @@ WORLD generateDemoWorldData() {
 			for (int x = 0; x < CHUNK_SIZE; ++x) {
 				for (int y = 0; y < CHUNK_SIZE; ++y) {
 					for (int z = 0; z < CHUNK_SIZE; ++z) {
-						if (randomInclusive(0, 1))
+						if (randomInclusive(0, 2))
 							continue;
 
-						BlockType block = y >= 15 ? BlockType::NYCELIUM : BlockType::DIRT;
-						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = block;
-						
+						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
 					}
 				}
 			}

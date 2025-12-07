@@ -153,7 +153,7 @@
     <ClCompile Include="World.cpp" />
     <ClCompile Include="world_mesh.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ebo.cpp" />
+    <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -161,8 +161,8 @@
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="utils.cpp" />
-    <ClCompile Include="vao.cpp" />
-    <ClCompile Include="vbo.cpp" />
+    <ClCompile Include="VAO.cpp" />
+    <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
@@ -181,13 +181,13 @@
     <ClInclude Include="World.h" />
     <ClInclude Include="world_mesh.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="ebo.h" />
+    <ClInclude Include="EBO.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="utils.h" />
-    <ClInclude Include="vao.h" />
-    <ClInclude Include="vbo.h" />
+    <ClInclude Include="VAO.h" />
+    <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="planks.png" />

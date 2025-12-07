@@ -1,7 +1,7 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const WORLD& world, const float maxViewingRange)
+World::World(const WORLD_DATA& world, const float maxViewingRange)
 	: maxViewingRange{ maxViewingRange }, world{ world } { }
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
