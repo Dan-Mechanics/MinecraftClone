@@ -8,7 +8,7 @@
 #include "utils.h"
 
 #define CHUNK std::unordered_map<BlockPos, BlockType>
-#define WORLD std::unordered_map<BlockPos, CHUNK>
+#define WORLD_DATA std::unordered_map<BlockPos, CHUNK>
 
 #define MAP std::vector<std::vector<glm::vec2>>
 #define ATLAS std::unordered_map<BlockType, MAP>
@@ -16,9 +16,9 @@
 #define CHUNK_SIZE 16
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world);
+	const ATLAS& atlas, const CHUNK& chunk, const WORLD_DATA& world);
 
-bool has(const BlockPos& blockPos, const WORLD& world);
+bool has(const BlockPos& blockPos, const WORLD_DATA& world);
 
 /// <summary>
 /// This UV code is a little strange but it works.
@@ -53,4 +53,4 @@ ATLAS generateAtlas();
 /// <summary>
 /// Placeholder code.
 /// </summary>
-WORLD generateDemoWorldData();
+WORLD_DATA generateDemoWorldData();

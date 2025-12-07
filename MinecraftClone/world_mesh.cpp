@@ -1,7 +1,7 @@
 #include "world_mesh.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK& chunk, const WORLD& world) {
+	const ATLAS& atlas, const CHUNK& chunk, const WORLD_DATA& world) {
 	verts.clear();
 	tris.clear();
 
@@ -110,7 +110,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 	modelMatrix = glm::mat4{ 1.0f };
 }
 
-bool has(const BlockPos& blockPos, const WORLD& world) {
+bool has(const BlockPos& blockPos, const WORLD_DATA& world) {
 	BlockPos chunkPos = blockPosToChunkPos(blockPos);
 	if (!world.contains(chunkPos))
 		return false;
@@ -208,8 +208,8 @@ ATLAS generateAtlas() {
 	return atlas;
 }
 
-WORLD generateDemoWorldData() {
-	WORLD world{};
+WORLD_DATA generateDemoWorldData() {
+	WORLD_DATA world{};
 	const int size = 3;
 	for (int i = -size; i < size; ++i) {
 		for (int j = -size; j < size; ++j) {
