@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "BlockType.h"
 #include "World.h"
+#include "ShadowMapFBO.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -101,12 +102,12 @@ int main() {
 
 	const auto atlas = generateAtlas();
 	const auto worldData = generateDemoWorldData();
-	World world{ worldData, 25.0f };
+	World world{ worldData, 50.0f };
 	world.generateChunkMeshes(atlas);
 
 	// ===
 
-	Object sun{ glm::vec3{ 0.5f, 0.65f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
+	Object sun{ glm::vec3{ 0.5f, 1.5f, 0.5f } * 20.0f, glm::vec3{ 0.0f }, glm::vec3{ 1.0f } };
 	sun.setColor(sunColor);
 
 	Object centerLine{ glm::vec3{ 0.0f }, glm::vec3{ 0.0f }, glm::vec3{ 0.2f, 100.0f, 0.02f } };
@@ -146,42 +147,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-
-
-
-	// Framebuffer for Shadow Map
-	unsigned int shadowMapFBO;
-	glGenFramebuffers(1, &shadowMapFBO);
-
-	// Texture for Shadow Map FBO
-	unsigned int shadowMapWidth = 2048, shadowMapHeight = 2048;
-	unsigned int shadowMap;
-	glGenTextures(1, &shadowMap);
-	glBindTexture(GL_TEXTURE_2D, shadowMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	
-	// Prevents darkness outside the frustrum
-	float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
-	// Needed since we don't touch the color buffer
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "shadow framebuffer broken!!" << std::endl;
-		return -1;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -215,65 +181,31 @@ int main() {
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
 
-		glEnable(GL_DEPTH_TEST);
-
-		glViewport(0, 0, shadowMapWidth, shadowMapHeight);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		// DRAW SCENE FOR SHADOW MAP !! ===
-		
-		// HERE YOU CAN CHANGE THE RESOLUTION OF THE SHADOWS.
-		const auto dist = 25.0f;
-		glm::mat4 orthgonalProjection = glm::ortho(-dist, dist, -dist, dist, -dist, dist);
-		glm::mat4 lightView = glm::lookAt(glm::normalize(sun.pos), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		// I THINK THIS IS CORRECT, I DO NOT KNOW.
-		glm::mat4 translation = glm::translate(glm::mat4{ 1.0f }, -camera.position);
-		glm::mat4 lightProjection = orthgonalProjection * lightView * translation;
-
-		shadowMapShader.activate();
-		glUniformMatrix4fv(glGetUniformLocation(shadowMapShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
+		shadowMap.bind(camera, sun, shadowMapShader);
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		world.drawForShadowMap(shadowMapShader, camera);
 
-		// Switch back to the default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		// Switch back to the default viewport
 		glViewport(0, 0, width, height);
-		// Bind the custom framebuffer
-		//glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		// Switch back to the default viewport
-		glViewport(0, 0, width, height);
-		// Specify the color of the background
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
-		// Clean the back buffer and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Enable depth testing since it's disabled when drawing the framebuffer rectangle
 		glEnable(GL_DEPTH_TEST);
 
 		// =====================
-
-		materialShader.activate();
-		glUniformMatrix4fv(glGetUniformLocation(materialShader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
-
-		// Bind the Shadow Map
-		glActiveTexture(GL_TEXTURE0 + 2);
-		glBindTexture(GL_TEXTURE_2D, shadowMap);
-		glUniform1i(glGetUniformLocation(materialShader.id, "shadowMap"), 2);
+		
 
 		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		//sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+
 		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
+		shadowMap.exportToShader(materialShader);
 		world.draw(atlasMaterial, materialShader, camera, sun.color, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
@@ -286,11 +218,9 @@ int main() {
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);
 
-	// make sure to delete the shadow map buffer
-	glDeleteFramebuffers(1, &shadowMapFBO);
-
 	cubeMesh.free();
 	world.free();
+	shadowMap.free();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
