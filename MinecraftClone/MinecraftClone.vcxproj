@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="BlockPos.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="world_mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ebo.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="BlockType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Direction.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="world_mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ebo.h" />

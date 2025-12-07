@@ -4,6 +4,10 @@ int randomInclusive(const int min, const int max) {
 	return rand() % (max - min + 1) + min;
 }
 
+void logVec3(const glm::vec3& vec) {
+	std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
+}
+
 void getCubeMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix) {
 	verts.clear();
 	tris.clear();
