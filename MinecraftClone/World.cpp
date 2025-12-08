@@ -1,16 +1,16 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const WORLD_DATA& worldData, const float maxViewingRange)
-	: maxViewingRange{ maxViewingRange }, worldData{ worldData } {
-}
+World::World(const float maxViewingRange) : maxViewingRange{ maxViewingRange }, worldData{} {}
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	auto it = chunkMeshes.begin();
 	while (it != chunkMeshes.end()) {
-		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange)
+		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange) {
+			++it;
 			continue;
+		}
 
 		// CHUNK IS VISIBLE.
 		chunkObject.drawWithMaterial(it->second, material, shader, camera, lightColor, lightPos, worldColor);
@@ -21,11 +21,31 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 void World::drawForShadowMap(const Shader& shader, const Camera& camera) {
 	auto it = chunkMeshes.begin();
 	while (it != chunkMeshes.end()) {
-		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange)
+		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange) {
+			++it;
 			continue;
+		}
 
 		chunkObject.drawAsUnlitColor(it->second, shader, camera);
 		++it;
+	}
+}
+
+void World::fill() {
+	const int size = 2;
+	for (int i = -size; i < size; ++i) {
+		for (int j = -size; j < size; ++j) {
+			for (int x = 0; x < CHUNK_SIZE; ++x) {
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
+					for (int z = 0; z < CHUNK_SIZE; ++z) {
+						if (randomInclusive(0, 2))
+							continue;
+
+						add({x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}, y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -66,6 +86,16 @@ void World::flush(const ATLAS& atlas) {
 	}
 
 	changedChunkPositions.clear();
+}
+
+void World::clear() {
+	auto it = worldData.begin();
+	while (it != worldData.end()) {
+		changedChunkPositions.insert(it->first);
+		++it;
+	}
+
+	worldData.clear();
 }
 
 void World::free() const {

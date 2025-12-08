@@ -112,10 +112,9 @@ int main() {
 	// ===
 
 	const auto atlas = generateAtlas();
-	const auto worldData = generateDemoWorldData();
-
-	World world{ worldData, 50.0f };
-	world.generateChunkMeshes(atlas);
+	World world{ 50.0f };
+	world.fill();
+	world.flush(atlas);
 
 	// ===
 

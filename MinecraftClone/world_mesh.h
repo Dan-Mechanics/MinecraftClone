@@ -47,10 +47,7 @@ void setEquatorUVs(MAP& map, const std::vector<glm::vec2>& to);
 void setPoleUVs(MAP& map, const std::vector<glm::vec2>& to);
 
 MAP generateUniformMap(const std::vector<glm::vec2>& to);
-MAP generateFillerMap();
+MAP generateEmptyMap();
 ATLAS generateAtlas();
 
-/// <summary>
-/// Placeholder code.
-/// </summary>
-WORLD_DATA generateDemoWorldData();
+bool isChunkValid(const BlockPos& chunkPos, const WORLD_DATA& worldData);

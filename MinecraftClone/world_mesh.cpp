@@ -187,13 +187,13 @@ ATLAS generateAtlas() {
 	ATLAS atlas{};
 
 	// NYCELIUM. ===
-	atlas[BlockType::NYCELIUM] = generateFillerMap();
+	atlas[BlockType::NYCELIUM] = generateEmptyMap();
 	setEquatorUVs(atlas[BlockType::NYCELIUM], tilePositionToUVs(0, 0));
 	atlas[BlockType::NYCELIUM][Direction::UP] = tilePositionToUVs(0, 3);
 	atlas[BlockType::NYCELIUM][Direction::DOWN] = tilePositionToUVs(0, 1);
 
 	// DYCELIUM. ==
-	atlas[BlockType::DYCELIUM] = generateFillerMap();
+	atlas[BlockType::DYCELIUM] = generateEmptyMap();
 	setEquatorUVs(atlas[BlockType::DYCELIUM], tilePositionToUVs(1, 0));
 	atlas[BlockType::DYCELIUM][Direction::UP] = tilePositionToUVs(1, 3);
 	atlas[BlockType::DYCELIUM][Direction::DOWN] = tilePositionToUVs(1, 1);
@@ -208,30 +208,30 @@ ATLAS generateAtlas() {
 	return atlas;
 }
 
-WORLD_DATA generateDemoWorldData() {
-	WORLD_DATA world{};
-	const int size = 2;
-	for (int i = -size; i < size; ++i) {
-		for (int j = -size; j < size; ++j) {
-			CHUNK chunk{};
-
-			for (int x = 0; x < CHUNK_SIZE; ++x) {
-				for (int y = 0; y < CHUNK_SIZE; ++y) {
-					for (int z = 0; z < CHUNK_SIZE; ++z) {
-						if (randomInclusive(0, 2))
-							continue;
-
-						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
-					}
-				}
-			}
-
-			world[{i, 0, j}] = chunk;
-		}
-	}
-
-	return world;
-}
+//WORLD_DATA generateDemoWorldData() {
+//	WORLD_DATA world{};
+//	const int size = 2;
+//	for (int i = -size; i < size; ++i) {
+//		for (int j = -size; j < size; ++j) {
+//			CHUNK chunk{};
+//
+//			for (int x = 0; x < CHUNK_SIZE; ++x) {
+//				for (int y = 0; y < CHUNK_SIZE; ++y) {
+//					for (int z = 0; z < CHUNK_SIZE; ++z) {
+//						if (randomInclusive(0, 2))
+//							continue;
+//
+//						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
+//					}
+//				}
+//			}
+//
+//			world[{i, 0, j}] = chunk;
+//		}
+//	}
+//
+//	return world;
+//}
 
 void setEquatorUVs(MAP& map, const std::vector<glm::vec2>& to) {
 	map[Direction::FORWARD] = to;
@@ -254,11 +254,16 @@ MAP generateUniformMap(const std::vector<glm::vec2>& to) {
 	return map;
 }
 
-MAP generateFillerMap() {
+MAP generateEmptyMap() {
 	MAP map{};
 	for (int i = 0; i < 6; ++i) {
 		map.emplace_back();
 	}
 
 	return map;
+}
+
+bool isChunkValid(const BlockPos& chunkPos, const WORLD_DATA& worldData) {
+	return worldData.contains(chunkPos) &&
+		worldData.at(chunkPos).begin() != worldData.at(chunkPos).end();
 }
