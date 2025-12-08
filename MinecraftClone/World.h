@@ -5,8 +5,8 @@
 #include <queue>
 #include "world_mesh.h"
 
-#define CHUNK std::unordered_map<BlockPos, BlockType>
-#define WORLD_DATA std::unordered_map<BlockPos, CHUNK>
+#define CHUNK_DATA std::unordered_map<BlockPos, BlockType>
+#define WORLD_DATA std::unordered_map<BlockPos, CHUNK_DATA>
 
 #define MAP std::vector<std::vector<glm::vec2>>
 #define ATLAS std::unordered_map<BlockType, MAP>
@@ -33,7 +33,7 @@ private:
 	std::unordered_set<BlockPos> changedChunkPositions{};
 	std::unordered_map<BlockPos, Mesh> chunkMeshes{};
 	float maxViewingRange{};
-	WORLD_DATA worldData{};
+	WORLD_DATA* worldData{};
 	Object chunkObject{};
 
 	const BlockPos up = { 0, 1, 0 };

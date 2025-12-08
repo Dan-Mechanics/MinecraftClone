@@ -7,8 +7,8 @@
 #include "Direction.h"
 #include "utils.h"
 
-#define CHUNK std::unordered_map<BlockPos, BlockType>
-#define WORLD_DATA std::unordered_map<BlockPos, CHUNK>
+#define CHUNK_DATA std::unordered_map<BlockPos, BlockType>
+#define WORLD_DATA std::unordered_map<BlockPos, CHUNK_DATA>
 
 #define MAP std::vector<std::vector<glm::vec2>>
 #define ATLAS std::unordered_map<BlockType, MAP>
@@ -16,7 +16,7 @@
 #define CHUNK_SIZE 16
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK& chunk, const WORLD_DATA& world);
+	const ATLAS& atlas, const CHUNK_DATA& chunk, const WORLD_DATA& world);
 
 bool has(const BlockPos& blockPos, const WORLD_DATA& world);
 

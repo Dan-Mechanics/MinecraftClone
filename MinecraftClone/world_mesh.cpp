@@ -1,7 +1,7 @@
 #include "world_mesh.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK& chunk, const WORLD_DATA& world) {
+	const ATLAS& atlas, const CHUNK_DATA& chunk, const WORLD_DATA& world) {
 	verts.clear();
 	tris.clear();
 
@@ -207,31 +207,6 @@ ATLAS generateAtlas() {
 
 	return atlas;
 }
-
-//WORLD_DATA generateDemoWorldData() {
-//	WORLD_DATA world{};
-//	const int size = 2;
-//	for (int i = -size; i < size; ++i) {
-//		for (int j = -size; j < size; ++j) {
-//			CHUNK chunk{};
-//
-//			for (int x = 0; x < CHUNK_SIZE; ++x) {
-//				for (int y = 0; y < CHUNK_SIZE; ++y) {
-//					for (int z = 0; z < CHUNK_SIZE; ++z) {
-//						if (randomInclusive(0, 2))
-//							continue;
-//
-//						chunk[{x + i * CHUNK_SIZE, y, z + j * CHUNK_SIZE}] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
-//					}
-//				}
-//			}
-//
-//			world[{i, 0, j}] = chunk;
-//		}
-//	}
-//
-//	return world;
-//}
 
 void setEquatorUVs(MAP& map, const std::vector<glm::vec2>& to) {
 	map[Direction::FORWARD] = to;
