@@ -1,21 +1,31 @@
 #include "Chunk.h"
 
-Chunk::Chunk(const BlockPos& chunkPos) {
-	// HERE WE WANT TO GENERATE A NEW CHUNK DATA MEME
-	// FUTURE: USE PERLIN THAT IS CONSISTENT.
-
-	// THE GAG IS THAT WE LOAD AND UNLOAD CHUNKS INTO RAM
-	// DYNAMICALLY BASED ON RENDER DISTANCE ISH.
+Chunk::Chunk(const BlockPos& chunkPos) : chunkPos{ chunkPos } {
+	// GENERATE DATA.
+	// RELOAD MESH.
 }
 
 Chunk::~Chunk() {
 	mesh.free();
 }
 
-void Chunk::draw() const {
-	//mesh.draw
+void Chunk::drawForShadowMap(Object& chunkObject, const Shader& shader, const Camera& camera) const {
+	chunkObject.drawAsUnlitColor(mesh, shader, camera);
 }
 
-void Chunk::reloadMesh() {
+void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
+	const Shader& shader, const Camera& camera, const glm::vec4& lightColor,
+	const glm::vec3& lightPos, const glm::vec4& worldColor) const {
+	chunkObject.drawWithMaterial(mesh, material, shader, camera, lightColor, lightPos, worldColor);
+}
 
+void Chunk::reloadMesh(const ATLAS& atlas, const std::unordered_map<BlockPos, Chunk*>& chunks) {
+	mesh.free();
+	
+	std::vector<Vertex> chunkVerts{};
+	std::vector<GLuint> chunkTris{};
+	glm::mat4 chunkMatrix{};
+
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, this, chunks);
+	mesh = { chunkVerts, chunkTris, chunkMatrix };
 }

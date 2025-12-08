@@ -6,19 +6,16 @@
 #include "BlockType.h"
 #include "Direction.h"
 #include "utils.h"
+#include "Chunk.h"
 
-#define CHUNK_DATA std::unordered_map<BlockPos, BlockType>
-#define WORLD_DATA std::unordered_map<BlockPos, CHUNK_DATA>
-
+#define CHUNK_SIZE 16
 #define MAP std::vector<std::vector<glm::vec2>>
 #define ATLAS std::unordered_map<BlockType, MAP>
 
-#define CHUNK_SIZE 16
-
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK_DATA& chunk, const WORLD_DATA& world);
+	const ATLAS& atlas, const Chunk* chunk, const std::unordered_map<BlockPos, Chunk*>& chunks);
 
-bool has(const BlockPos& blockPos, const WORLD_DATA& world);
+bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos, Chunk*>& chunks);
 
 /// <summary>
 /// This UV code is a little strange but it works.
@@ -50,4 +47,4 @@ MAP generateUniformMap(const std::vector<glm::vec2>& to);
 MAP generateEmptyMap();
 ATLAS generateAtlas();
 
-bool isChunkValid(const BlockPos& chunkPos, const WORLD_DATA& worldData);
+bool isChunkValid(const BlockPos& chunkPos, const std::unordered_map<BlockPos, Chunk*>& chunks);

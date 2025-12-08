@@ -1,7 +1,7 @@
 #include "world_mesh.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const ATLAS& atlas, const CHUNK_DATA& chunk, const WORLD_DATA& world) {
+	const ATLAS& atlas, const Chunk* chunk, const std::unordered_map<BlockPos, Chunk*>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -17,19 +17,19 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 	const auto low = 0.0f;
 	const auto high = 1.0f;
 
-	auto current = chunk.begin();
-	while (current != chunk.end()) {
+	auto it = chunk->data.begin();
+	while (it != chunk->data.end()) {
 		const int blockStartVertIndex = verts.size();
 		auto faceCount = 0;
 
-		const BlockPos blockPos = current->first;
-		const BlockType blockType = current->second;
+		const BlockPos blockPos = it->first;
+		const BlockType blockType = it->second;
 		glm::vec3 pos = blockPos.getVec3();
 		pos.x = -pos.x - 1.0f;
 		pos.z = -pos.z - 1.0f;
 
 		// UP. ===
-		if (!has(blockPos + up, world)) {
+		if (!has(blockPos + up, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 1.0f, 0.0f });
@@ -40,7 +40,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// DOWN. ===
-		if (!has(blockPos + down, world)) {
+		if (!has(blockPos + down, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 0.0f, -1.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, -1.0f, 0.0f });
@@ -51,7 +51,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// FORWARD. ===
-		if (!has(blockPos + back, world)) {
+		if (!has(blockPos + back, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
@@ -62,7 +62,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// RIGHT. ===
-		if (!has(blockPos + left, world)) {
+		if (!has(blockPos + left, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
@@ -73,7 +73,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// BACK. ===
-		if (!has(blockPos + forward, world)) {
+		if (!has(blockPos + forward, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
@@ -84,7 +84,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// LEFT. ===
-		if (!has(blockPos + right, world)) {
+		if (!has(blockPos + right, chunks)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });
@@ -104,18 +104,18 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 			tris.push_back(blockStartVertIndex + i * 4 + 3);
 		}
 
-		++current;
+		++it;
 	}
 
 	modelMatrix = glm::mat4{ 1.0f };
 }
 
-bool has(const BlockPos& blockPos, const WORLD_DATA& world) {
+bool has(const BlockPos& blockPos, const std::unordered_map<BlockPos, Chunk*>& chunks) {
 	BlockPos chunkPos = blockPosToChunkPos(blockPos);
-	if (!world.contains(chunkPos))
+	if (!chunks.contains(chunkPos))
 		return false;
 
-	return world.at(chunkPos).contains(blockPos);
+	return chunks.at(chunkPos)->data.contains(blockPos);
 }
 
 std::vector<glm::vec2> tilePositionToUVs(const int x, const int y) {
@@ -238,7 +238,7 @@ MAP generateEmptyMap() {
 	return map;
 }
 
-bool isChunkValid(const BlockPos& chunkPos, const WORLD_DATA& worldData) {
-	return worldData.contains(chunkPos) &&
-		worldData.at(chunkPos).begin() != worldData.at(chunkPos).end();
+bool isChunkValid(const BlockPos& chunkPos, const std::unordered_map<BlockPos, Chunk*>& chunks) {
+	return chunks.contains(chunkPos) &&
+		chunks.at(chunkPos)->data.begin() != chunks.at(chunkPos)->data.end();
 }
