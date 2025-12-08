@@ -145,3 +145,8 @@ void freeMaterial(const std::vector<Texture>& material) {
 		++it;
 	}
 }
+
+bool isChunkValid(const BlockPos& chunkPos, const WORLD_DATA& worldData) {
+	return worldData.contains(chunkPos) &&
+		worldData.at(chunkPos).begin() != worldData.at(chunkPos).end();
+}
