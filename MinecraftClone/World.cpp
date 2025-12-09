@@ -1,9 +1,7 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const float maxViewingRange) : maxViewingRange{ maxViewingRange } {
-	worldData = new WORLD_DATA{};
-}
+World::World(const float maxViewingRange) : maxViewingRange{ maxViewingRange } { }
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
@@ -53,8 +51,8 @@ void World::tick() {
 
 void World::add(const BlockPos& blockPos, const BlockType& blockType) {
 	BlockPos chunkPos = blockPosToChunkPos(blockPos);
-	if (!worldData->contains(chunkPos))
-		(*worldData)[chunkPos] = {};
+	if (!chunks.contains(chunkPos))
+		return;
 
 	// WE ALREADY HAVE THAT BLOCK.
 	if ((*worldData)[chunkPos].contains(blockPos))

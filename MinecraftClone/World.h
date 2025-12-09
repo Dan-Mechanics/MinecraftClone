@@ -26,11 +26,9 @@ public:
 	void free() const;
 
 private:
-	std::unordered_map<BlockPos, glm::vec3> chunkCenters{};
 	std::unordered_set<BlockPos> changedChunkPositions{};
-	std::unordered_map<BlockPos, Mesh> chunkMeshes{};
+	std::unordered_map<BlockPos, Chunk*> chunks{};
 	float maxViewingRange{};
-	WORLD_DATA* worldData{};
 	Object chunkObject{};
 
 	const BlockPos up = { 0, 1, 0 };

@@ -31,6 +31,7 @@ namespace std {
 		//	return c1 ^ (h3 << 1); // OR USE BOOST::HASH_COMBINE.
 		//}
 
+		// FIX !!
 		std::size_t operator()(BlockPos blockPos) const {
 			std::size_t seed = 3;
 
