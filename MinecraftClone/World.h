@@ -8,6 +8,8 @@
 
 class World {
 public:
+	std::unordered_map<glm::ivec3, Chunk*> chunks{};
+
 	World();
 	World(const unsigned int chunkSize, const float maxViewingRange);
 
@@ -26,7 +28,6 @@ public:
 
 private:
 	std::unordered_set<glm::ivec3> changedChunkPositions{};
-	std::unordered_map<glm::ivec3, Chunk*> chunks{};
 	unsigned int chunkSize{};
 	float maxViewingRange{};
 	Object chunkObject{};

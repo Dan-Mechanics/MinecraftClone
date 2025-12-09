@@ -53,7 +53,7 @@ void World::flush(const Atlas& atlas) {
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
 		if (chunks.contains(chunkPos))
-			chunks[chunkPos]->generateMesh(atlas, chunks);
+			chunks[chunkPos]->generateMesh(atlas, *this);
 
 		++it;
 	}

@@ -1,11 +1,12 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
-#include "world_mesh.h"
+#include "world_mesh_utils.h"
 #include <unordered_map>
 #include "BlockType.h"
 #include "World.h"
 #include "ShadowMapFBO.h"
+#include "mesh_utils.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -70,11 +71,6 @@ int main() {
 		(float)86 / 255,
 		(float)150 / 255, 1.0f
 	};
-	/*glm::vec4 skyColor = glm::vec4 {
-		(float)100 / 255,
-		(float)145 / 255,
-		(float)190 / 255, 1.0f 
-	};*/
 
 	// ===
 
@@ -111,12 +107,8 @@ int main() {
 
 	// ===
 
-	//std::unordered_set<glm::ivec3, BlockType> set;
-
 	const auto atlas = generateAtlas();
-	World world{ 50.0f };
-	world.fill();
-	world.flush(atlas);
+	World world{ 16, 50.0f };
 
 	// ===
 
@@ -168,7 +160,6 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	//ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 	ShadowMapFBO shadowMap{ 1024, 1024, 50.0f };
 
 	while (!glfwWindowShouldClose(window)) {
