@@ -1,7 +1,7 @@
 #include "world_mesh_utils.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const Atlas& atlas, const Chunk* chunk, const std::unordered_map<glm::ivec3, Chunk*>& chunks) {
+	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -10,8 +10,8 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 	const auto low = 0.0f;
 	const auto high = 1.0f;
 
-	auto it = chunk->blocks.begin();
-	while (it != chunk->blocks.end()) {
+	auto it = chunk.blocks.begin();
+	while (it != chunk.blocks.end()) {
 		const int startingVertIndex = verts.size();
 		auto faceCount = 0;
 

@@ -6,45 +6,31 @@
 #include "world_mesh_utils.h"
 #include <unordered_set>
 
-#define CHUNK_SIZE 16
-#define MAP std::vector<std::vector<glm::vec2>>
-#define ATLAS std::unordered_map<BlockType, MAP>
-
 class World {
 public:
 	World();
-	World(const float maxViewingRange);
+	World(const unsigned int chunkSize, const float maxViewingRange);
 
-	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera, const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
-	void drawForShadowMap(const Shader& shader, const Camera& camera);
+	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
+
+	void drawShadows(const Shader& shader, const Camera& camera);
+	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
+		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	
-	void fill();
 	void tick();
-	void add(const BlockPos & blockPos, const BlockType & blockType);
-	void remove(const BlockPos & blockPos);
-	void flush(const ATLAS& atlas);
-	void clear();
+	void add(const glm::ivec3& blockPos, const BlockType& blockType);
+	void remove(const glm::ivec3& blockPos);
+	void flush(const Atlas& atlas);
+	void removeAll();
 	void free() const;
 
 private:
 	std::unordered_set<glm::ivec3> changedChunkPositions{};
-	std::unordered_map<BlockPos, Chunk*> chunks{};
+	std::unordered_map<glm::ivec3, Chunk*> chunks{};
+	unsigned int chunkSize{};
 	float maxViewingRange{};
 	Object chunkObject{};
 
-	const BlockPos up = { 0, 1, 0 };
-	const BlockPos down = { 0, -1, 0 };
-	const BlockPos left = { -1, 0, 0 };
-	const BlockPos right = { 1, 0, 0 };
-	const BlockPos forward = { 0, 0, 1 };
-	const BlockPos back = { 0, 0, -1 };
-	const glm::vec3 chunkPosOffset{
-		(float)CHUNK_SIZE / 2.0f,
-		(float)CHUNK_SIZE / 2.0f,
-		(float)CHUNK_SIZE / 2.0f
-	};
-
-	void notifyChunkChange(const BlockPos& chunkPos);
-	void updateChunkMesh(const BlockPos& chunkPos, const ATLAS& atlas);
+	void notifyChunkChange(const glm::ivec3& chunkPos);
 
 };

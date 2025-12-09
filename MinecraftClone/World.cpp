@@ -1,47 +1,28 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const float maxViewingRange) : maxViewingRange{ maxViewingRange } { }
+World::World(const unsigned int chunkSize, const float maxViewingRange) 
+	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { }
+
+void World::drawShadows(const Shader& shader, const Camera& camera) {
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
+		it->second->drawShadows(chunkObject, shader, camera);
+		++it;
+	}
+}
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
-	auto it = chunkMeshes.begin();
-	while (it != chunkMeshes.end()) {
-		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange) {
-			++it;
-			continue;
-		}
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
+		it->second->draw(chunkObject, material, shader,
+			camera, lightColor, lightPos, worldColor);
 
-		// CHUNK IS VISIBLE.
-		chunkObject.drawWithMaterial(it->second, material, shader, camera, lightColor, lightPos, worldColor);
 		++it;
 	}
 }
 
-void World::drawForShadowMap(const Shader& shader, const Camera& camera) {
-	auto it = chunkMeshes.begin();
-	while (it != chunkMeshes.end()) {
-		if (glm::length(camera.position - chunkCenters[it->first]) > maxViewingRange) {
-			++it;
-			continue;
-		}
-
-		chunkObject.drawAsUnlitColor(it->second, shader, camera);
-		++it;
-	}
-}
-
-void World::fill() {
-	const int blockExtent = 25;
-	for (int x = -blockExtent; x <= blockExtent; ++x) {
-		for (int z = -blockExtent; z <= blockExtent; ++z) {
-			for (int y = -CHUNK_SIZE; y <= -1; ++y) {
-				if (randomInclusive(0, 10) == 0)
-					add({ x, y, z }, y >= -2 ? BlockType::NYCELIUM : BlockType::DIRT);
-			}
-		}
-	}
-}
 
 void World::tick() {
 	// look around the player and see which chunks need to be loaded/ unloaded.
@@ -49,64 +30,57 @@ void World::tick() {
 
 }
 
-void World::add(const BlockPos& blockPos, const BlockType& blockType) {
-	BlockPos chunkPos = blockPosToChunkPos(blockPos);
-	if (!chunks.contains(chunkPos))
+void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
+	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	if (chunks.contains(chunkPos) && chunks[chunkPos]->blocks.contains(blockPos))
 		return;
-
-	// WE ALREADY HAVE THAT BLOCK.
-	if ((*worldData)[chunkPos].contains(blockPos))
-		return;
-
-	(*worldData)[chunkPos][blockPos] = blockType;
+	
+	chunks[chunkPos]->blocks[blockPos] = blockType;
 	notifyChunkChange(chunkPos);
 }
 
-void World::remove(const BlockPos& blockPos) {
-	BlockPos chunkPos = blockPosToChunkPos(blockPos);
-	if (!worldData->contains(chunkPos))
+void World::remove(const glm::ivec3& blockPos) {
+	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	if (!chunks.contains(chunkPos) || !chunks[chunkPos]->blocks.contains(blockPos))
 		return;
 
-	if (!(*worldData)[chunkPos].contains(blockPos))
-		return;
-
-	(*worldData)[chunkPos].erase(blockPos);
+	chunks[chunkPos]->blocks.erase(blockPos);
 	notifyChunkChange(chunkPos);
 }
 
-void World::flush(const ATLAS& atlas) {
+void World::flush(const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
-		const BlockPos chunkPos = *it;
-		if (!isChunkValid(chunkPos, *worldData)) 
-			worldData->erase(chunkPos);
+		const glm::ivec3 chunkPos = *it;
+		if (chunks.contains(chunkPos))
+			chunks[chunkPos]->generateMesh(atlas, chunks);
 
-		updateChunkMesh(chunkPos, atlas);
 		++it;
 	}
 
 	changedChunkPositions.clear();
 }
 
-void World::clear() {
-	auto it = worldData->begin();
-	while (it != worldData->end()) {
+void World::removeAll() {
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
 		changedChunkPositions.insert(it->first);
+		it->second->blocks.clear();
 		++it;
 	}
-
-	worldData->clear();
 }
 
 void World::free() const {
-	auto it = chunkMeshes.begin();
-	while (it != chunkMeshes.end()) {
-		it->second.free();
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
+		// THIS WILL AUTOMATICALLY DELETE
+		// THE MESH VIA DTOR.
+		delete it->second;
 		++it;
 	}
 }
 
-void World::notifyChunkChange(const BlockPos& chunkPos) {
+void World::notifyChunkChange(const glm::ivec3& chunkPos) {
 	changedChunkPositions.insert(chunkPos);
 	changedChunkPositions.insert(chunkPos + up);
 	changedChunkPositions.insert(chunkPos + down);
@@ -114,25 +88,4 @@ void World::notifyChunkChange(const BlockPos& chunkPos) {
 	changedChunkPositions.insert(chunkPos + right);
 	changedChunkPositions.insert(chunkPos + forward);
 	changedChunkPositions.insert(chunkPos + back);
-}
-
-void World::updateChunkMesh(const BlockPos& chunkPos, const ATLAS& atlas) {
-	if (!isChunkValid(chunkPos, *worldData)) {
-		// DESTROY THE MESH.
-		if (chunkMeshes.contains(chunkPos)) {
-			chunkMeshes.at(chunkPos).free();
-			chunkMeshes.erase(chunkPos);
-			chunkCenters.erase(chunkPos);
-		}
-
-		return;
-	}
-
-	std::vector<Vertex> chunkVerts{};
-	std::vector<GLuint> chunkTris{};
-	glm::mat4 chunkMatrix{};
-
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, (*worldData)[chunkPos], *worldData);
-	chunkMeshes[chunkPos] = { chunkVerts, chunkTris, chunkMatrix };
-	chunkCenters[chunkPos] = chunkPos.getVec3() * (float)CHUNK_SIZE + chunkPosOffset;
 }

@@ -5,7 +5,7 @@
 #include "BlockType.h"
 #include "Direction.h"
 #include "utils.h"
-#include "Chunk.h"
+#include "World.h"
 
 struct Face {
 public:
@@ -32,7 +32,7 @@ public:
 };
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const Atlas& atlas, const Chunk* chunk, const std::unordered_map<glm::ivec3, Chunk*>& chunks);
+	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*>& chunks);
 
 /// <summary>
 /// This UV code is a little strange but it works.
