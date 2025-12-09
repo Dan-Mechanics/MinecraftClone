@@ -20,7 +20,7 @@ public:
 	void draw(Object& chunkObject, const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) const;
 
-	void generateMesh(const Atlas& atlas, const World& world)c;
+	void generateMesh(const Atlas& atlas, const World& world);
 
 private:
 	void fillBlocks(const unsigned int chunkSize);
