@@ -1,8 +1,8 @@
 #include "Chunk.h"
 
-Chunk::Chunk(const BlockPos& chunkPos) : chunkPos{ chunkPos } {
-	// GENERATE DATA.
-	// RELOAD MESH.
+Chunk::Chunk() = default;
+Chunk::Chunk(const glm::ivec3& chunkPos) : chunkPos{ chunkPos } {
+	// ...
 }
 
 Chunk::~Chunk() {
@@ -19,7 +19,7 @@ void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
 	chunkObject.drawWithMaterial(mesh, material, shader, camera, lightColor, lightPos, worldColor);
 }
 
-void Chunk::reloadMesh(const ATLAS& atlas, const std::unordered_map<BlockPos, Chunk*>& chunks) {
+void Chunk::generateMesh(const ATLAS& atlas, const std::unordered_map<BlockPos, Chunk*>& chunks) {
 	mesh.free();
 	
 	std::vector<Vertex> chunkVerts{};

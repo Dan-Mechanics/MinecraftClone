@@ -3,7 +3,8 @@
 #include "Mesh.h"
 #include "Object.h"
 #include <queue>
-#include "world_mesh.h"
+#include "world_mesh_utils.h"
+#include <unordered_set>
 
 #define CHUNK_SIZE 16
 #define MAP std::vector<std::vector<glm::vec2>>
@@ -26,7 +27,7 @@ public:
 	void free() const;
 
 private:
-	std::unordered_set<BlockPos> changedChunkPositions{};
+	std::unordered_set<glm::ivec3> changedChunkPositions{};
 	std::unordered_map<BlockPos, Chunk*> chunks{};
 	float maxViewingRange{};
 	Object chunkObject{};
