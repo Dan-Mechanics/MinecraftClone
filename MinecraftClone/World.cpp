@@ -23,15 +23,39 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
+void World::tick(const glm::vec3& playerPos) {
+	const auto chunkSize = 16;
+	const auto playerBlockPos = posToBlockPos(playerPos);
+	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
+	const auto radius = 2;
 
-void World::tick(const glm::vec3& eyesPos) {
-	// look around the player and see which chunks need to be loaded/ unloaded.
+	std::unordered_set<glm::ivec3> visibleArea{};
+	for (int x = -2; x <= radius; x++) {
+		for (int z = -2; z <= radius; z++) {
+			visibleArea.insert(playerChunkPos + glm::ivec3{ x, 0, z });
+		}
+	}
 
-	// step one: create a grid of chunkPos which will represent what the player wants to render.
-	// if a chunkpos IS within the chunks but not in the player range, deelte that chunk
-	// if there is a chunk element not in the chunks but it is in the range, then we make a new chunk.
+	// REMOVE OLD. ===
+	auto it1 = chunks.begin();
+	while (it1 != chunks.end()) {
+		if (!visibleArea.contains(it1->second.chunkPos)) {
+			it1 = chunks.erase(it1);
+			continue;
+		}
 
+		++it1;
+	}
 
+	// ADD NEW. ===
+	auto it2 = visibleArea.begin();
+	while (it2 != visibleArea.end()) {
+		const glm::ivec3 chunkPos = *it2;
+		if (!chunks.contains(chunkPos))
+			chunks[chunkPos] = { chunkPos, chunkSize };
+
+		++it1;
+	}
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {

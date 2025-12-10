@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CHUNK_CLASS_H
+#define CHUNK_CLASS_H
+
 #include "Mesh.h"
 #include "Object.h"
 #include <unordered_map>
@@ -26,3 +28,5 @@ private:
 	void fillBlocks(const unsigned int chunkSize);
 
 };
+
+#endif

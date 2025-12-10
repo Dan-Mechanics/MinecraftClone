@@ -186,6 +186,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
+			world.tick(camera.position);
 			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
