@@ -1,4 +1,5 @@
-# MINECRAFT CLONE
+# Minecraft Clone
+![IMAGE.](https://github.com/Dan-Mechanics/MinecraftClone/blob/release/screenshot.png?raw=true)
 HKU ( school ) project for learning more C++ and OpenGL.
 
 References:
