@@ -13,7 +13,7 @@ std::string getFileContents(const char* filename);
 class Shader {
 public:
 	GLuint id;
-	Shader(const char* vertexFile, const char* fragementFile, const char* geometryFile);
+	Shader(const char* vertexFile, const char* fragementFile);
 
 	void activate() const;
 	void free() const;
