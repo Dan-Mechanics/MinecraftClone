@@ -1,10 +1,9 @@
 #pragma once
-#include <vector>
-#include "Mesh.h"
-#include "Object.h"
-#include <queue>
-#include "world_mesh_utils.h"
 #include <unordered_set>
+#include "shader.h"
+#include "Camera.h"
+#include "Texture.h"
+#include "world_mesh_utils.h"
 
 class World {
 public:

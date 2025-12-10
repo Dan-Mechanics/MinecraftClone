@@ -5,9 +5,9 @@ Chunk::Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize) : chunkPo
 	fillBlocks(chunkSize);
 }
 
-//Chunk::~Chunk() {
-//	mesh.free();
-//}
+Chunk::~Chunk() {
+	mesh.free();
+}
 
 void Chunk::drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const {
 	chunkObject.drawAsUnlitColor(mesh, shader, camera);
@@ -27,7 +27,7 @@ void Chunk::generateMesh(const Atlas& atlas, const std::unordered_map<glm::ivec3
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix{};
 
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, this, chunks);
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, *this, chunks);
 	mesh = { chunkVerts, chunkTris, chunkMatrix };
 	hasMeshed = true;
 }

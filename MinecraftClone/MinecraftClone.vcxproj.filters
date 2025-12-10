@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{ff00db2e-e20f-431b-8039-50aeb0de18f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{e92ae3ea-da26-4619-b622-969ddd775fb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -63,14 +66,14 @@
     <ClCompile Include="Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_utils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="world_mesh_utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="world_mesh_utils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="mesh_utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,13 +137,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world_mesh_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="mesh_utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
