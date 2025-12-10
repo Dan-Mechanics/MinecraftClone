@@ -70,11 +70,6 @@ int main() {
 		(float)86 / 255,
 		(float)150 / 255, 1.0f
 	};
-	/*glm::vec4 skyColor = glm::vec4 {
-		(float)100 / 255,
-		(float)145 / 255,
-		(float)190 / 255, 1.0f 
-	};*/
 
 	// ===
 
@@ -182,9 +177,8 @@ int main() {
 
 		previousTime = currentTime;
 
-		std::string fps = std::to_string(1.0f / deltaTime);
-		std::string ms = std::to_string(deltaTime * 1000);
-		std::string newTitle = "fps: " + fps + " | ms: " + ms;
+		std::string fps = std::to_string(int(1.0f / deltaTime));
+		std::string newTitle = "fps: " + fps;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
 		// ===
