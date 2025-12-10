@@ -8,7 +8,7 @@
 
 class World {
 public:
-	std::unordered_map<glm::ivec3, Chunk*> chunks{};
+	std::unordered_map<glm::ivec3, Chunk> chunks{};
 
 	World();
 	World(const unsigned int chunkSize, const float maxViewingRange);
@@ -19,12 +19,11 @@ public:
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	
-	void tick();
+	void tick(const glm::vec3& eyesPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void flush(const Atlas& atlas);
 	void removeAll();
-	void free() const;
 
 private:
 	std::unordered_set<glm::ivec3> changedChunkPositions{};

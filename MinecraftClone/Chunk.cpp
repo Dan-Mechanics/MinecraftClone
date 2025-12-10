@@ -19,7 +19,7 @@ void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
 	chunkObject.drawWithMaterial(mesh, material, shader, camera, lightColor, lightPos, worldColor);
 }
 
-void Chunk::generateMesh(const Atlas& atlas, const World& world) {
+void Chunk::generateMesh(const Atlas& atlas, const std::unordered_map<glm::ivec3, Chunk>& chunks) {
 	if (hasMeshed)
 		mesh.free();
 	
@@ -27,7 +27,7 @@ void Chunk::generateMesh(const Atlas& atlas, const World& world) {
 	std::vector<GLuint> chunkTris{};
 	glm::mat4 chunkMatrix{};
 
-	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, this, world);
+	generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, this, chunks);
 	mesh = { chunkVerts, chunkTris, chunkMatrix };
 	hasMeshed = true;
 }

@@ -231,7 +231,6 @@ int main() {
 	freeMaterial(atlasMaterial);
 
 	cubeMesh.free();
-	world.free();
 	shadowMap.free();
 
 	glfwDestroyWindow(window);
