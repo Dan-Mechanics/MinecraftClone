@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "vbo.h"
-#include "Chunk.h"
 #include "BlockType.h"
 #include "Direction.h"
 #include "Atlas.h"
@@ -45,4 +44,4 @@ bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec
 /// <summary>
 /// Does any chunk contain this block position?
 /// </summary>
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk, hasing_utils::HashVec3>& chunks, const unsigned int chunkSize);
+bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk>& chunks, const unsigned int chunkSize);
