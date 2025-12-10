@@ -4,10 +4,11 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "world_mesh_utils.h"
+#include "Util.h"
 
 class World {
 public:
-	std::unordered_map<glm::ivec3, Chunk> chunks{};
+	std::unordered_map<glm::ivec3, Chunk, hasing_utils::HashVec3> chunks{};
 
 	World();
 	World(const unsigned int chunkSize, const float maxViewingRange);

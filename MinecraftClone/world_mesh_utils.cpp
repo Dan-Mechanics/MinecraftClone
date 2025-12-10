@@ -1,7 +1,7 @@
 #include "world_mesh_utils.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk>& chunks) {
+	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk, hasing_utils::HashVec3>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -233,7 +233,7 @@ bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec
 		chunks.at(chunkPos).blocks.begin() != chunks.at(chunkPos).blocks.end();
 }
 
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk>& chunks, const unsigned int chunkSize) {
+bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk, hasing_utils::HashVec3>& chunks, const unsigned int chunkSize) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
 		return false;
