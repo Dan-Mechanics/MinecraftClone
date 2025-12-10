@@ -64,7 +64,6 @@ vec4 shadowWorldLight()
 
 	}
 
-
 	vec4 light = texture(specular0, texCoord).r * diffuse * (1.0f - shadow) * lightColor + worldColor;
 	light.x = min(light.x, 1.0f);
 	light.y = min(light.y, 1.0f);
