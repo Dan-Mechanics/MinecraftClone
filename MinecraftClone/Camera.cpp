@@ -22,7 +22,7 @@ void Camera::sendMatrixToShader(const Shader& shader, const char* uniform) const
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::moveCamera(GLFWwindow* window, const double dt) {
+void Camera::moveCamera(GLFWwindow* window, const float dt) {
 	if (!hasFocus)
 		return;
 	
@@ -40,9 +40,8 @@ void Camera::moveCamera(GLFWwindow* window, const double dt) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		movement += bodyRight;
 
-	if (glm::length(movement) > 0.0f) {
+	if (glm::length(movement) > 0.0f) 
 		movement = glm::normalize(movement);
-	}
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		movement += up;
@@ -50,8 +49,11 @@ void Camera::moveCamera(GLFWwindow* window, const double dt) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		movement -= up;
 
-	const auto currentSpeed = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ? standardSpeed * 2.5f : standardSpeed;
-	position += (float)dt * currentSpeed * movement;
+	auto currentSpeed = standardSpeed;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		currentSpeed *= 2.5f;
+
+	position += dt * currentSpeed * movement;
 }
 
 void Camera::rotateCamera(GLFWwindow* window) {

@@ -34,7 +34,7 @@ public:
 
 	void updateMatrix(float fovDeg, float nearPlane, float farPlane);
 	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
-	void moveCamera(GLFWwindow* window, const double dt);
+	void moveCamera(GLFWwindow* window, const float dt);
 	void rotateCamera(GLFWwindow* window);
 
 };

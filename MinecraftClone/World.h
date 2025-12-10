@@ -1,27 +1,35 @@
 #pragma once
-#include <vector>
-#include "world_mesh.h"
-#include "Mesh.h"
-#include "Object.h"
+#include <unordered_set>
+#include "shader.h"
+#include "Camera.h"
+#include "Texture.h"
+#include "world_mesh_utils.h"
 
 class World {
 public:
-	World();
-	World(const WORLD_DATA& world, const float maxViewingRange);
-	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera, const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
-	void drawForShadowMap(const Shader& shader, const Camera& camera);
+	std::unordered_map<glm::ivec3, Chunk, IntVec3Hash> chunks{};
 
-	/// <summary>
-	/// For the time being.
-	/// </summary>
-	void generateChunkMeshes(const ATLAS& atlas);
-	void free() const;
+	World();
+	World(const unsigned int chunkSize, const float maxViewingRange);
+
+	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
+
+	void drawShadows(const Shader& shader, const Camera& camera);
+	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
+		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
+	
+	void tick(const glm::vec3 & playerPos);
+	void add(const glm::ivec3& blockPos, const BlockType& blockType);
+	void remove(const glm::ivec3& blockPos);
+	void flush(const Atlas& atlas);
+	void removeAll();
 
 private:
-	WORLD_DATA world{};
-	std::vector<Mesh> chunkMeshes{};
-	std::vector<glm::vec3> chunkPositions{};
+	std::unordered_set<glm::ivec3, IntVec3Hash> changedChunkPositions{};
+	unsigned int chunkSize{};
 	float maxViewingRange{};
 	Object chunkObject{};
+
+	void notifyChunkChange(const glm::ivec3& chunkPos);
 
 };

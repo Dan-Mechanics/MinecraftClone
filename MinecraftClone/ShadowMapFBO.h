@@ -1,5 +1,5 @@
-#ifndef SHADOW_MAP_FBO_H
-#define SHADOW_MAP_FBO_H
+#ifndef SHADOW_MAP_CLASS_FBO_H
+#define SHADOW_MAP_CLASS_FBO_H
 
 #include <glm/glm.hpp>
 #include <glad/glad.h>

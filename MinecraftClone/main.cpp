@@ -1,11 +1,13 @@
+#include "Chunk.h"
 #include "Mesh.h"
 #include "Object.h"
 #include "utils.h"
-#include "world_mesh.h"
+#include "world_mesh_utils.h"
 #include <unordered_map>
 #include "BlockType.h"
 #include "World.h"
 #include "ShadowMapFBO.h"
+#include "mesh_utils.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -107,10 +109,7 @@ int main() {
 	// ===
 
 	const auto atlas = generateAtlas();
-	const auto worldData = generateDemoWorldData();
-
-	World world{ worldData, 50.0f };
-	world.generateChunkMeshes(atlas);
+	//World world{ 16, 50.0f };
 
 	// ===
 
@@ -138,9 +137,9 @@ int main() {
 	up.position(glm::vec3{ 0.0f, 3.0f, 0.0f });
 	up.color(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-	// Object ground{};
-	// ground.position(glm::vec3{ 0.0f, -3.0f, 0.0f });
-	// ground.scale(glm::vec3{ 100.0f, 1.0f, 100.0f });
+	Object ground{};
+	ground.position(glm::vec3{ 0.0f, -3.0f, 0.0f });
+	ground.scale(glm::vec3{ 100.0f, 1.0f, 100.0f });
 
 	// ===
 
@@ -162,7 +161,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
+	ShadowMapFBO shadowMap{ 1024, 1024, 50.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -186,6 +185,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
+			//world.tick(camera.position);
 			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
@@ -197,8 +197,8 @@ int main() {
 
 		shadowMap.bind(camera, sun, shadowMapShader);
 
-		// ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		world.drawForShadowMap(shadowMapShader, camera);
+		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		//world.drawShadows(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);
@@ -208,7 +208,7 @@ int main() {
 
 		// ===
 		
-		// ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -218,7 +218,7 @@ int main() {
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.exportToShader(materialShader);
-		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
+		//world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -231,7 +231,6 @@ int main() {
 	freeMaterial(atlasMaterial);
 
 	cubeMesh.free();
-	world.free();
 	shadowMap.free();
 
 	glfwDestroyWindow(window);

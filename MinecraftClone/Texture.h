@@ -13,13 +13,9 @@ public:
 
 	Texture(const char* image, const char* texType, GLuint slot);
 
-	// Assigns a texture unit to a texture
 	void setTextureUnit(const Shader & shader, const char* uniform, GLuint unit) const;
-	// Binds a texture
 	void bind() const;
-	// Unbinds a texture
 	void unbind() const;
-	// Deletes a texture
 	void free() const;
 
 };
