@@ -29,7 +29,7 @@ void World::tick(const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
 	const auto radius = 2;
 
-	std::unordered_set<glm::ivec3> visibleArea{};
+	std::unordered_set<glm::ivec3, IntVec3Hash> visibleArea{};
 	for (int x = -2; x <= radius; x++) {
 		for (int z = -2; z <= radius; z++) {
 			visibleArea.insert(playerChunkPos + glm::ivec3{ x, 0, z });
@@ -80,8 +80,24 @@ void World::flush(const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
-		if (chunks.contains(chunkPos))
-			chunks[chunkPos].generateMesh(atlas, chunks);
+		if (!chunks.contains(chunkPos)) {
+			++it;
+			continue;
+		}
+		
+		Chunk& chunk = chunks[chunkPos];
+
+		// DELETE THE OLD MESH.
+		if (chunk.hasMesh)
+			chunk.mesh.free();
+
+		std::vector<Vertex> chunkVerts{};
+		std::vector<GLuint> chunkTris{};
+		glm::mat4 chunkMatrix{};
+
+		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, chunk, chunks);
+		chunk.mesh = { chunkVerts, chunkTris, chunkMatrix };
+		chunk.hasMesh = true;
 
 		++it;
 	}

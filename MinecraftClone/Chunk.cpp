@@ -2,7 +2,7 @@
 
 Chunk::Chunk() = default;
 Chunk::Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize) : chunkPos{ chunkPos } {
-	makeChunkTerrain(chunkSize);
+	generateChunkData(chunkSize);
 }
 
 Chunk::~Chunk() {
@@ -19,7 +19,7 @@ void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
 	chunkObject.drawWithMaterial(mesh, material, shader, camera, lightColor, lightPos, worldColor);
 }
 
-void Chunk::makeChunkTerrain(const unsigned int chunkSize) {
+void Chunk::generateChunkData(const unsigned int chunkSize) {
 	if (chunkPos.y != -1)
 		return;
 

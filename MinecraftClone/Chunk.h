@@ -3,12 +3,13 @@
 #include "Object.h"
 #include "BlockType.h"
 #include "utils.h"
+#include "hashing_utils.h"
 
 class Chunk {
 public:
-	std::unordered_map<glm::ivec3, BlockType> blocks{};
+	std::unordered_map<glm::ivec3, BlockType, IntVec3Hash> blocks{};
 	glm::ivec3 chunkPos{};
-	bool hasMeshed{};
+	bool hasMesh{};
 	Mesh mesh{};
 
 	Chunk();
@@ -20,6 +21,6 @@ public:
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) const;
 
 private:
-	void makeChunkTerrain(const unsigned int chunkSize);
+	void generateChunkData(const unsigned int chunkSize);
 
 };

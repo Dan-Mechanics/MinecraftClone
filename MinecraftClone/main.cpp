@@ -109,7 +109,7 @@ int main() {
 	// ===
 
 	const auto atlas = generateAtlas();
-	World world{ 16, 50.0f };
+	//World world{ 16, 50.0f };
 
 	// ===
 
@@ -186,7 +186,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			world.tick(camera.position);
+			//world.tick(camera.position);
 			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
 		}
 
@@ -199,7 +199,7 @@ int main() {
 		shadowMap.bind(camera, sun, shadowMapShader);
 
 		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		world.drawShadows(shadowMapShader, camera);
+		//world.drawShadows(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);
@@ -219,7 +219,7 @@ int main() {
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.exportToShader(materialShader);
-		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
+		//world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
