@@ -5,9 +5,9 @@ Chunk::Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize) : chunkPo
 	fillBlocks(chunkSize);
 }
 
-Chunk::~Chunk() {
-	mesh.free();
-}
+//Chunk::~Chunk() {
+//	mesh.free();
+//}
 
 void Chunk::drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const {
 	chunkObject.drawAsUnlitColor(mesh, shader, camera);

@@ -16,7 +16,7 @@ public:
 
 	Chunk();
 	Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize);
-	virtual ~Chunk();
+//	virtual ~Chunk();
 
 	void drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const;
 	void draw(Object& chunkObject, const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
