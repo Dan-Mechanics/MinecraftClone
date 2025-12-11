@@ -187,7 +187,8 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			world.tick(camera.position);
+			//world.tick(camera.position);
+			world.tick({0.0f, 0.0f, 0.0f});
 			world.flush(atlas);
 		}
 
