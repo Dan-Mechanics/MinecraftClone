@@ -1,8 +1,8 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const unsigned int chunkSize, const float maxViewingRange) 
-	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { 
+World::World(const int chunkSize, const float maxViewingRange)
+	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } {
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -84,6 +84,7 @@ void World::remove(const glm::ivec3& blockPos) {
 
 void World::flush(const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
+
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
 		if (!chunks.contains(chunkPos)) {

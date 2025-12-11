@@ -10,7 +10,7 @@ public:
 	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
 
 	World();
-	World(const unsigned int chunkSize, const float maxViewingRange);
+	World(const int chunkSize, const float maxViewingRange);
 
 	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
 
@@ -26,7 +26,7 @@ public:
 
 private:
 	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
-	unsigned int chunkSize{};
+	int chunkSize{};
 	float maxViewingRange{};
 	Object chunkObject{};
 

@@ -40,10 +40,9 @@ glm::ivec3 posToBlockPos(const glm::vec3& pos);
 /// <summary>
 /// Rounds down.
 /// </summary>
-glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const unsigned int chunkSize);
-bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize);
 
 /// <summary>
 /// Does any chunk contain this block position?
 /// </summary>
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const unsigned int chunkSize);
+bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize);
