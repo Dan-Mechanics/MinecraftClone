@@ -2,7 +2,9 @@
 
 World::World() = default;
 World::World(const unsigned int chunkSize, const float maxViewingRange) 
-	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { }
+	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { 
+	chunks[{ 0, 0, 0 }] = { { 0, 0, 0 }, 16 };
+}
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -24,17 +26,18 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 }
 
 void World::tick(const glm::vec3& playerPos) {
-	const auto chunkSize = 16;
+	//const auto chunkSize = 16;
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
 	const auto radius = 2;
 
 	std::unordered_set<glm::ivec3, IntVec3Hash> visibleArea{};
-	for (int x = -2; x <= radius; x++) {
+	visibleArea.insert(playerChunkPos);
+	/*for (int x = -2; x <= radius; x++) {
 		for (int z = -2; z <= radius; z++) {
 			visibleArea.insert(playerChunkPos + glm::ivec3{ x, 0, z });
 		}
-	}
+	}*/
 
 	// REMOVE OLD. ===
 	auto it1 = chunks.begin();
@@ -54,7 +57,7 @@ void World::tick(const glm::vec3& playerPos) {
 		if (!chunks.contains(chunkPos))
 			chunks[chunkPos] = { chunkPos, chunkSize };
 
-		++it1;
+		++it2;
 	}
 }
 
