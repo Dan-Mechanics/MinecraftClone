@@ -110,8 +110,7 @@ int main() {
 
 	const auto atlas = generateAtlas();
 	World world{ 16, 50.0f };
-	//world.add({ 0,0,0 }, BlockType::DIAMOND);
-	world.flush(atlas);
+	//world.flush(atlas);
 
 	// ===
 
@@ -163,7 +162,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 1024, 1024, 50.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -188,8 +187,8 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			// world.tick(camera.position);
-			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+			world.tick(camera.position);
+			world.flush(atlas);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -229,6 +228,8 @@ int main() {
 
 	materialShader.free();
 	unlitShader.free();
+
+	world.free();
 
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);

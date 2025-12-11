@@ -8,7 +8,9 @@ Chunk::Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize) : chunkPo
 }
 
 Chunk::~Chunk() {
-	mesh.free();
+	if (hasMesh)
+		mesh.free();
+
 	std::cout << "destroyed: " << std::flush;
 	log(chunkPos);
 }
@@ -24,19 +26,13 @@ void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
 }
 
 void Chunk::generateChunkData(const unsigned int chunkSize) {
-	/*if (chunkPos.y != -1)
-		return;*/
-
+	if (chunkPos.y != -1)
+		return;
+	
 	for (int x = 0; x < chunkSize; x++) {
-				std::cout << "Cunt" << std::endl;
 		for (int y = 0; y < chunkSize; y++) {
 			for (int z = 0; z < chunkSize; z++) {
-				if (randomInclusive(0, 1))
-					continue;
-
-				glm::ivec3 blockPos{ x, y, z };
-				blockPos += chunkPos * (int)chunkSize;
-				blocks[blockPos] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+				blocks[glm::ivec3{ x, y, z } + chunkPos * (int)chunkSize] = BlockType::DIRT;
 			}
 		}
 	}

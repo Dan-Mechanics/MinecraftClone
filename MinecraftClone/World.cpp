@@ -3,8 +3,12 @@
 World::World() = default;
 World::World(const unsigned int chunkSize, const float maxViewingRange) 
 	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { 
-	chunks[{0, 0, 0}] = new Chunk{ {0,0,0}, 16 };
-	changedChunkPositions.insert({ 0,0,0 });
+	/*const glm::ivec3 pos = { 0, -1, 0 };
+	chunks[pos] = new Chunk{ pos, 16 };
+	changedChunkPositions.insert(pos );
+
+	delete chunks[pos];
+	chunks.erase(pos);*/
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -32,18 +36,19 @@ void World::tick(const glm::vec3& playerPos) {
 	const auto radius = 2;
 
 	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
-	visibleArea.insert(playerChunkPos);
-	/*for (int x = -2; x <= radius; x++) {
-		for (int z = -2; z <= radius; z++) {
-			visibleArea.insert(playerChunkPos + glm::ivec3{ x, 0, z });
+	for (int x = -2; x < radius; ++x) {
+		for (int y = -2; y < radius; ++y) {
+			for (int z = -2; z < radius; ++z) {
+				visibleArea.insert(playerChunkPos + glm::ivec3{ x, y, z });
+			}
 		}
-	}*/
+	}
 
 	// REMOVE OLD. ===
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
 		if (!visibleArea.contains(it1->second->chunkPos)) {
-			// ??
+			changedChunkPositions.insert(it1->first);
 			delete it1->second;
 			it1 = chunks.erase(it1);
 			continue;
@@ -56,8 +61,10 @@ void World::tick(const glm::vec3& playerPos) {
 	auto it2 = visibleArea.begin();
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2;
-		if (!chunks.contains(chunkPos))
+		if (!chunks.contains(chunkPos)) {
 			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+			changedChunkPositions.insert(chunkPos);
+		}
 
 		++it2;
 	}
@@ -82,7 +89,6 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::flush(const Atlas& atlas) {
-	std::cout << "flush" << std::endl;
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -91,6 +97,7 @@ void World::flush(const Atlas& atlas) {
 			continue;
 		}
 		
+		std::cout << "flush" << std::endl;
 		Chunk& chunk = *chunks[chunkPos];
 
 		// DELETE THE OLD MESH.
@@ -102,8 +109,6 @@ void World::flush(const Atlas& atlas) {
 		std::vector<GLuint> chunkTris{};
 		glm::mat4 chunkMatrix{};
 
-		std::cout << "HELLO !!" << std::endl;
-
 		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, chunk, chunks);
 		chunk.mesh = { chunkVerts, chunkTris, chunkMatrix };
 		chunk.hasMesh = true;
@@ -114,13 +119,14 @@ void World::flush(const Atlas& atlas) {
 	changedChunkPositions.clear();
 }
 
-void World::removeAll() {
+void World::free() {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		changedChunkPositions.insert(it->first);
-		it->second->blocks.clear();
+		delete it->second;
 		++it;
 	}
+
+	chunks.clear();
 }
 
 void World::notifyChunkChange(const glm::ivec3& chunkPos) {

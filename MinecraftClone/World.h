@@ -22,7 +22,7 @@ public:
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void flush(const Atlas& atlas);
-	void removeAll();
+	void free();
 
 private:
 	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
