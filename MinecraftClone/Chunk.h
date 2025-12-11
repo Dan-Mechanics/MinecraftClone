@@ -21,6 +21,6 @@ public:
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) const;
 
 private:
-	void generateChunkData(const unsigned int chunkSize);
+	void generateChunkData(const int chunkSize);
 
 };
