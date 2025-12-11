@@ -13,7 +13,7 @@ public:
 	Mesh mesh{};
 
 	Chunk();
-	Chunk(const glm::ivec3& chunkPos, const unsigned int chunkSize);
+	Chunk(const glm::ivec3& chunkPos, const int chunkSize);
 	virtual ~Chunk();
 
 	void drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const;
@@ -21,6 +21,6 @@ public:
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) const;
 
 private:
-	void generateChunkData(const unsigned int chunkSize);
+	void generateChunkData(const int chunkSize);
 
 };

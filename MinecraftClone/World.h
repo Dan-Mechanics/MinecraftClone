@@ -7,10 +7,9 @@
 
 class World {
 public:
-	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
 
 	World();
-	World(const unsigned int chunkSize, const float maxViewingRange);
+	World(const int chunkSize, const int renderRadius);
 
 	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
 
@@ -22,12 +21,13 @@ public:
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void flush(const Atlas& atlas);
-	void removeAll();
+	void free();
 
 private:
+	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
 	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
-	unsigned int chunkSize{};
-	float maxViewingRange{};
+	int chunkSize{};
+	int renderRadius{};
 	Object chunkObject{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);

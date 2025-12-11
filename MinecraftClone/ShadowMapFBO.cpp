@@ -48,7 +48,7 @@ void ShadowMapFBO::bind(const Camera& camera, const Object& sun, const Shader& s
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 }
 
-void ShadowMapFBO::exportToShader(const Shader& shader) const {
+void ShadowMapFBO::sendToShader(const Shader& shader) const {
 	shader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 

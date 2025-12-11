@@ -7,8 +7,7 @@
 #include "Chunk.h"
 #include "hashing_utils.h"
 
-void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix, const int chunkSize, const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
 
 /// <summary>
 /// This UV code is a little strange but it works.
@@ -40,10 +39,9 @@ glm::ivec3 posToBlockPos(const glm::vec3& pos);
 /// <summary>
 /// Rounds down.
 /// </summary>
-glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const unsigned int chunkSize);
-bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize);
 
 /// <summary>
 /// Does any chunk contain this block position?
 /// </summary>
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const unsigned int chunkSize);
+bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize);

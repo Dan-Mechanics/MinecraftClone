@@ -109,9 +109,9 @@ int main() {
 	// ===
 
 	const auto atlas = generateAtlas();
-	World world{ 16, 50.0f };
-	//world.add({ 0,0,0 }, BlockType::DIAMOND);
-	world.flush(atlas);
+	const auto chunkSize = 16;
+	const auto renderRadius = 2;
+	World world{ chunkSize, renderRadius };
 
 	// ===
 
@@ -163,7 +163,7 @@ int main() {
 
 	// DISABLE VSYNC.
 	glfwSwapInterval(0);
-	ShadowMapFBO shadowMap{ 1024, 1024, 50.0f };
+	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
@@ -187,8 +187,9 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			// world.tick(camera.position);
-			// chunk.rotate(glm::vec3{ 0.0f, 90.0f, 0.0f }, deltaTime);
+			//world.tick(camera.position);
+			world.tick(camera.position);
+			world.flush(atlas);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -199,7 +200,7 @@ int main() {
 
 		shadowMap.bind(camera, sun, shadowMapShader);
 
-		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		world.drawShadows(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -210,7 +211,7 @@ int main() {
 
 		// ===
 		
-		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -219,7 +220,7 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		shadowMap.exportToShader(materialShader);
+		shadowMap.sendToShader(materialShader);
 		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
@@ -228,6 +229,8 @@ int main() {
 
 	materialShader.free();
 	unlitShader.free();
+
+	world.free();
 
 	freeMaterial(woodMaterial);
 	freeMaterial(atlasMaterial);

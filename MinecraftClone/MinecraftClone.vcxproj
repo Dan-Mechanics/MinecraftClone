@@ -75,8 +75,8 @@
     <LibraryPath>C:\Users\Dan-Mechanics\Development\GITHUB\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Dan-Mechanics\Development\GITHUB\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Dan-Mechanics\Development\GITHUB\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\Dan-Mechanics\Development\MinecraftClone\MinecraftClone\Libraries\include;$(IncludePath)</IncludePath>
@@ -139,6 +139,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
