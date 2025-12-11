@@ -110,6 +110,8 @@ int main() {
 
 	const auto atlas = generateAtlas();
 	World world{ 16, 50.0f };
+	world.add({ 0,0,0 }, BlockType::DIAMOND);
+	world.flush(atlas);
 
 	// ===
 
