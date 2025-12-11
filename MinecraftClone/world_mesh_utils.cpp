@@ -34,10 +34,6 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::UP]);
 			faceCount++;
 		}
-		else
-		{
-			std::cout << "Important" << std::endl;
-		}
 
 		// DOWN. ===
 		if (!has(blockPos + down, chunks, chunkSize)) {
@@ -231,14 +227,15 @@ Map generateEmptyMap() {
 }
 
 glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize) {
-	return { blockPos.x / chunkSize, blockPos.y / chunkSize, blockPos.z / chunkSize };
+	return glm::ivec3 { 
+		floor((float)blockPos.x / chunkSize),
+		floor((float)blockPos.y / chunkSize),
+		floor((float)blockPos.z / chunkSize) 
+	};
 }
 
 bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize) {
-	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-	if(chunkPos != glm::ivec3{0,0,0})
-		std::cout << toString(chunkPos) << std::endl;
-
+	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
 		return false;
 

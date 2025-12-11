@@ -2,8 +2,7 @@
 
 World::World() = default;
 World::World(const int chunkSize, const float maxViewingRange)
-	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } {
-}
+	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
