@@ -1,8 +1,8 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const int chunkSize, const float maxViewingRange)
-	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { }
+World::World(const int chunkSize, const int renderRadius)
+	: chunkSize{ chunkSize }, renderRadius{ renderRadius } { }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -26,12 +26,11 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 void World::tick(const glm::vec3& playerPos) {
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
-	const auto radius = 5;
 
 	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
-	for (int x = -radius; x < radius; ++x) {
-		for (int y = -radius; y < radius; ++y) {
-			for (int z = -radius; z < radius; ++z) {
+	for (int x = -renderRadius; x < renderRadius; ++x) {
+		for (int y = -renderRadius; y < renderRadius; ++y) {
+			for (int z = -renderRadius; z < renderRadius; ++z) {
 				visibleArea.insert(playerChunkPos + glm::ivec3{ x, y, z });
 			}
 		}
@@ -83,7 +82,6 @@ void World::remove(const glm::ivec3& blockPos) {
 
 void World::flush(const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
-
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
 		if (!chunks.contains(chunkPos)) {
@@ -91,11 +89,7 @@ void World::flush(const Atlas& atlas) {
 			continue;
 		}
 		
-		std::cout << "flush" << std::endl;
 		Chunk& chunk = *chunks[chunkPos];
-
-		// DELETE THE OLD MESH.
-		// IS THIS NEEDED THOUGH ??
 		if (chunk.hasMesh)
 			chunk.mesh.free();
 
@@ -103,7 +97,10 @@ void World::flush(const Atlas& atlas) {
 		std::vector<GLuint> chunkTris{};
 		glm::mat4 chunkMatrix{};
 
-		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, chunk, chunks);
+		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix,
+			chunkSize, atlas, chunk, chunks);
+
+		std::cout << "YAAARRR" << toString(chunkPos)<< std::endl;
 		chunk.mesh = { chunkVerts, chunkTris, chunkMatrix };
 		chunk.hasMesh = true;
 

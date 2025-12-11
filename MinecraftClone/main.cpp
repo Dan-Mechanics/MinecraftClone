@@ -109,7 +109,9 @@ int main() {
 	// ===
 
 	const auto atlas = generateAtlas();
-	World world{ 16, 50.0f };
+	const auto chunkSize = 16;
+	const auto renderRadius = 2;
+	World world{ chunkSize, renderRadius };
 
 	// ===
 
@@ -199,7 +201,7 @@ int main() {
 
 		shadowMap.bind(camera, sun, shadowMapShader);
 
-		ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 		world.drawShadows(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -210,7 +212,7 @@ int main() {
 
 		// ===
 		
-		ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
+		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -219,7 +221,7 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		shadowMap.exportToShader(materialShader);
+		shadowMap.sendToShader(materialShader);
 		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
