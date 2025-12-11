@@ -1,7 +1,7 @@
 #include "world_mesh_utils.h"
 
 void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix,
-	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk, IntVec3Hash>& chunks) {
+	const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -228,15 +228,15 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const unsigned int chu
 	return { blockPos.x / chunkSize, blockPos.y / chunkSize, blockPos.z / chunkSize };
 }
 
-bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec3, Chunk, IntVec3Hash>& chunks) {
+bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
 	return chunks.contains(chunkPos) &&
-		chunks.at(chunkPos).blocks.begin() != chunks.at(chunkPos).blocks.end();
+		chunks.at(chunkPos)->blocks.begin() != chunks.at(chunkPos)->blocks.end();
 }
 
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk, IntVec3Hash>& chunks, const unsigned int chunkSize) {
+bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const unsigned int chunkSize) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
 		return false;
 
-	return chunks.at(chunkPos).blocks.contains(blockPos);
+	return chunks.at(chunkPos)->blocks.contains(blockPos);
 }
