@@ -236,7 +236,8 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize) {
 
 bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-	std::cout << "chunkpos: " << toString(chunkPos) << std::endl;
+	if(chunkPos != glm::ivec3{0,0,0})
+		std::cout << toString(chunkPos) << std::endl;
 
 	if (!chunks.contains(chunkPos))
 		return false;

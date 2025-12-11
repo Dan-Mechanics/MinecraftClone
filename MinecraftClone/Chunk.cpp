@@ -32,7 +32,7 @@ void Chunk::generateChunkData(const int chunkSize) {
 	for (int x = 0; x < chunkSize; x++) {
 		for (int y = 0; y < chunkSize; y++) {
 			for (int z = 0; z < chunkSize; z++) {
-				blocks[glm::ivec3{ x, y, z } + (chunkPos * chunkSize)] = BlockType::DIRT;
+				blocks[glm::ivec3{ x, y, z } + chunkPos * (int)chunkSize] = BlockType::DIRT;
 			}
 		}
 	}
