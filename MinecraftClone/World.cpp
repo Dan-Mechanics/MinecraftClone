@@ -30,13 +30,14 @@ void World::tick(const glm::vec3& playerPos) {
 	const auto radius = 1;
 
 	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
-	for (int x = -radius; x < radius; ++x) {
+	visibleArea.insert(playerChunkPos);
+	/*for (int x = -radius; x < radius; ++x) {
 		for (int y = -radius; y < radius; ++y) {
 			for (int z = -radius; z < radius; ++z) {
 				visibleArea.insert(playerChunkPos + glm::ivec3{ x, y, z });
 			}
 		}
-	}
+	}*/
 
 	// REMOVE OLD. ===
 	auto it1 = chunks.begin();

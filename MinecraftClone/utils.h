@@ -5,8 +5,10 @@
 #include <glm/ext/vector_int3.hpp>
 #include <vector>
 #include "Texture.h"
+#include <string>
 
 int randomInclusive(const int min, const int max);
 void log(const glm::vec3& vec);
 void log(const glm::ivec3& vec);
+std::string toString(const glm::ivec3& vec);
 void freeMaterial(const std::vector<Texture>& material);
