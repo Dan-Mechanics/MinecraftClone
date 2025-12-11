@@ -7,7 +7,7 @@
 
 class World {
 public:
-	std::unordered_map<glm::ivec3, Chunk, IntVec3Hash> chunks{};
+	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
 
 	World();
 	World(const unsigned int chunkSize, const float maxViewingRange);
@@ -25,7 +25,7 @@ public:
 	void removeAll();
 
 private:
-	std::unordered_set<glm::ivec3, IntVec3Hash> changedChunkPositions{};
+	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
 	unsigned int chunkSize{};
 	float maxViewingRange{};
 	Object chunkObject{};

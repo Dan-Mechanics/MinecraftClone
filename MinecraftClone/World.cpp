@@ -2,12 +2,15 @@
 
 World::World() = default;
 World::World(const unsigned int chunkSize, const float maxViewingRange) 
-	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { }
+	: chunkSize{ chunkSize }, maxViewingRange{ maxViewingRange } { 
+	chunks[{0, 0, 0}] = new Chunk{ {0,0,0}, 16 };
+	changedChunkPositions.insert({ 0,0,0 });
+}
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second.drawShadows(chunkObject, shader, camera);
+		it->second->drawShadows(chunkObject, shader, camera);
 		++it;
 	}
 }
@@ -16,7 +19,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second.draw(chunkObject, material, shader,
+		it->second->draw(chunkObject, material, shader,
 			camera, lightColor, lightPos, worldColor);
 
 		++it;
@@ -24,22 +27,24 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 }
 
 void World::tick(const glm::vec3& playerPos) {
-	const auto chunkSize = 16;
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
 	const auto radius = 2;
 
-	std::unordered_set<glm::ivec3, IntVec3Hash> visibleArea{};
-	for (int x = -2; x <= radius; x++) {
+	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
+	visibleArea.insert(playerChunkPos);
+	/*for (int x = -2; x <= radius; x++) {
 		for (int z = -2; z <= radius; z++) {
 			visibleArea.insert(playerChunkPos + glm::ivec3{ x, 0, z });
 		}
-	}
+	}*/
 
 	// REMOVE OLD. ===
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
-		if (!visibleArea.contains(it1->second.chunkPos)) {
+		if (!visibleArea.contains(it1->second->chunkPos)) {
+			// ??
+			delete it1->second;
 			it1 = chunks.erase(it1);
 			continue;
 		}
@@ -52,31 +57,32 @@ void World::tick(const glm::vec3& playerPos) {
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2;
 		if (!chunks.contains(chunkPos))
-			chunks[chunkPos] = { chunkPos, chunkSize };
+			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
 
-		++it1;
+		++it2;
 	}
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-	if (chunks.contains(chunkPos) && chunks[chunkPos].blocks.contains(blockPos))
+	if (chunks.contains(chunkPos) && chunks[chunkPos]->blocks.contains(blockPos))
 		return;
 	
-	chunks[chunkPos].blocks[blockPos] = blockType;
+	chunks[chunkPos]->blocks[blockPos] = blockType;
 	notifyChunkChange(chunkPos);
 }
 
 void World::remove(const glm::ivec3& blockPos) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-	if (!chunks.contains(chunkPos) || !chunks[chunkPos].blocks.contains(blockPos))
+	if (!chunks.contains(chunkPos) || !chunks[chunkPos]->blocks.contains(blockPos))
 		return;
 
-	chunks[chunkPos].blocks.erase(blockPos);
+	chunks[chunkPos]->blocks.erase(blockPos);
 	notifyChunkChange(chunkPos);
 }
 
 void World::flush(const Atlas& atlas) {
+	std::cout << "flush" << std::endl;
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -85,15 +91,18 @@ void World::flush(const Atlas& atlas) {
 			continue;
 		}
 		
-		Chunk& chunk = chunks[chunkPos];
+		Chunk& chunk = *chunks[chunkPos];
 
 		// DELETE THE OLD MESH.
+		// IS THIS NEEDED THOUGH ??
 		if (chunk.hasMesh)
 			chunk.mesh.free();
 
 		std::vector<Vertex> chunkVerts{};
 		std::vector<GLuint> chunkTris{};
 		glm::mat4 chunkMatrix{};
+
+		std::cout << "HELLO !!" << std::endl;
 
 		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix, atlas, chunk, chunks);
 		chunk.mesh = { chunkVerts, chunkTris, chunkMatrix };
@@ -109,7 +118,7 @@ void World::removeAll() {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		changedChunkPositions.insert(it->first);
-		it->second.blocks.clear();
+		it->second->blocks.clear();
 		++it;
 	}
 }

@@ -7,7 +7,7 @@
 
 class Chunk {
 public:
-	std::unordered_map<glm::ivec3, BlockType, IntVec3Hash> blocks{};
+	std::unordered_map<glm::ivec3, BlockType, vec3hash> blocks{};
 	glm::ivec3 chunkPos{};
 	bool hasMesh{};
 	Mesh mesh{};
