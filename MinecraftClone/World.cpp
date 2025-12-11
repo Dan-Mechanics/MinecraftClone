@@ -26,7 +26,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 void World::tick(const glm::vec3& playerPos) {
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
-	const auto radius = 1;
+	const auto radius = 5;
 
 	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
 	for (int x = -radius; x < radius; ++x) {

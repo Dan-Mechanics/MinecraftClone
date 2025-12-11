@@ -26,14 +26,19 @@ void Chunk::draw(Object& chunkObject, const std::vector<Texture>& material,
 }
 
 void Chunk::generateChunkData(const int chunkSize) {
+	// FOR THE TIME BEING.
 	if (chunkPos.y != -1)
 		return;
 	
 	for (int x = 0; x < chunkSize; x++) {
 		for (int y = 0; y < chunkSize; y++) {
-			for (int z = 0; z < chunkSize; z++) {
-				blocks[glm::ivec3{ x, y, z } + chunkPos * (int)chunkSize] = BlockType::DIRT;
-			}
+			/*for (int z = 0; z < chunkSize; z++) {
+				if (randomInclusive(0, 1))
+					blocks[glm::ivec3{ x, y, z } + chunkPos * chunkSize] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+			}*/
+
+			if (randomInclusive(0, 1))
+				blocks[glm::ivec3{ x, 0, y } + chunkPos * chunkSize] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 		}
 	}
 }
