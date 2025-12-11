@@ -84,7 +84,7 @@ void World::flush(const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
-		if (!chunks.contains(chunkPos)) {
+		if (!isChunkValid(chunkPos, chunks)) {
 			++it;
 			continue;
 		}

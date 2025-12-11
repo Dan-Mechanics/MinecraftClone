@@ -229,6 +229,11 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize) {
 	};
 }
 
+bool isChunkValid(const glm::ivec3& chunkPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
+	return chunks.contains(chunkPos) &&
+		chunks.at(chunkPos)->blocks.begin() != chunks.at(chunkPos)->blocks.end();
+}
+
 bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
