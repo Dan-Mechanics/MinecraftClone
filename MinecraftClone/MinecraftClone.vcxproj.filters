@@ -19,6 +19,12 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{ff00db2e-e20f-431b-8039-50aeb0de18f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{1b2d2537-3902-446a-b721-838d1d6f4721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChunkMesh">
+      <UniqueIdentifier>{666c945d-40d8-4951-b489-4f89af359e6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -33,9 +39,6 @@
     <ClCompile Include="vbo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ebo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vao.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,9 +49,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
@@ -63,17 +63,23 @@
     <ClCompile Include="Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="world_mesh_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_utils.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="EBO.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
     <ClCompile Include="ChunkMesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ChunkMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,22 +115,10 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vbo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ebo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vao.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
@@ -151,23 +145,35 @@
     <ClInclude Include="world_mesh_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hashing_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkMesh.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Vertex.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_utils.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Mesh</Filter>
     </ClInclude>
     <ClInclude Include="IntVertex.h">
-      <Filter>Header Files</Filter>
+      <Filter>ChunkMesh</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ChunkMesh.h">
+      <Filter>ChunkMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
