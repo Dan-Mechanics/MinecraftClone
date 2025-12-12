@@ -178,4 +178,18 @@
       <Filter>Resource Files\Shaders</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="atlas.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="atlas_specular.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="planks.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="planks_specular.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

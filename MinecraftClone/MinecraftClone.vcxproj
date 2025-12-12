@@ -206,6 +206,12 @@
     <Text Include="lit_color.frag" />
     <Text Include="shadow_map.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="atlas.png" />
+    <Image Include="atlas_specular.png" />
+    <Image Include="planks.png" />
+    <Image Include="planks_specular.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
