@@ -16,9 +16,6 @@ public:
 	Chunk(const glm::ivec3& chunkPos, const int chunkSize);
 	virtual ~Chunk();
 
-	void drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const;
-	void draw(Object& chunkObject, const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
-		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) const;
 
 private:
 	void generateChunkData(const int chunkSize);

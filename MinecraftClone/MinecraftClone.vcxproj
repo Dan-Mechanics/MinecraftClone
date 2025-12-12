@@ -170,6 +170,7 @@
   <ItemGroup>
     <None Include="chunk.frag" />
     <None Include="chunk.vert" />
+    <None Include="chunk_shadow.vert" />
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="normals_debug.frag" />
