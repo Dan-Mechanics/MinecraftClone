@@ -37,12 +37,6 @@ public:
 		const glm::vec3& translation, const glm::quat& rotation,
 		const glm::vec3& scale, const glm::vec4& selfColor) const;
 
-	void drawShadowChunk(const Shader& shader, const Camera& camera) const;
-
-	void drawChunk(const Shader& shader, const Camera& camera,
-		const glm::vec3& lightPos, const glm::vec4& lightColor,
-		const glm::vec4& worldColor, const std::vector<Texture>& material) const;
-
 	void free() const;
 
 };
