@@ -12,6 +12,7 @@ public:
 	glm::vec3 color{};
 	glm::vec2 texUv{};
 
+	Vertex() = default;
 	Vertex(const glm::vec3& position)
 		: position(position) {
 	}
@@ -22,7 +23,6 @@ public:
 	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec3& color, const glm::vec2& texUv)
 		: position(position), normal(normal), color(color), texUv(texUv) { }
 
-	Vertex() = default;
 };
 
 class VBO {
