@@ -91,12 +91,12 @@ int main() {
 
 	std::vector <Texture> woodMaterial {
 		Texture("planks.png", "diffuse", 0),
-		Texture("planksSpec.png", "specular", 1)
+		Texture("planks_specular.png", "specular", 1)
 	};
 
 	std::vector <Texture> atlasMaterial {
-		Texture("texture_atlas.png", "diffuse", 0),
-		Texture("texture_atlas_specular.png", "specular", 1)
+		Texture("atlas.png", "diffuse", 0)
+		//Texture("texture_atlas_specular.png", "specular", 1)
 	};
 
 	// ===

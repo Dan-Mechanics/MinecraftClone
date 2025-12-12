@@ -203,12 +203,6 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="planks.png" />
-    <Image Include="planks_specular" />
-    <Image Include="atlas" />
-    <Image Include="atlas_specular" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="lit_color.frag" />
     <Text Include="shadow_map.frag" />
   </ItemGroup>
