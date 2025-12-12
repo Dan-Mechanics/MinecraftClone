@@ -186,6 +186,8 @@ void Mesh::drawChunk(const Shader& shader, const Camera& camera, const glm::vec3
 			num = std::to_string(specularCount++);
 		}
 
+		// POSSIBLY ADD EMMISION IN THE FUTURE ??
+
 		material[i].setTextureUnit(shader, (type + num).c_str(), i);
 		material[i].bind();
 	}
