@@ -186,6 +186,7 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Direction.h" />
+    <ClInclude Include="IntVertex.h" />
     <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="hashing_utils.h" />
@@ -203,7 +204,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="planks.png" />
-    <Image Include="planksSpec.png" />
+    <Image Include="planks_specular" />
+    <Image Include="atlas" />
+    <Image Include="atlas_specular" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag" />
