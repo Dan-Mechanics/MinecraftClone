@@ -84,17 +84,19 @@ int main() {
 	Shader materialShader("default.vert", "material.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
+	Shader chunkShader("chunk.vert", "chunk.frag");
+	Shader chunkShadowMap("chunk_shadow.vert", "shadow_map.frag");
 
 	// ===
 
 	std::vector <Texture> woodMaterial {
 		Texture("planks.png", "diffuse", 0),
-		Texture("planksSpec.png", "specular", 1)
+		Texture("planks_specular.png", "specular", 1)
 	};
 
 	std::vector <Texture> atlasMaterial {
-		Texture("texture_atlas.png", "diffuse", 0),
-		Texture("texture_atlas_specular.png", "specular", 1)
+		Texture("atlas.png", "diffuse", 0)
+		//Texture("texture_atlas_specular.png", "specular", 1)
 	};
 
 	// ===
@@ -153,7 +155,7 @@ int main() {
 	glFrontFace(GL_CCW);
 
 	// METERS PER SECOND.
-	const auto standardSpeed = 12.5f;
+	const auto standardSpeed = 15.0f;
 	const auto sensitivity = 0.1f;
 	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
@@ -187,7 +189,6 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			//world.tick(camera.position);
 			world.tick(camera.position);
 			world.flush(atlas);
 		}
@@ -195,13 +196,13 @@ int main() {
 		camera.hasFocus = hasFocus;
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
-		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+		camera.updateMatrix(105.0f, 0.01f, 100.0f);
 
 
-		shadowMap.bind(camera, sun, shadowMapShader);
+		shadowMap.bind(camera, sun, chunkShadowMap);
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		world.drawShadows(shadowMapShader, camera);
+		world.drawShadows(chunkShadowMap, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);
@@ -220,8 +221,8 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		shadowMap.sendToShader(materialShader);
-		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
+		shadowMap.sendToShader(chunkShader);
+		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

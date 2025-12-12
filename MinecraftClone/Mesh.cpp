@@ -1,7 +1,6 @@
 #include "Mesh.h"
 
 Mesh::Mesh() = default;
-
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices) {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -42,8 +41,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indic
 void Mesh::drawTexture(const Shader& shader, const Camera& camera,
 	const glm::vec3& translation, const glm::quat& rotation,
 	const glm::vec3& scale, const glm::vec3& lightPos,
-	const glm::vec4& lightColor, const glm::vec4& worldColor,
-	const std::vector<Texture>& textures) const {
+	const glm::vec4& lightColor, const glm::vec4& worldColor, const std::vector<Texture>& material) const {
 	shader.activate();
 	vao.bind();
 
@@ -51,9 +49,9 @@ void Mesh::drawTexture(const Shader& shader, const Camera& camera,
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
 
-	for (unsigned int i = 0; i < textures.size(); i++) {
+	for (unsigned int i = 0; i < material.size(); i++) {
 		std::string num;
-		std::string type = textures[i].type;
+		std::string type = material[i].type;
 		if (type == "diffuse") {
 			num = std::to_string(numDiffuse++);
 		}
@@ -61,8 +59,8 @@ void Mesh::drawTexture(const Shader& shader, const Camera& camera,
 			num = std::to_string(numSpecular++);
 		}
 
-		textures[i].setTextureUnit(shader, (type + num).c_str(), i);
-		textures[i].bind();
+		material[i].setTextureUnit(shader, (type + num).c_str(), i);
+		material[i].bind();
 	}
 
 	// Take care of the camera Matrix
