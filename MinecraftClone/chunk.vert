@@ -10,15 +10,11 @@ out vec2 texCoord;
 out vec4 fragPosLight;
 
 uniform mat4 camMatrix;
-uniform mat4 model;
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
 uniform mat4 lightProjection;
 
 void main() {
-	crntPos = vec3(model * translation * scale * rotation * vec4(aPos, 1.0f));
-	Normal = vec3(rotation * vec4(aNormal, 1.0f));
+	crntPos = aPos;
+	Normal = aNormal;
 
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
 
