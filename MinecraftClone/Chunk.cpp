@@ -3,16 +3,16 @@
 Chunk::Chunk() = default;
 Chunk::Chunk(const glm::ivec3& chunkPos, const int chunkSize) : chunkPos{ chunkPos } {
 	generateChunkData(chunkSize);
-	//std::cout << "created: " << std::flush;
-	//log(chunkPos);
+	std::cout << "created: " << std::flush;
+	log(chunkPos);
 }
 
 Chunk::~Chunk() {
 	if (hasMesh)
 		mesh.free();
 
-	//std::cout << "destroyed: " << std::flush;
-	//log(chunkPos);
+	std::cout << "destroyed: " << std::flush;
+	log(chunkPos);
 }
 
 void Chunk::drawShadows(Object& chunkObject, const Shader& shader, const Camera& camera) const {

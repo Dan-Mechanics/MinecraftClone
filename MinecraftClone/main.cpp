@@ -84,6 +84,7 @@ int main() {
 	Shader materialShader("default.vert", "material.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
+	Shader chunkShader("chunk.vert", "chunk.frag");
 
 	// ===
 
@@ -222,7 +223,7 @@ int main() {
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.sendToShader(materialShader);
-		world.draw(atlasMaterial, materialShader, camera, sun.col, sun.pos, skyColor);
+		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

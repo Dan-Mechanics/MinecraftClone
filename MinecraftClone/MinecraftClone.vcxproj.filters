@@ -92,6 +92,12 @@
     <None Include="shadow_map.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="chunk.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="chunk.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -142,10 +148,10 @@
     <ClInclude Include="mesh_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util.h">
+    <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="hashing_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

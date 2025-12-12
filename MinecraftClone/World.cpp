@@ -100,7 +100,6 @@ void World::flush(const Atlas& atlas) {
 		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix,
 			chunkSize, atlas, chunk, chunks);
 
-		std::cout << "YAAARRR" << toString(chunkPos)<< std::endl;
 		chunk.mesh = { chunkVerts, chunkTris, chunkMatrix };
 		chunk.hasMesh = true;
 

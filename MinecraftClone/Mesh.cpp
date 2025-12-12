@@ -160,6 +160,73 @@ void Mesh::drawUnlit(const Shader& shader, const Camera& camera, const glm::vec3
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
+void Mesh::drawShadowChunk(const Shader& shader, const Camera& camera, const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale) const {
+	shader.activate();
+	vao.bind();
+
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+
+	glm::mat4 trans = glm::mat4(1.0f);
+	glm::mat4 rot = glm::mat4(1.0f);
+	glm::mat4 sca = glm::mat4(1.0f);
+
+	trans = glm::translate(trans, translation);
+	rot = glm::mat4_cast(rotation);
+	sca = glm::scale(sca, scale);
+
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+void Mesh::drawChunk(const Shader& shader, const Camera& camera, const glm::vec3& translation, const glm::quat& rotation,
+	const glm::vec3& scale, const glm::vec3& lightPos, const glm::vec4& lightColor, const glm::vec4& worldColor, const std::vector<Texture>& textures) const {
+	shader.activate();
+	vao.bind();
+
+	auto diffuseCount = 0;
+	auto specularCount = 0;
+	for (int i = 0; i < textures.size(); i++) {
+		std::string num;
+		std::string type = textures[i].type;
+		if (type == "diffuse") {
+			num = std::to_string(diffuseCount++);
+		}
+		else if (type == "specular") {
+			num = std::to_string(specularCount++);
+		}
+
+		textures[i].setTextureUnit(shader, (type + num).c_str(), i);
+		textures[i].bind();
+	}
+
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+
+	glm::mat4 trans = glm::mat4(1.0f);
+	glm::mat4 rot = glm::mat4(1.0f);
+	glm::mat4 sca = glm::mat4(1.0f);
+
+	trans = glm::translate(trans, translation);
+	rot = glm::mat4_cast(rotation);
+	sca = glm::scale(sca, scale);
+
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
+
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+
 void Mesh::free() const {
 	vao.free();
 	vbo.free();

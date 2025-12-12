@@ -168,6 +168,8 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="chunk.frag" />
+    <None Include="chunk.vert" />
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="normals_debug.frag" />
