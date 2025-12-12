@@ -91,14 +91,13 @@ void World::flush(const Atlas& atlas) {
 		if (chunk.hasMesh)
 			chunk.chunkMesh.free();
 
-		std::vector<Vertex> chunkVerts{};
+		std::vector<ChunkVertex> chunkVerts{};
 		std::vector<GLuint> chunkTris{};
-		glm::mat4 chunkMatrix{};
 
-		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix,
-			chunkSize, atlas, chunk, chunks);
+		generateChunkMesh(chunkVerts, 
+			chunkTris, chunkSize, atlas, chunk, chunks);
 
-		chunk.chunkMesh = { chunkVerts, chunkTris, chunkMatrix };
+		chunk.chunkMesh = { chunkVerts, chunkTris };
 		chunk.hasMesh = true;
 
 		++it;

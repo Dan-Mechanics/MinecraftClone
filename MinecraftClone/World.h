@@ -28,7 +28,7 @@ private:
 	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
 	int chunkSize{};
 	int renderRadius{};
-	Object chunkObject{};
+	//Object chunkObject{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
