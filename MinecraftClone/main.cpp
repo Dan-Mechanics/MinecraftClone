@@ -85,7 +85,6 @@ int main() {
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
 	Shader chunkShader("chunk.vert", "chunk.frag");
-	Shader chunkShadowMap("chunk_shadow.vert", "shadow_map.frag");
 
 	// ===
 
@@ -201,10 +200,10 @@ int main() {
 		camera.updateMatrix(103.0f, 0.01f, 100.0f);
 
 
-		shadowMap.bind(camera, sun, chunkShadowMap);
+		shadowMap.bind(camera, sun, shadowMapShader);
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		world.drawShadows(chunkShadowMap, camera);
+		world.drawShadows(shadowMapShader, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);

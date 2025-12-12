@@ -25,7 +25,8 @@ public:
 	void drawTexture(const Shader& shader, const Camera& camera,
 		const glm::vec3& translation, const glm::quat& rotation,
 		const glm::vec3& scale, const glm::vec3& lightPos,
-		const glm::vec4& lightColor, const glm::vec4& worldColor, const std::vector<Texture>& material) const;
+		const glm::vec4& lightColor, const glm::vec4& worldColor,
+		const std::vector<Texture>& textures) const;
 
 	void drawColor(const Shader& shader, const Camera& camera,
 		const glm::vec3& translation, const glm::quat& rotation,
@@ -37,11 +38,15 @@ public:
 		const glm::vec3& translation, const glm::quat& rotation,
 		const glm::vec3& scale, const glm::vec4& selfColor) const;
 
-	void drawShadowChunk(const Shader& shader, const Camera& camera) const;
+	void drawShadowChunk(const Shader& shader, const Camera& camera,
+		const glm::vec3& translation, const glm::quat& rotation,
+		const glm::vec3& scale) const;
 
 	void drawChunk(const Shader& shader, const Camera& camera,
-		const glm::vec3& lightPos, const glm::vec4& lightColor,
-		const glm::vec4& worldColor, const std::vector<Texture>& material) const;
+		const glm::vec3& translation, const glm::quat& rotation,
+		const glm::vec3& scale, const glm::vec3& lightPos,
+		const glm::vec4& lightColor, const glm::vec4& worldColor,
+		const std::vector<Texture>& textures) const;
 
 	void free() const;
 

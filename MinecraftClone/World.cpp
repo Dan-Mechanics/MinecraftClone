@@ -7,7 +7,7 @@ World::World(const int chunkSize, const int renderRadius)
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second->mesh.drawShadowChunk(shader, camera);
+		it->second->drawShadows(chunkObject, shader, camera);
 		++it;
 	}
 }
@@ -16,7 +16,9 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second->mesh.drawChunk(shader, camera, lightPos, lightColor, worldColor, material);
+		it->second->draw(chunkObject, material, shader,
+			camera, lightColor, lightPos, worldColor);
+
 		++it;
 	}
 }
