@@ -155,6 +155,13 @@ void setCurrentFaceUVs(std::vector<Vertex>& verts, const Face& face) {
 		verts[beginFaceVert + i].texUv = face.uvs[i];
 		verts[beginFaceVert + i].texUv = face.uvs[i];
 		verts[beginFaceVert + i].texUv = face.uvs[i];
+
+		// MAKE THE VERTEX COLOR MAGENTA FOR DEBUG.
+		// WE WON'T SEE THIS BECAUSE OF THE TEXTURE.
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
+		verts[beginFaceVert + i].color = magenta;
 	}
 }
 
