@@ -3,16 +3,16 @@
 Chunk::Chunk() = default;
 Chunk::Chunk(const glm::ivec3& chunkPos, const int chunkSize) : chunkPos{ chunkPos } {
 	generateChunkData(chunkSize);
-	std::cout << "created: " << std::flush;
-	log(chunkPos);
+	/*std::cout << "created: " << std::flush;
+	log(chunkPos);*/
 }
 
 Chunk::~Chunk() {
 	if (hasMesh)
 		mesh.free();
 
-	std::cout << "destroyed: " << std::flush;
-	log(chunkPos);
+	/*std::cout << "destroyed: " << std::flush;
+	log(chunkPos);*/
 }
 
 void Chunk::generateChunkData(const int chunkSize) {
@@ -27,8 +27,10 @@ void Chunk::generateChunkData(const int chunkSize) {
 					blocks[glm::ivec3{ x, y, z } + chunkPos * chunkSize] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 			}*/
 
+			blocks[glm::ivec3{ x, 0, y } + chunkPos * chunkSize] = BlockType::GRAVEL;
+
 			if (randomInclusive(0, 1))
-				blocks[glm::ivec3{ x, 0, y } + chunkPos * chunkSize] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+				blocks[glm::ivec3{ x, 1, y } + chunkPos * chunkSize] = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
 		}
 	}
 }

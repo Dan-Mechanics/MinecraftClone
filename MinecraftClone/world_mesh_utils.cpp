@@ -16,8 +16,11 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		const BlockType blockType = it->second;
 
 		glm::vec3 pos{ blockPos };
-		pos.x = -pos.x - 1.0f;
-		pos.z = -pos.z - 1.0f;
+		/*pos.x = -pos.x - 1.0f;
+		pos.z = -pos.z - 1.0f;*/
+
+		pos.x -= 1.0f;
+		pos.z -= 1.0f;
 
 		// UP. ===
 		if (!hasBlock(blockPos + up, chunks, chunkSize)) {
@@ -42,7 +45,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// FORWARD. ===
-		if (!hasBlock(blockPos + back, chunks, chunkSize)) {
+		if (!hasBlock(blockPos + forward, chunks, chunkSize)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ 0.0f, 0.0f, 1.0f });
@@ -53,7 +56,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// RIGHT. ===
-		if (!hasBlock(blockPos + left, chunks, chunkSize)) {
+		if (!hasBlock(blockPos + right, chunks, chunkSize)) {
 			verts.emplace_back(pos + glm::vec3{ high, low, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, high }, glm::vec3{ 1.0f, 0.0f, 0.0f });
@@ -64,7 +67,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// BACK. ===
-		if (!hasBlock(blockPos + forward, chunks, chunkSize)) {
+		if (!hasBlock(blockPos + back, chunks, chunkSize)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
 			verts.emplace_back(pos + glm::vec3{ high, high, low }, glm::vec3{ 0.0f, 0.0f, -1.0f });
@@ -75,7 +78,7 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 		}
 
 		// LEFT. ===
-		if (!hasBlock(blockPos + right, chunks, chunkSize)) {
+		if (!hasBlock(blockPos + left, chunks, chunkSize)) {
 			verts.emplace_back(pos + glm::vec3{ low, low, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, high }, glm::vec3{ -1.0f, 0.0f, 0.0f });
 			verts.emplace_back(pos + glm::vec3{ low, high, low }, glm::vec3{ -1.0f, 0.0f, 0.0f });

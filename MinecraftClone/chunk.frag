@@ -33,7 +33,7 @@ vec4 directionalLight() {
 			shadow = 1.0f;
 	}
 
-	vec4 light = texture(specular0, texCoord).r * diffuse * (1.0f - shadow) * lightColor + worldColor;
+	vec4 light = diffuse * (1.0f - shadow) * lightColor + worldColor;
 	light.x = min(light.x, 1.0f);
 	light.y = min(light.y, 1.0f);
 	light.z = min(light.z, 1.0f);

@@ -155,7 +155,7 @@ int main() {
 	glFrontFace(GL_CCW);
 
 	// METERS PER SECOND.
-	const auto standardSpeed = 12.5f;
+	const auto standardSpeed = 15.0f;
 	const auto sensitivity = 0.1f;
 	Camera camera{ window, width, height, standardSpeed, sensitivity };
 
@@ -190,7 +190,6 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			//world.tick(camera.position);
 			world.tick(camera.position);
 			world.flush(atlas);
 		}
@@ -198,7 +197,7 @@ int main() {
 		camera.hasFocus = hasFocus;
 		camera.moveCamera(window, deltaTime);
 		camera.rotateCamera(window);
-		camera.updateMatrix(103.0f, 0.01f, 100.0f);
+		camera.updateMatrix(105.0f, 0.01f, 100.0f);
 
 
 		shadowMap.bind(camera, sun, chunkShadowMap);
@@ -223,7 +222,7 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		shadowMap.sendToShader(materialShader);
+		shadowMap.sendToShader(chunkShader);
 		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);
