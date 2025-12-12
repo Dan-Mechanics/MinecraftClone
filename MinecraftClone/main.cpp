@@ -192,6 +192,7 @@ int main() {
 			timer -= tickInterval;
 			world.tick(camera.position);
 			world.flush(atlas);
+			// std::cout << "lgihtwork" << std::endl;
 		}
 
 		camera.hasFocus = hasFocus;

@@ -16,6 +16,7 @@ void main() {
 
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
 
+	vec3 crntPos = vec3(0.0, 0.0, 0.0);
 	fragPosLight = lightProjection * vec4(crntPos, 1.0f);
 	
 	gl_Position = camMatrix * vec4(aPos, 1.0);
