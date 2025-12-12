@@ -186,7 +186,7 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Direction.h" />
-    <ClInclude Include="IntVertex.h" />
+    <ClInclude Include="ChunkVertex.h" />
     <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="hashing_utils.h" />

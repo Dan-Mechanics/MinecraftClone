@@ -3,22 +3,22 @@
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_int3.hpp>
 
-struct IntVertex {
+struct ChunkVertex {
 public:
 	glm::ivec3 position{};
 	glm::vec3 normal{};
 	glm::vec2 texUv{};
 
-	IntVertex() = default;
-	IntVertex(const glm::ivec3& position)
+	ChunkVertex() = default;
+	ChunkVertex(const glm::ivec3& position)
 		: position(position) {
 	}
 
-	IntVertex(const glm::ivec3& position, const glm::vec3& normal)
+	ChunkVertex(const glm::ivec3& position, const glm::vec3& normal)
 		: position(position), normal(normal) {
 	}
 
-	IntVertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& texUv)
+	ChunkVertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& texUv)
 		: position(position), normal(normal), texUv(texUv) {
 	}
 
