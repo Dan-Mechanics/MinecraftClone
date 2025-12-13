@@ -1,6 +1,6 @@
 #include "world_mesh_utils.h"
 
-void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, glm::mat4& modelMatrix, const int chunkSize, const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
+void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, const int chunkSize, const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -100,8 +100,6 @@ void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, gl
 
 		++it;
 	}
-
-	modelMatrix = glm::mat4{ 1.0f };
 }
 
 Face tilePositionToUVs(const int x, const int y) {

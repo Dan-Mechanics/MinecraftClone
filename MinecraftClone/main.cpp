@@ -167,6 +167,9 @@ int main() {
 	glfwSwapInterval(0);
 	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
+	ThreadPool pool{ 16 };
+	pool.init();
+
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
 		float deltaTime = currentTime - previousTime;
@@ -190,7 +193,7 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			world.tick(camera.position);
-			world.flush(atlas);
+			world.flush(pool, atlas);
 		}
 
 		camera.hasFocus = hasFocus;
@@ -238,6 +241,8 @@ int main() {
 
 	cubeMesh.free();
 	shadowMap.free();
+
+	pool.terminate();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

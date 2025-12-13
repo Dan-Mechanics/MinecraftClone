@@ -19,25 +19,6 @@ ChunkMesh::ChunkMesh(const std::vector<Vertex>& vertices, const std::vector<GLui
 	ebo.unbind();
 }
 
-ChunkMesh::ChunkMesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const glm::mat4& modelMatrix) {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->modelMatrix = modelMatrix;
-
-	vao.bind();
-	vbo = { vertices };
-	ebo = { indices };
-
-	vao.linkAttribute(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
-	vao.linkAttribute(vbo, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-	vao.linkAttribute(vbo, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
-	vao.linkAttribute(vbo, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float)));
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
-}
-
 void ChunkMesh::drawShadows(const Shader& shader, const Camera& camera) const {
 	shader.activate();
 	vao.bind();

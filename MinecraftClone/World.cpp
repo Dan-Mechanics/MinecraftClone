@@ -78,7 +78,7 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyChunkChange(chunkPos);
 }
 
-void World::flush(const Atlas& atlas) {
+void World::flush(ThreadPool& pool, const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -95,10 +95,11 @@ void World::flush(const Atlas& atlas) {
 		std::vector<GLuint> chunkTris{};
 		glm::mat4 chunkMatrix{};
 
-		generateChunkMesh(chunkVerts, chunkTris, chunkMatrix,
+		//auto future = pool.submit(generateChunkMesh, chunkverts, chunkTris, )
+		generateChunkMesh(chunkVerts, chunkTris,
 			chunkSize, atlas, chunk, chunks);
 
-		chunk.chunkMesh = { chunkVerts, chunkTris, chunkMatrix };
+		chunk.chunkMesh = { chunkVerts, chunkTris };
 		chunk.hasMesh = true;
 
 		++it;

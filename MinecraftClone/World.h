@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "world_mesh_utils.h"
+#include "ThreadPool.h"
 
 class World {
 public:
@@ -20,7 +21,7 @@ public:
 	void tick(const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-	void flush(const Atlas& atlas);
+	void flush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:

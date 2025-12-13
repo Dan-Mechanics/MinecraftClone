@@ -188,8 +188,10 @@
     <ClInclude Include="Direction.h" />
     <ClInclude Include="IntVertex.h" />
     <ClInclude Include="mesh_utils.h" />
+    <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="hashing_utils.h" />
+    <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="world_mesh_utils.h" />
