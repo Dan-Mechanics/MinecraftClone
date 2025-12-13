@@ -25,10 +25,6 @@ void ChunkMesh::drawShadows(const Shader& shader, const Camera& camera) const {
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 	camera.sendMatrixToShader(shader, "camMatrix");
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
 }
 
 void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3& lightPos, const glm::vec4& lightColor,
@@ -61,10 +57,6 @@ void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3
 	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
 }
 
 void ChunkMesh::free() const {
