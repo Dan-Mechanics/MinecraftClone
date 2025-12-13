@@ -89,10 +89,6 @@ void Mesh::drawTexture(const Shader& shader, const Camera& camera,
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
 }
 
 void Mesh::drawColor(const Shader& shader, const Camera& camera,
@@ -130,10 +126,6 @@ void Mesh::drawColor(const Shader& shader, const Camera& camera,
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
 }
 
 void Mesh::drawUnlit(const Shader& shader, const Camera& camera, const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale, const glm::vec4& selfColor) const {
@@ -164,10 +156,6 @@ void Mesh::drawUnlit(const Shader& shader, const Camera& camera, const glm::vec3
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-	vao.unbind();
-	vbo.unbind();
-	ebo.unbind();
 }
 
 void Mesh::free() const {
