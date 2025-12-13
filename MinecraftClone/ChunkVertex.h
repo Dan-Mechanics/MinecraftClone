@@ -6,11 +6,12 @@
 struct ChunkVertex {
 public:
 	glm::ivec3 position{};
-	glm::ivec3 normal{};
+	//glm::ivec3 normal{};
+	GLint normal;
 	glm::vec2 texUv{};
 
 	ChunkVertex() = default;
-	ChunkVertex(const glm::ivec3& position, const glm::ivec3& normal)
+	ChunkVertex(const glm::ivec3& position, const GLint& normal)
 		: position{ position }, normal{ normal } { }
 
 };

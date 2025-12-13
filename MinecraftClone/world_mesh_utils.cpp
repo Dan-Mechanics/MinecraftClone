@@ -23,10 +23,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// UP. ===
 		if (!hasBlock(blockPos + up, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ low, high, low }, glm::ivec3{ 0, 1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ low, high, high }, glm::ivec3{ 0, 1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, high, high }, glm::ivec3{ 0, 1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, high, low }, glm::ivec3{ 0, 1, 0 });
+			verts.emplace_back(pos + glm::ivec3{ low, high, low },   0);
+			verts.emplace_back(pos + glm::ivec3{ low, high, high },  0);
+			verts.emplace_back(pos + glm::ivec3{ high, high, high }, 0);
+			verts.emplace_back(pos + glm::ivec3{ high, high, low },  0);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::UP]);
 			faceCount++;
@@ -34,10 +34,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// DOWN. ===
 		if (!hasBlock(blockPos + down, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ low, low, low }, glm::ivec3{ 0, -1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, low, low }, glm::ivec3{ 0, -1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, low, high }, glm::ivec3{ 0, -1, 0 });
-			verts.emplace_back(pos + glm::ivec3{ low, low, high }, glm::ivec3{ 0, -1, 0 });
+			verts.emplace_back(pos + glm::ivec3{ low, low, low },   1);
+			verts.emplace_back(pos + glm::ivec3{ high, low, low },  1);
+			verts.emplace_back(pos + glm::ivec3{ high, low, high }, 1);
+			verts.emplace_back(pos + glm::ivec3{ low, low, high },  1);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::DOWN]);
 			faceCount++;
@@ -45,10 +45,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// FORWARD. ===
 		if (!hasBlock(blockPos + forward, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ high, low, high }, glm::ivec3{ 0, 0, 1 });
-			verts.emplace_back(pos + glm::ivec3{ high, high, high }, glm::ivec3{ 0, 0, 1 });
-			verts.emplace_back(pos + glm::ivec3{ low, high, high }, glm::ivec3{ 0, 0, 1 });
-			verts.emplace_back(pos + glm::ivec3{ low, low, high }, glm::ivec3{ 0, 0, 1 });
+			verts.emplace_back(pos + glm::ivec3{ high, low, high },  2);
+			verts.emplace_back(pos + glm::ivec3{ high, high, high }, 2);
+			verts.emplace_back(pos + glm::ivec3{ low, high, high },  2);
+			verts.emplace_back(pos + glm::ivec3{ low, low, high },   2);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::FORWARD]);
 			faceCount++;
@@ -56,10 +56,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// RIGHT. ===
 		if (!hasBlock(blockPos + right, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ high, low, low }, glm::ivec3{ 1, 0, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, high, low }, glm::ivec3{ 1, 0, 0});
-			verts.emplace_back(pos + glm::ivec3{ high, high, high }, glm::ivec3{ 1, 0, 0 });
-			verts.emplace_back(pos + glm::ivec3{ high, low, high }, glm::ivec3{ 1, 0, 0 });
+			verts.emplace_back(pos + glm::ivec3{ high, low, low },   3);
+			verts.emplace_back(pos + glm::ivec3{ high, high, low },  3);
+			verts.emplace_back(pos + glm::ivec3{ high, high, high }, 3);
+			verts.emplace_back(pos + glm::ivec3{ high, low, high },  3);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::RIGHT]);
 			faceCount++;
@@ -67,10 +67,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// BACK. ===
 		if (!hasBlock(blockPos + back, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ low, low, low }, glm::ivec3{ 0, 0, -1 });
-			verts.emplace_back(pos + glm::ivec3{ low, high, low }, glm::ivec3{ 0, 0, -1 });
-			verts.emplace_back(pos + glm::ivec3{ high, high, low }, glm::ivec3{ 0, 0, -1 });
-			verts.emplace_back(pos + glm::ivec3{ high, low, low }, glm::ivec3{ 0, 0, -1 });
+			verts.emplace_back(pos + glm::ivec3{ low, low, low },   4);
+			verts.emplace_back(pos + glm::ivec3{ low, high, low },  4);
+			verts.emplace_back(pos + glm::ivec3{ high, high, low }, 4);
+			verts.emplace_back(pos + glm::ivec3{ high, low, low },  4);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::BACK]);
 			faceCount++;
@@ -78,10 +78,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		// LEFT. ===
 		if (!hasBlock(blockPos + left, chunks, chunkSize)) {
-			verts.emplace_back(pos + glm::ivec3{ low, low, high }, glm::ivec3{ -1, 0, 0 });
-			verts.emplace_back(pos + glm::ivec3{ low, high, high }, glm::ivec3{ -1, 0, 0 });
-			verts.emplace_back(pos + glm::ivec3{ low, high, low }, glm::ivec3{ -1, 0, 0 });
-			verts.emplace_back(pos + glm::ivec3{ low, low, low }, glm::ivec3{ -1, 0, 0 });
+			verts.emplace_back(pos + glm::ivec3{ low, low, high },  5);
+			verts.emplace_back(pos + glm::ivec3{ low, high, high }, 5);
+			verts.emplace_back(pos + glm::ivec3{ low, high, low },  5);
+			verts.emplace_back(pos + glm::ivec3{ low, low, low },   5);
 
 			setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::LEFT]);
 			faceCount++;

@@ -218,11 +218,11 @@ int main() {
 		//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
 		// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		// up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.sendToShader(chunkShader);
 		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
