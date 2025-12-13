@@ -85,8 +85,8 @@ int main() {
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
 
-	Shader chunkShader("chunk.vert", "debug_chunk.frag");
-	//Shader chunkShadowMap("chunk_shadow.vert", "shadow_map.frag");
+	Shader chunkShader("chunk.vert", "chunk.frag");
+	Shader chunkShadowMap("chunk_shadow.vert", "shadow_map.frag");
 
 	// ===
 
@@ -202,10 +202,10 @@ int main() {
 		camera.updateMatrix(105.0f, 0.01f, 100.0f);
 
 
-		//shadowMap.bind(camera, sun, chunkShadowMap);
+		shadowMap.bind(camera, sun, chunkShadowMap);
 
 		//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
-		//world.drawShadows(chunkShadowMap, camera);
+		world.drawShadows(chunkShadowMap, camera);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);
@@ -224,7 +224,7 @@ int main() {
 		right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
-		//shadowMap.sendToShader(chunkShader);
+		shadowMap.sendToShader(chunkShader);
 		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);

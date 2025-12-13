@@ -145,8 +145,6 @@ void rotateUVsClockwise(Face& face) {
 
 void setCurrentFaceUVs(std::vector<ChunkVertex>& verts, const Face& face) {
 	auto beginFaceVert = verts.size() - 4;
-	glm::vec3 magenta{ 1.0f, 0.0f, 1.0f };
-
 	for (int i = 0; i < 4; ++i) {
 		verts[beginFaceVert + i].texUv = face.uvs[i];
 		verts[beginFaceVert + i].texUv = face.uvs[i];
