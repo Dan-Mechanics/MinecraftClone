@@ -107,6 +107,9 @@
     <None Include="chunk_shadow.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="debug_chunk.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">

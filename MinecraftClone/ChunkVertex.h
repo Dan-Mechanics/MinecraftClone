@@ -10,16 +10,7 @@ public:
 	glm::vec2 texUv{};
 
 	ChunkVertex() = default;
-	ChunkVertex(const glm::ivec3& position)
-		: position(position) {
-	}
-
 	ChunkVertex(const glm::ivec3& position, const glm::vec3& normal)
-		: position(position), normal(normal) {
-	}
-
-	ChunkVertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& texUv)
-		: position(position), normal(normal), texUv(texUv) {
-	}
+		: position{ position }, normal{ normal } { }
 
 };

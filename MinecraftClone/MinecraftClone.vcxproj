@@ -172,6 +172,7 @@
     <None Include="chunk.frag" />
     <None Include="chunk.vert" />
     <None Include="chunk_shadow.vert" />
+    <None Include="debug_chunk.frag" />
     <None Include="default.frag" />
     <None Include="default.vert" />
     <None Include="normals_debug.frag" />

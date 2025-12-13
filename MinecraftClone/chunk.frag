@@ -41,5 +41,7 @@ vec4 directionalLight() {
 }
 
 void main() {
+	vec4 color = directionalLight();
+	color.a = 1.0f;
 	FragColor = directionalLight();
 }
