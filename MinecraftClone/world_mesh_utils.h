@@ -7,7 +7,9 @@
 #include "Chunk.h"
 #include "hashing_utils.h"
 
-void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, const int chunkSize, Atlas& atlas, Chunk& chunk, std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
+	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
+	const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
 
 /// <summary>
 /// This UV code is a little strange but it works.
@@ -25,7 +27,7 @@ void rotateUVsClockwise(Face& face);
 /// <summary>
 /// Rule: this can only be called after 4 verts have been added.
 /// </summary>
-void setCurrentFaceUVs(std::vector<Vertex>& verts, const Face& face);
+void setCurrentFaceUVs(std::vector<ChunkVertex>& verts, const Face& face);
 void setEquatorUVs(Map& map, const Face& face);
 void setPoleUVs(Map& map, const Face& face);
 

@@ -84,6 +84,7 @@ int main() {
 	Shader materialShader("default.vert", "material.frag");
 	Shader unlitShader("default.vert", "unlit_color.frag");
 	Shader shadowMapShader("shadow_map.vert", "shadow_map.frag");
+
 	Shader chunkShader("chunk.vert", "chunk.frag");
 	Shader chunkShadowMap("chunk_shadow.vert", "shadow_map.frag");
 
@@ -110,9 +111,9 @@ int main() {
 
 	// ===
 
-	 auto atlas = generateAtlas();
+	const auto atlas = generateAtlas();
 	const auto chunkSize = 16;
-	const auto renderRadius = 2;
+	const auto renderRadius = 5;
 	World world{ chunkSize, renderRadius };
 
 	// ===
@@ -167,9 +168,6 @@ int main() {
 	glfwSwapInterval(0);
 	ShadowMapFBO shadowMap{ 2048, 2048, 25.0f };
 
-	ThreadPool pool{ 16 };
-	pool.init();
-
 	while (!glfwWindowShouldClose(window)) {
 		currentTime = (float)glfwGetTime();
 		float deltaTime = currentTime - previousTime;
@@ -183,8 +181,9 @@ int main() {
 
 		previousTime = currentTime;
 
-		std::string fps = std::to_string(int(1.0f / deltaTime));
-		std::string newTitle = "fps: " + fps;
+		std::string fps = std::to_string(1.0f / deltaTime);
+		std::string ms = std::to_string(deltaTime * 1000);
+		std::string newTitle = "fps: " + fps + " | ms: " + ms;
 		glfwSetWindowTitle(window, newTitle.c_str());
 
 		// ===
@@ -193,7 +192,8 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			world.tick(camera.position);
-			world.flush(pool, atlas);
+			world.flush(atlas);
+			// std::cout << "lgihtwork" << std::endl;
 		}
 
 		camera.hasFocus = hasFocus;
@@ -241,8 +241,6 @@ int main() {
 
 	cubeMesh.free();
 	shadowMap.free();
-
-	pool.terminate();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

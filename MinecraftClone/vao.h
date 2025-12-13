@@ -11,7 +11,7 @@ public:
 
 	void linkAttribute(VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) const;
 	void bind() const;
-	void unbind();
+	void unbind() const;
 	void free() const;
 };
 

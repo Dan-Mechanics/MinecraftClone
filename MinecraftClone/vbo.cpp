@@ -7,6 +7,12 @@ VBO::VBO(const std::vector<Vertex>& vertices) {
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
 
+VBO::VBO(const std::vector<ChunkVertex>& vertices) {
+	glGenBuffers(1, &id);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(ChunkVertex), vertices.data(), GL_STATIC_DRAW);
+}
+
 void VBO::bind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 }

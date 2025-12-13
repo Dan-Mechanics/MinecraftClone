@@ -9,14 +9,13 @@
 class Chunk {
 public:
 	std::unordered_map<glm::ivec3, BlockType, vec3hash> blocks{};
+	ChunkMesh chunkMesh{};
 	glm::ivec3 chunkPos{};
 	bool hasMesh{};
-	ChunkMesh chunkMesh{};
 
 	Chunk();
 	Chunk(const glm::ivec3& chunkPos, const int chunkSize);
 	virtual ~Chunk();
-
 
 private:
 	void generateChunkData(const int chunkSize);

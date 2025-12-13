@@ -8,14 +8,14 @@
 
 class ChunkMesh {
 public:
-	std::vector<Vertex> vertices{};
+	std::vector<ChunkVertex> vertices{};
 	std::vector<GLuint> indices{};
 	VAO vao{};
 	EBO ebo{};
 	VBO vbo{};
 
 	ChunkMesh();
-	ChunkMesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
+	ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);
 
 	void drawShadows(const Shader& shader, const Camera& camera) const;
 
