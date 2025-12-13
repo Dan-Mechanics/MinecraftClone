@@ -1,6 +1,6 @@
 #include "world_mesh_utils.h"
 
-void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, const int chunkSize, const Atlas& atlas, const Chunk& chunk, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
+void generateChunkMesh(std::vector<Vertex>& verts, std::vector<GLuint>& tris, const int chunkSize, Atlas& atlas, Chunk& chunk, std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
 	verts.clear();
 	tris.clear();
 

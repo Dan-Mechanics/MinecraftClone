@@ -21,7 +21,7 @@ public:
 	void tick(const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-	void flush(ThreadPool& pool, const Atlas& atlas);
+	void flush(ThreadPool& pool, Atlas& atlas);
 	void free();
 
 private:

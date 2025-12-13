@@ -78,7 +78,7 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyChunkChange(chunkPos);
 }
 
-void World::flush(ThreadPool& pool, const Atlas& atlas) {
+void World::flush(ThreadPool& pool, Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -98,6 +98,9 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 		future.get();
 		/*generateChunkMesh(chunkVerts, chunkTris,
 			chunkSize, atlas, chunk, chunks);*/
+
+		if (chunkVerts.size() != 0)
+			std::cout << chunkVerts.size() << std::endl;
 
 		chunk.chunkMesh = { chunkVerts, chunkTris };
 		chunk.hasMesh = true;

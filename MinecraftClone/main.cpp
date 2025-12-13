@@ -110,7 +110,7 @@ int main() {
 
 	// ===
 
-	const auto atlas = generateAtlas();
+	 auto atlas = generateAtlas();
 	const auto chunkSize = 16;
 	const auto renderRadius = 2;
 	World world{ chunkSize, renderRadius };
