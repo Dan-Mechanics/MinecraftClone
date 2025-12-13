@@ -93,11 +93,11 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 
 		std::vector<Vertex> chunkVerts{};
 		std::vector<GLuint> chunkTris{};
-		glm::mat4 chunkMatrix{};
 
-		//auto future = pool.submit(generateChunkMesh, chunkverts, chunkTris, )
-		generateChunkMesh(chunkVerts, chunkTris,
-			chunkSize, atlas, chunk, chunks);
+		auto future = pool.submit(generateChunkMesh, chunkVerts, chunkTris, chunkSize, atlas, chunk, chunks);
+		future.get();
+		/*generateChunkMesh(chunkVerts, chunkTris,
+			chunkSize, atlas, chunk, chunks);*/
 
 		chunk.chunkMesh = { chunkVerts, chunkTris };
 		chunk.hasMesh = true;
