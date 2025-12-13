@@ -12,8 +12,6 @@ uniform mat4 camMatrix;
 uniform mat4 lightProjection;
 
 void main() {
-
-
 	Normal = aNormal;
 
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
