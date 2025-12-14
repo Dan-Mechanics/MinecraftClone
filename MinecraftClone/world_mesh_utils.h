@@ -6,10 +6,16 @@
 #include "Atlas.h"
 #include "Chunk.h"
 #include "hashing_utils.h"
+#include <unordered_set>
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
 	const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+
+void addChunk(const int chunkSize, const glm::ivec3& chunkPos,
+	std::unordered_set<glm::ivec3, vec3hash>& changedChunkPositions, std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+
+void bindMaterial(std::vector<Texture>& material, const Shader & shader);
 
 /// <summary>
 /// This UV code is a little strange but it works.

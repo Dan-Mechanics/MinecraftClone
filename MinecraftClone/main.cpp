@@ -195,7 +195,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			world.tick(camera.position);
+			world.tick(pool, camera.position);
 			world.flush(pool, atlas);
 			// std::cout << "lgihtwork" << std::endl;
 		}
@@ -229,6 +229,8 @@ int main() {
 		up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 		shadowMap.sendToShader(chunkShader);
+
+		bindMaterial(atlasMaterial, chunkShader);
 		world.draw(atlasMaterial, chunkShader, camera, sun.col, sun.pos, skyColor);
 
 		glfwSwapBuffers(window);

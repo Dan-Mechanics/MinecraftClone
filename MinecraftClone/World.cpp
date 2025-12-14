@@ -21,7 +21,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
-void World::tick(const glm::vec3& playerPos) {
+void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
 
@@ -52,8 +52,12 @@ void World::tick(const glm::vec3& playerPos) {
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2;
 		if (!chunks.contains(chunkPos)) {
-			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-			changedChunkPositions.insert(chunkPos);
+			/*chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+			changedChunkPositions.insert(chunkPos);*/
+			auto future = pool.submit(addChunk, 
+				chunkSize, std::ref(chunkPos), std::ref(changedChunkPositions), std::ref(chunks));
+
+			future.get();
 		}
 
 		++it2;
@@ -99,6 +103,7 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 		/*generateChunkMesh(chunkVerts, 
 			chunkTris, chunkSize, atlas, chunk, chunks);*/
 
+		// I DON'T IF THIS ACTUALLY MAKES IT FASTER OR NOT.
 		auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
 			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
 

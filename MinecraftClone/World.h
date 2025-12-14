@@ -18,7 +18,7 @@ public:
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	
-	void tick(const glm::vec3 & playerPos);
+	void tick(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void flush(ThreadPool& pool, const Atlas& atlas);

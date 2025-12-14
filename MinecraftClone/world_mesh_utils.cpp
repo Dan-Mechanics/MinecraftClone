@@ -101,6 +101,32 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	}
 }
 
+void addChunk(const int chunkSize, const glm::ivec3& chunkPos,
+	std::unordered_set<glm::ivec3, vec3hash>& changedChunkPositions, 
+	std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
+	chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+	changedChunkPositions.insert(chunkPos);
+}
+
+void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
+	auto diffuseCount = 0;
+	auto specularCount = 0;
+	for (int i = 0; i < material.size(); ++i) {
+		std::string num;
+		std::string type = material[i].type;
+		if (type == "diffuse") {
+			num = std::to_string(diffuseCount++);
+		}
+		else if (type == "specular") {
+			num = std::to_string(specularCount++);
+		}
+		// POSSIBLY ADD EMMISION IN THE FUTURE ??
+
+		material[i].setTextureUnit(shader, (type + num).c_str(), i);
+		material[i].bind();
+	}
+}
+
 Face tilePositionToUVs(const int x, const int y) {
 	const auto scale = 16.0f;
 	const auto low = 0.0f;
