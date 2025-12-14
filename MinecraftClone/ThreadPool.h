@@ -66,7 +66,7 @@ public:
     }
 
     // Waits until threads finish their current task and shutdowns the pool
-    void terminate() {
+    void shutdown() {
         m_shutdown = true;
         m_conditional_lock.notify_all();
 

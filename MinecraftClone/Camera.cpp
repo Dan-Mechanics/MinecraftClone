@@ -1,7 +1,6 @@
 #include "Camera.h"
 
 Camera::Camera() = default;
-
 Camera::Camera(GLFWwindow* window, const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity) :
 	width{ width }, height{ height }, standardSpeed{ standardSpeed }, sensitivity{ sensitivity } { 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -51,7 +50,7 @@ void Camera::moveCamera(GLFWwindow* window, const float dt) {
 
 	auto currentSpeed = standardSpeed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		currentSpeed *= 2.5f;
+		currentSpeed *= 10.0f;
 
 	position += dt * currentSpeed * movement;
 }

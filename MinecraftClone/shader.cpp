@@ -15,6 +15,7 @@ std::string getFileContents(const char* filename) {
 	return { contents };
 }
  
+Shader::Shader() = default;
 Shader::Shader(const char* vertexFile, const char* fragmentFile) {
 	std::string vertexCode = getFileContents(vertexFile);
 	std::string fragmentCode = getFileContents(fragmentFile);

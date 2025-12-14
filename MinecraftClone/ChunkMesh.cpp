@@ -32,22 +32,7 @@ void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3
 	shader.activate();
 	vao.bind();
 
-	auto diffuseCount = 0;
-	auto specularCount = 0;
-	for (int i = 0; i < material.size(); i++) {
-		std::string num;
-		std::string type = material[i].type;
-		if (type == "diffuse") {
-			num = std::to_string(diffuseCount++);
-		}
-		else if (type == "specular") {
-			num = std::to_string(specularCount++);
-		}
-		// POSSIBLY ADD EMMISION IN THE FUTURE ??
-
-		material[i].setTextureUnit(shader, (type + num).c_str(), i);
-		material[i].bind();
-	}
+	//bindMaterial(material);
 
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 	camera.sendMatrixToShader(shader, "camMatrix");
