@@ -20,8 +20,7 @@ private:
 
     public:
         ThreadWorker(ThreadPool* pool, const int id)
-            : m_pool(pool), m_id(id) {
-        }
+            : m_pool(pool), m_id(id) { }
 
         void operator()() {
             std::function<void()> func;
@@ -29,14 +28,14 @@ private:
             while (!m_pool->m_shutdown) {
                 {
                     std::unique_lock<std::mutex> lock(m_pool->m_conditional_mutex);
-                    if (m_pool->m_queue.empty()) {
+                    if (m_pool->m_queue.empty()) 
                         m_pool->m_conditional_lock.wait(lock);
-                    }
+
                     dequeued = m_pool->m_queue.dequeue(func);
                 }
-                if (dequeued) {
+
+                if (dequeued) 
                     func();
-                }
             }
         }
     };
@@ -88,7 +87,7 @@ public:
         // Wrap packaged task into void function
         std::function<void()> wrapper_func = [task_ptr]() {
             (*task_ptr)();
-            };
+        };
 
         // Enqueue generic wrapper function
         m_queue.enqueue(wrapper_func);
