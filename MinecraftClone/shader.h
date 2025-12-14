@@ -12,7 +12,8 @@ std::string getFileContents(const char* filename);
 
 class Shader {
 public:
-	GLuint id;
+	GLuint id{};
+	Shader();
 	Shader(const char* vertexFile, const char* fragementFile);
 
 	void activate() const;

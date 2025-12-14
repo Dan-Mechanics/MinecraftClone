@@ -152,6 +152,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkMesh.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="mesh_utils.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="World.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="ChunkVertex.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="ShadowMapFBO.h" />

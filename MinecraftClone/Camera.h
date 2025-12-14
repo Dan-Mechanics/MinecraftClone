@@ -18,12 +18,12 @@ public:
 	glm::vec3 bodyRight{};
 	glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
 	glm::mat4 cameraMatrix = glm::identity<glm::mat4>();
+	glm::vec3 worldForward{ 0.0f, 0.0f, 1.0f };
 
-	const glm::vec3 worldForward{ 0.0f, 0.0f, 1.0f };
-	const unsigned int width{};
-	const unsigned int height{};
-	const float standardSpeed{};
-	const float sensitivity{};
+	unsigned int width{};
+	unsigned int height{};
+	float standardSpeed{};
+	float sensitivity{};
 
 	int hasFocus{};
 	float rotX{};
