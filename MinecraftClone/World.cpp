@@ -79,11 +79,6 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::flush(ThreadPool& pool, const Atlas& atlas) {
-	std::vector<glm::ivec3> positions{};
-	std::vector<std::future<void>> futures{};
-	std::vector<ChunkVertex> chunkVerts{};
-	std::vector<GLuint> chunkTris{};
-	
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -93,29 +88,21 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 		}
 		
 		Chunk& chunk = *chunks[chunkPos];
-		if (chunk.hasMesh) // DOES THIS NEED TO BE MULTITHREADED TOO ??
+		if (chunk.hasMesh) 
 			chunk.chunkMesh.free();
 
-		futures.push_back(pool.submit(generateChunkMesh, std::ref(chunkVerts),
-			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks)));
+		std::vector<ChunkVertex> chunkVerts{};
+		std::vector<GLuint> chunkTris{};
 
-		positions.emplace_back(chunkPos);
+		auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
+			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
+
+		future.get();
 
 		++it;
 	}
 
 	changedChunkPositions.clear();
-
-	auto it2 = positions.begin();
-	while (it2 != positions.end()) {
-		futures[std::distance(positions.begin(), it2)].get();
-
-		Chunk& chunk = *chunks[*it2];
-		chunk.chunkMesh = { chunkVerts, chunkTris };
-		chunk.hasMesh = true;
-
-		++it2;
-	}
 }
 
 void World::free() {
