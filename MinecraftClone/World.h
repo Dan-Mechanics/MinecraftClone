@@ -22,6 +22,7 @@ public:
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void flush(ThreadPool& pool, const Atlas& atlas);
+	void smallFlush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:

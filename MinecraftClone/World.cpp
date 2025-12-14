@@ -7,7 +7,9 @@ World::World(const int chunkSize, const int renderRadius)
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second->chunkMesh.drawShadows(shader, camera);
+		if (it->second->hasMesh)
+			it->second->chunkMesh.drawShadows(shader, camera);
+
 		++it;
 	}
 }
@@ -16,7 +18,9 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		it->second->chunkMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
+		if (it->second->hasMesh)
+			it->second->chunkMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
+
 		++it;
 	}
 }
@@ -52,12 +56,12 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2;
 		if (!chunks.contains(chunkPos)) {
-			/*chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-			changedChunkPositions.insert(chunkPos);*/
-			auto future = pool.submit(addChunk, 
-				chunkSize, std::ref(chunkPos), std::ref(changedChunkPositions), std::ref(chunks));
-
-			future.get();
+			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+			changedChunkPositions.insert(chunkPos);
+			//auto future = pool.submit(addChunk, 
+			//	chunkSize, std::ref(chunkPos), std::ref(changedChunkPositions), std::ref(chunks));
+			//
+			//future.get();
 		}
 
 		++it2;
@@ -103,7 +107,6 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 		/*generateChunkMesh(chunkVerts, 
 			chunkTris, chunkSize, atlas, chunk, chunks);*/
 
-		// I DON'T IF THIS ACTUALLY MAKES IT FASTER OR NOT.
 		auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
 			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
 
@@ -116,6 +119,36 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 	}
 
 	changedChunkPositions.clear();
+}
+
+void World::smallFlush(ThreadPool& pool, const Atlas& atlas) {
+	auto it = changedChunkPositions.begin();
+	if (it != changedChunkPositions.end()) {
+		const glm::ivec3 chunkPos = *it;
+		if (!chunks.contains(chunkPos)) {
+			return;
+		}
+
+		Chunk& chunk = *chunks[chunkPos];
+		if (chunk.hasMesh)
+			chunk.chunkMesh.free();
+
+		std::vector<ChunkVertex> chunkVerts{};
+		std::vector<GLuint> chunkTris{};
+
+		generateChunkMesh(chunkVerts,
+			chunkTris, chunkSize, atlas, chunk, chunks);
+
+		/*auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
+			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
+
+		future.get();*/
+
+		chunk.chunkMesh = { chunkVerts, chunkTris };
+		chunk.hasMesh = true;
+
+		changedChunkPositions.erase(chunkPos);
+	}
 }
 
 void World::free() {
