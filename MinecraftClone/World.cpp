@@ -29,9 +29,10 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerBlockPos = posToBlockPos(playerPos);
 	const auto playerChunkPos = blockPosToChunkPos(playerBlockPos, chunkSize);
 
+	// THIS IS ALSO A TASK !!
 	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
 	for (int x = -renderRadius; x < renderRadius; ++x) {
-		for (int y = -renderRadius; y < renderRadius; ++y) {
+		for (int y = -1; y < 1; ++y) {
 			for (int z = -renderRadius; z < renderRadius; ++z) {
 				visibleArea.insert(playerChunkPos + glm::ivec3{ x, y, z });
 			}
@@ -86,9 +87,8 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyChunkChange(chunkPos);
 }
 
-void World::flush(ThreadPool& pool, const Atlas& atlas) {
-	std::vector<std::future<void>> futures{};
-	
+void World::flushAll(ThreadPool& pool, const Atlas& atlas) {
+	// std::vector<std::future<void>> futures{};
 	auto it = changedChunkPositions.begin();
 	while (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
@@ -104,13 +104,13 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 		std::vector<ChunkVertex> chunkVerts{};
 		std::vector<GLuint> chunkTris{};
 
-		/*generateChunkMesh(chunkVerts, 
-			chunkTris, chunkSize, atlas, chunk, chunks);*/
+		generateChunkMesh(chunkVerts, 
+			chunkTris, chunkSize, atlas, chunk, chunks);
 
-		auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
+		/*auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
 			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
 
-		future.get();
+		future.get();*/
 
 		chunk.chunkMesh = { chunkVerts, chunkTris };
 		chunk.hasMesh = true;
@@ -121,11 +121,12 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 	changedChunkPositions.clear();
 }
 
-void World::smallFlush(ThreadPool& pool, const Atlas& atlas) {
+void World::refreshSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	if (it != changedChunkPositions.end()) {
 		const glm::ivec3 chunkPos = *it;
 		if (!chunks.contains(chunkPos)) {
+			changedChunkPositions.erase(chunkPos);
 			return;
 		}
 

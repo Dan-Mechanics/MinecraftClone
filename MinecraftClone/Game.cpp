@@ -114,7 +114,10 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 void Game::tick(const float interval, ThreadPool& pool) {
 	world.tick(pool, camera.position);
-	world.flush(pool, atlas);
+}
+
+void Game::fastTick(const float interval, ThreadPool& pool) {
+	world.refreshSingleChunkMesh(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {

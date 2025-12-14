@@ -21,8 +21,8 @@ public:
 	void tick(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-	void flush(ThreadPool& pool, const Atlas& atlas);
-	void smallFlush(ThreadPool& pool, const Atlas& atlas);
+	void flushAll(ThreadPool& pool, const Atlas& atlas);
+	void refreshSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:

@@ -15,6 +15,7 @@ public:
 	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool);
+	void fastTick(const float interval, ThreadPool& pool);
 	glm::vec4 getClearColor() const;
 	void free();
 

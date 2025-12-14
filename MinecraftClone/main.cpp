@@ -15,7 +15,8 @@ const float fpsCap = 300.0f;
 const float minFrameInterval = 1.0f / fpsCap;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
-const float tickInterval = 0.02f;
+const float tickInterval = 0.1f;
+const float fastTickInterval = 0.005f;
 bool hasFocus = true;
 
 static void setFocus(GLFWwindow* window, int focus) {
@@ -87,9 +88,10 @@ int main() {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	float previousTime = 0.0;
-	float currentTime = 0.0;
-	float timer = 0.0;
+	float previousTime = 0.0f;
+	float currentTime = 0.0f;
+	float timer = 0.0f;
+	float fastTimer = 0.0f;
 
 	glfwSwapInterval(0);
 
@@ -114,6 +116,12 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			game.tick(tickInterval, pool);
+		}
+
+		fastTimer += deltaTime;
+		while (fastTimer >= fastTickInterval) {
+			fastTimer -= fastTickInterval;
+			game.fastTick(fastTickInterval, pool);
 		}
 
 		game.drawShadows(deltaTime, hasFocus, window);
