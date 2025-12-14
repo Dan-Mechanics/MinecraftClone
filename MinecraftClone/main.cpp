@@ -8,6 +8,7 @@
 #include "World.h"
 #include "ShadowMapFBO.h"
 #include "mesh_utils.h"
+#include "ThreadPool.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -116,6 +117,9 @@ int main() {
 	const auto renderRadius = 5;
 	World world{ chunkSize, renderRadius };
 
+	ThreadPool pool{ 16 };
+	pool.init();
+
 	// ===
 
 	Object sun{};
@@ -192,7 +196,7 @@ int main() {
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			world.tick(camera.position);
-			world.flush(atlas);
+			world.flush(pool, atlas);
 			// std::cout << "lgihtwork" << std::endl;
 		}
 
@@ -241,6 +245,8 @@ int main() {
 
 	cubeMesh.free();
 	shadowMap.free();
+
+	pool.shutdown();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -1,0 +1,42 @@
+#pragma once
+#include <mutex>
+#include <queue>
+
+/// <summary>
+/// https://github.com/mtrebi/thread-pool/blob/master/include/SafeQueue.h
+/// </summary>
+template <typename T>
+class SafeQueue {
+public:
+    bool empty() {
+        std::unique_lock<std::mutex> lock(mutex);
+        return queue.empty();
+    }
+
+    int size() {
+        std::unique_lock<std::mutex> lock(mutex);
+        return queue.size();
+    }
+
+    void enqueue(T& t) {
+        std::unique_lock<std::mutex> lock(mutex);
+        queue.push(t);
+    }
+
+    bool dequeue(T& t) {
+        std::unique_lock<std::mutex> lock(mutex);
+
+        if (queue.empty()) {
+            return false;
+        }
+        t = std::move(queue.front());
+
+        queue.pop();
+        return true;
+    }
+
+private:
+    std::queue<T> queue{};
+    std::mutex mutex{};
+
+};
