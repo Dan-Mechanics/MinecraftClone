@@ -57,7 +57,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 5;
+	renderRadius = 4;
 	world = { chunkSize, renderRadius };
 
 	// ===
@@ -113,11 +113,15 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 }
 
 void Game::tick(const float interval, ThreadPool& pool) {
-	world.tick(pool, camera.position);
-}
+	timer += interval;
+	if (timer >= 1.0f) {
+		timer = 0.0f;
+		world.tick(pool, camera.position);
+		return;
+	}
 
-void Game::fastTick(const float interval, ThreadPool& pool) {
-	world.refreshSingleChunkMesh(pool, atlas);
+	world.smallFlush(pool, atlas);
+	world.smallFlush(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {

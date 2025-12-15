@@ -6,7 +6,7 @@
 #include "hashing_utils.h"
 #include "ChunkMesh.h"
 
-class Chunk {
+struct Chunk {
 public:
 	std::unordered_map<glm::ivec3, BlockType, vec3hash> blocks{};
 	ChunkMesh chunkMesh{};
@@ -16,8 +16,5 @@ public:
 	Chunk();
 	Chunk(const glm::ivec3& chunkPos, const int chunkSize);
 	virtual ~Chunk();
-
-private:
-	void generateChunkData(const int chunkSize);
 
 };

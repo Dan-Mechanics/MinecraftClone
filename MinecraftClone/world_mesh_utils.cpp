@@ -101,11 +101,21 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	}
 }
 
-void addChunk(const int chunkSize, const glm::ivec3& chunkPos,
-	std::unordered_set<glm::ivec3, vec3hash>& changedChunkPositions, 
-	std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
-	chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-	changedChunkPositions.insert(chunkPos);
+void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
+	if (chunkPos.y != -1)
+		return;
+
+	for (int x = 0; x < chunkSize; ++x) {
+		for (int y = 0; y < chunkSize; ++y) {
+			for (int z = 0; z < chunkSize; ++z) {
+				if (randomInclusive(0, 4))
+					continue;
+
+				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
+				chunks[chunkPos]->blocks[blockPos] = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
+			}
+		}
+	}
 }
 
 void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
