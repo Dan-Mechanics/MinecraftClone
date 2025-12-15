@@ -12,8 +12,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
 	const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
 
-void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos);
-void bindMaterial(std::vector<Texture>& material, const Shader & shader);
+void flushAll();
 
 /// <summary>
 /// This UV code is a little strange but it works.

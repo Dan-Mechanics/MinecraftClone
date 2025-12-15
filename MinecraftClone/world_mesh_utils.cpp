@@ -101,61 +101,8 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	}
 }
 
-void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
-	if (chunkPos.x == 0 && chunkPos.y == 0 && chunkPos.z == 0) {
-		for (int x = 0; x < chunkSize; ++x) {
-			for (int y = 0; y < chunkSize; ++y) {
-				for (int z = 0; z < chunkSize; ++z) {
-					if (randomInclusive(0, 3))
-						continue;
-
-					const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-					const auto blockType = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-
-					chunks[chunkPos]->blocks[blockPos] = blockType;
-				}
-			}
-		}
-
-		return;
-	}
-	
-	if (chunkPos.y != -1)
-		return;
-
-	for (int x = 0; x < chunkSize; ++x) {
-		for (int y = 0; y < 3; ++y) {
-			for (int z = 0; z < chunkSize; ++z) {
-				if (randomInclusive(0, 3))
-					continue;
-
-				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-				const auto blockType = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
-				//const auto blockType = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-
-				chunks[chunkPos]->blocks[blockPos] = blockType;
-			}
-		}
-	}
-}
-
-void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
-	auto diffuseCount = 0;
-	auto specularCount = 0;
-	for (int i = 0; i < material.size(); ++i) {
-		std::string num;
-		std::string type = material[i].type;
-		if (type == "diffuse") {
-			num = std::to_string(diffuseCount++);
-		}
-		else if (type == "specular") {
-			num = std::to_string(specularCount++);
-		}
-		// POSSIBLY ADD EMMISION IN THE FUTURE ??
-
-		material[i].setTextureUnit(shader, (type + num).c_str(), i);
-		material[i].bind();
-	}
+void flushAll() {
+	// ..
 }
 
 Face tilePositionToUVs(const int x, const int y) {

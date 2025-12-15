@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "world_mesh_utils.h"
+#include "world_data_utils.h"
 #include "ThreadPool.h"
 
 class World {

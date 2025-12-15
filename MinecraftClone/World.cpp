@@ -40,7 +40,6 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
 		if (!visibleArea.contains(it1->first - playerChunkPos)) {
-			//changedChunkPositions.insert(it1->first);
 			notifyChunkChange(it1->first);
 			delete it1->second;
 			it1 = chunks.erase(it1);
