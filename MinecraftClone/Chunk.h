@@ -8,7 +8,7 @@
 
 struct Chunk {
 public:
-	std::unordered_map<glm::ivec3, BlockType, vec3hash> blocks{};
+	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
 	ChunkMesh chunkMesh{};
 	glm::ivec3 chunkPos{};
 	bool hasMesh{};

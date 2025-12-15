@@ -1,6 +1,6 @@
 #include "world_data_utils.h"
 
-void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
+void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
 	if (chunkPos.x == 0 && chunkPos.y == 0 && chunkPos.z == 0) {
 		for (int x = 0; x < chunkSize; ++x) {
 			for (int y = 0; y < chunkSize; ++y) {

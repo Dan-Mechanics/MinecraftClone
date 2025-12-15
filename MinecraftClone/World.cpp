@@ -96,9 +96,12 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::flush(ThreadPool& pool, const Atlas& atlas) {
-	while (!changedChunkPositions.empty()) {
+	auto future = pool.submit(flushAll, std::ref(changedChunkPositions), std::ref(atlas), chunkSize, std::ref(chunks));
+	future.get();
+
+	/*while (!changedChunkPositions.empty()) {
 		smallFlush(pool, atlas);
-	}
+	}*/
 }
 
 void World::smallFlush(ThreadPool& pool, const Atlas& atlas) {

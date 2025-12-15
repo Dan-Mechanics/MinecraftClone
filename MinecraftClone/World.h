@@ -27,11 +27,11 @@ public:
 	void free();
 
 private:
-	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
-	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
+	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	int chunkSize{};
 	int renderRadius{};
-	std::unordered_set<glm::ivec3, vec3hash> visibleArea{};
+	std::unordered_set<glm::ivec3, ivec3hash> visibleArea{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 

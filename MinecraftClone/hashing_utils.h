@@ -3,7 +3,7 @@
 /// <summary>
 /// https://github.com/Isti01/glCraft/blob/main/src/Util/Util.h
 /// </summary>
-class vec3hash {
+class ivec3hash {
 public:
     size_t operator()(const glm::ivec3& coord) const noexcept {
         size_t hash = coord.x;

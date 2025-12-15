@@ -128,6 +128,8 @@ void Game::tick(const float interval, ThreadPool& pool) {
 
 	world.smallFlush(pool, atlas);
 	world.smallFlush(pool, atlas);
+
+	//world.flush(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {
