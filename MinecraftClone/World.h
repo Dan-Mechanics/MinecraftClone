@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "world_mesh_utils.h"
+#include "world_data_utils.h"
 #include "ThreadPool.h"
 
 class World {
@@ -21,16 +22,16 @@ public:
 	void tick(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-	void flushAll(ThreadPool& pool, const Atlas& atlas);
-	void refreshSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
+	void flush(ThreadPool& pool, const Atlas& atlas);
+	void smallFlush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:
-	std::unordered_map<glm::ivec3, Chunk*, vec3hash> chunks{};
-	std::unordered_set<glm::ivec3, vec3hash> changedChunkPositions{};
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
+	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	int chunkSize{};
 	int renderRadius{};
-	//Object chunkObject{};
+	std::unordered_set<glm::ivec3, ivec3hash> visibleArea{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 

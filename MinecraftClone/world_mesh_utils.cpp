@@ -2,7 +2,7 @@
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
-	const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
 	verts.clear();
 	tris.clear();
 
@@ -101,30 +101,39 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	}
 }
 
-void addChunk(const int chunkSize, const glm::ivec3& chunkPos,
-	std::unordered_set<glm::ivec3, vec3hash>& changedChunkPositions, 
-	std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks) {
-	chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-	changedChunkPositions.insert(chunkPos);
-}
-
-void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
-	auto diffuseCount = 0;
-	auto specularCount = 0;
-	for (int i = 0; i < material.size(); ++i) {
-		std::string num;
-		std::string type = material[i].type;
-		if (type == "diffuse") {
-			num = std::to_string(diffuseCount++);
+void flushAll(std::unordered_set<glm::ivec3, ivec3hash>& changedChunkPositions, const Atlas& atlas,
+	const int chunkSize, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
+	auto it = changedChunkPositions.begin();
+	while (it != changedChunkPositions.end()) {
+		const glm::ivec3 chunkPos = *it;
+		if (!chunks.contains(chunkPos)) {
+			++it;
+			continue;
 		}
-		else if (type == "specular") {
-			num = std::to_string(specularCount++);
-		}
-		// POSSIBLY ADD EMMISION IN THE FUTURE ??
 
-		material[i].setTextureUnit(shader, (type + num).c_str(), i);
-		material[i].bind();
+		if (chunks[chunkPos]->blocks.empty()) {
+			delete chunks[chunkPos];
+			chunks.erase(chunkPos);
+			++it;
+			continue;
+		}
+
+		Chunk& chunk = *chunks[chunkPos];
+		if (chunk.hasMesh)
+			chunk.chunkMesh.free();
+
+		std::vector<ChunkVertex> chunkVerts{};
+		std::vector<GLuint> chunkTris{};
+
+		generateChunkMesh(chunkVerts,
+			chunkTris, chunkSize, atlas, chunk, chunks);
+
+		chunk.chunkMesh = { chunkVerts, chunkTris };
+		chunk.hasMesh = true;
+		++it;
 	}
+
+	changedChunkPositions.clear();
 }
 
 Face tilePositionToUVs(const int x, const int y) {
@@ -246,7 +255,7 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize) {
 	};
 }
 
-bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize) {
+bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
 		return false;

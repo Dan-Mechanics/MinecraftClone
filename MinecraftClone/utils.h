@@ -12,3 +12,4 @@ void log(const glm::vec3& vec);
 void log(const glm::ivec3& vec);
 std::string toString(const glm::ivec3& vec);
 void freeMaterial(const std::vector<Texture>& material);
+void bindMaterial(std::vector<Texture>& material, const Shader& shader);

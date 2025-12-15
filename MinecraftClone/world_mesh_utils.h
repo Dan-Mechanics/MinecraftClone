@@ -10,12 +10,10 @@
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
-	const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
-void addChunk(const int chunkSize, const glm::ivec3& chunkPos,
-	std::unordered_set<glm::ivec3, vec3hash>& changedChunkPositions, std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks);
-
-void bindMaterial(std::vector<Texture>& material, const Shader & shader);
+void flushAll(std::unordered_set<glm::ivec3, ivec3hash>& changedChunkPositions, 
+	const Atlas& atlas, const int chunkSize, std::unordered_map<glm::ivec3,Chunk*, ivec3hash>& chunks);
 
 /// <summary>
 /// This UV code is a little strange but it works.
@@ -52,4 +50,4 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize);
 /// <summary>
 /// Does any chunk contain this block position?
 /// </summary>
-bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks, const int chunkSize);
+bool hasBlock(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);

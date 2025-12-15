@@ -15,6 +15,12 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 		(float)150 / 255, 1.0f
 	};
 
+	/*ambientColor = glm::vec4{
+		(float)0 / 255,
+		(float)0 / 255,
+		(float)0  / 255, 1.0f
+	};*/
+
 	// ===
 
 	sun.setPos(glm::vec3{ 0.5f, 0.4f, 0.5f } *20.0f);
@@ -57,7 +63,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 5;
+	renderRadius = 4;
 	world = { chunkSize, renderRadius };
 
 	// ===
@@ -68,7 +74,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	chunkShader = { "chunk.vert", "chunk.frag" };
 	chunkShadowMap = { "chunk_shadow.vert", "shadow_map.frag" };
 	
-	shadowMap = { 2048, 2048, 25.0f };
+	shadowMap = { 2048, 2048, 35.0f };
 
 	// ===
 
@@ -113,11 +119,17 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 }
 
 void Game::tick(const float interval, ThreadPool& pool) {
-	world.tick(pool, camera.position);
-}
+	timer += interval;
+	if (timer >= 1.0f) {
+		timer = 0.0f;
+		world.tick(pool, camera.position);
+		return;
+	}
 
-void Game::fastTick(const float interval, ThreadPool& pool) {
-	world.refreshSingleChunkMesh(pool, atlas);
+	world.smallFlush(pool, atlas);
+	world.smallFlush(pool, atlas);
+
+	//world.flush(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {

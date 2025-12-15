@@ -24,3 +24,22 @@ void freeMaterial(const std::vector<Texture>& material) {
 		++it;
 	}
 }
+
+void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
+	auto diffuseCount = 0;
+	auto specularCount = 0;
+	for (int i = 0; i < material.size(); ++i) {
+		std::string num;
+		std::string type = material[i].type;
+		if (type == "diffuse") {
+			num = std::to_string(diffuseCount++);
+		}
+		else if (type == "specular") {
+			num = std::to_string(specularCount++);
+		}
+		// POSSIBLY ADD EMMISION IN THE FUTURE ??
+
+		material[i].setTextureUnit(shader, (type + num).c_str(), i);
+		material[i].bind();
+	}
+}
