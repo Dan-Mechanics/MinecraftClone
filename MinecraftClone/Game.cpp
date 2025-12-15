@@ -63,7 +63,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 3;
+	renderRadius = 4;
 	world = { chunkSize, renderRadius };
 
 	// ===

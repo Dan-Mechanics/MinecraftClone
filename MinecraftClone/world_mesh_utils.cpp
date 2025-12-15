@@ -106,7 +106,7 @@ void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks,
 		for (int x = 0; x < chunkSize; ++x) {
 			for (int y = 0; y < chunkSize; ++y) {
 				for (int z = 0; z < chunkSize; ++z) {
-					if (randomInclusive(0, 1))
+					if (randomInclusive(0, 3))
 						continue;
 
 					const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
@@ -124,9 +124,9 @@ void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks,
 		return;
 
 	for (int x = 0; x < chunkSize; ++x) {
-		for (int y = 0; y < chunkSize; ++y) {
+		for (int y = 0; y < 3; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
-				if (randomInclusive(0, 4))
+				if (randomInclusive(0, 3))
 					continue;
 
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
