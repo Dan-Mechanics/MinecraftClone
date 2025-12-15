@@ -58,7 +58,7 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 			auto future = pool.submit(allocateChunkData, std::ref(chunks), chunkSize, chunkPos);
 			future.get();
 
-			notifyChunkChange(chunkPos);
+			changedChunkPositions.insert(chunkPos);
 		}
 
 		++it2;
