@@ -15,6 +15,12 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 		(float)150 / 255, 1.0f
 	};
 
+	/*ambientColor = glm::vec4{
+		(float)0 / 255,
+		(float)0 / 255,
+		(float)0  / 255, 1.0f
+	};*/
+
 	// ===
 
 	sun.setPos(glm::vec3{ 0.5f, 0.4f, 0.5f } *20.0f);
@@ -57,7 +63,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 4;
+	renderRadius = 2;
 	world = { chunkSize, renderRadius };
 
 	// ===

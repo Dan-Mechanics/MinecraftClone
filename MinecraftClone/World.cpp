@@ -4,7 +4,7 @@ World::World() = default;
 World::World(const int chunkSize, const int renderRadius)
 	: chunkSize{ chunkSize }, renderRadius{ renderRadius } { 
 	for (int x = -renderRadius; x < renderRadius; ++x) {
-		for (int y = -1; y <= 1; ++y) {
+		for (int y = -2; y <= 2; ++y) {
 			for (int z = -renderRadius; z < renderRadius; ++z) {
 				visibleArea.insert(glm::ivec3{ x, y, z });
 			}
