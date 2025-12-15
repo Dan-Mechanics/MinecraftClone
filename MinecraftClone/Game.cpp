@@ -63,7 +63,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 2;
+	renderRadius = 3;
 	world = { chunkSize, renderRadius };
 
 	// ===
@@ -74,7 +74,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	chunkShader = { "chunk.vert", "chunk.frag" };
 	chunkShadowMap = { "chunk_shadow.vert", "shadow_map.frag" };
 	
-	shadowMap = { 2048, 2048, 25.0f };
+	shadowMap = { 2048, 2048, 35.0f };
 
 	// ===
 

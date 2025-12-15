@@ -124,10 +124,10 @@ void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, vec3hash>& chunks,
 		return;
 
 	for (int x = 0; x < chunkSize; ++x) {
-		for (int y = 0; y < 2; ++y) {
+		for (int y = 0; y < chunkSize; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
-				/*if (randomInclusive(0, 4))
-					continue;*/
+				if (randomInclusive(0, 4))
+					continue;
 
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
 				const auto blockType = y >= 14 ? BlockType::NYCELIUM : BlockType::DIRT;
