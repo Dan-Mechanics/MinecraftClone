@@ -96,7 +96,6 @@ void World::flush(ThreadPool& pool, const Atlas& atlas) {
 }
 
 void World::smallFlush(ThreadPool& pool, const Atlas& atlas) {
-	// std::vector<std::future<void>> futures{};
 	auto it = changedChunkPositions.begin();
 	if (it == changedChunkPositions.end())
 		return;
