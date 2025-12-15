@@ -54,14 +54,18 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it2 = visibleArea.begin();
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
-		bool usefulChunkPos = chunkPos.y == -1 || (chunkPos.x == 0 && chunkPos.y == 0 && chunkPos.z == 0);
-		if (usefulChunkPos && !chunks.contains(chunkPos)) {
+		if (!chunks.contains(chunkPos)) {
 			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
 			auto future = pool.submit(allocateChunkData, std::ref(chunks), chunkSize, chunkPos);
 			future.get();
 
-			notifyChunkChange(chunkPos);
-			//changedChunkPositions.insert(chunkPos);
+			if (chunks[chunkPos]->blocks.empty()) {
+				delete chunks[chunkPos];
+				chunks.erase(chunkPos);
+			}
+			else {
+				notifyChunkChange(chunkPos);
+			}
 		}
 
 		++it2;
