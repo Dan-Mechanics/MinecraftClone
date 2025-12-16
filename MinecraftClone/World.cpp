@@ -55,7 +55,7 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
 		if (!chunks.contains(chunkPos)) {
 			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-			auto future = pool.submit(allocateChunkData, std::ref(chunks), chunkSize, chunkPos);
+			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
 			future.get();
 
 			if (chunks[chunkPos]->blocks.empty()) {
