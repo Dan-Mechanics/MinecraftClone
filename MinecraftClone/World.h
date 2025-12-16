@@ -27,16 +27,7 @@ public:
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 
-	/// <summary>
-	/// Reload the meshes of all changed chunks.
-	/// </summary>
-	void flush(ThreadPool& pool, const Atlas& atlas);
-
-	/// <summary>
-	/// Reload the mesh of a single chunk that
-	/// is next in line.
-	/// </summary>
-	void smallFlush(ThreadPool& pool, const Atlas& atlas);
+	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:

@@ -49,6 +49,7 @@ private:
 	std::vector<Texture> atlasMaterial{};
 	Mesh cubeMesh{};
 
+	float updateVisibleAreaInterval{};
 	float timer{};
 
 };

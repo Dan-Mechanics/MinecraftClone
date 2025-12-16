@@ -1,5 +1,15 @@
 #include "world_data_utils.h"
 
+bool doesChunkGenerateBlocks(const glm::ivec3& chunkPos) {
+	if (chunkPos.x == 0 && chunkPos.y == 0 && chunkPos.z == 0)
+		return true;
+
+	if (chunkPos.y == -1)
+		return true;
+
+	return false;
+}
+
 void fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
 	if (chunkPos.x == 0 && chunkPos.y == 0 && chunkPos.z == 0) {
 		for (int x = 0; x < chunkSize; ++x) {

@@ -53,18 +53,13 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it2 = visibleArea.begin();
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
-		if (!chunks.contains(chunkPos)) {
+		if (!chunks.contains(chunkPos) && doesChunkGenerateBlocks(chunkPos)) {
 			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+
 			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
 			future.get();
 
-			if (chunks[chunkPos]->blocks.empty()) {
-				delete chunks[chunkPos];
-				chunks.erase(chunkPos);
-			}
-			else {
-				notifyChunkChange(chunkPos);
-			}
+			notifyChunkChange(chunkPos);
 		}
 
 		++it2;
@@ -95,12 +90,7 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyChunkChange(chunkPos);
 }
 
-void World::flush(ThreadPool& pool, const Atlas& atlas) {
-	auto future = pool.submit(flushAll, std::ref(changedChunkPositions), std::ref(atlas), chunkSize, std::ref(chunks));
-	future.get();
-}
-
-void World::smallFlush(ThreadPool& pool, const Atlas& atlas) {
+void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	if (it == changedChunkPositions.end())
 		return;
