@@ -32,8 +32,6 @@ void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3
 	shader.activate();
 	vao.bind();
 
-	//bindMaterial(material);
-
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 	camera.sendMatrixToShader(shader, "camMatrix");
 

@@ -152,7 +152,6 @@ Face tilePositionToUVs(const int x, const int y) {
 	translateUVs(face, 0.0f, -1.0f);
 	scaleUVs(face, scale);
 	translateUVs(face, x / scale, -y / scale);
-	// rotateUVsClockwise(uvs);
 
 	return face;
 }

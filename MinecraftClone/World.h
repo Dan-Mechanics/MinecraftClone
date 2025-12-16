@@ -19,10 +19,23 @@ public:
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	
+	/// <summary>
+	/// Manage adding and removing chunks on
+	/// the heap based on player positon.
+	/// </summary>
 	void tick(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
+
+	/// <summary>
+	/// Reload the meshes of all changed chunks.
+	/// </summary>
 	void flush(ThreadPool& pool, const Atlas& atlas);
+
+	/// <summary>
+	/// Reload the mesh of a single chunk that
+	/// is next in line.
+	/// </summary>
 	void smallFlush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
