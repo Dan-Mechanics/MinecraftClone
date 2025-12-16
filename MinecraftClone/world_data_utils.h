@@ -8,4 +8,6 @@
 #include "hashing_utils.h"
 #include <unordered_set>
 
-void allocateChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos);
+bool doesChunkGenerateBlocks(const glm::ivec3& chunkPos);
+void fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, 
+	const int chunkSize, const glm::ivec3& chunkPos);
