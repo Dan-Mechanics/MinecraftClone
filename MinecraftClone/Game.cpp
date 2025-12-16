@@ -15,12 +15,6 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 		(float)150 / 255, 1.0f
 	};
 
-	/*ambientColor = glm::vec4{
-		(float)0 / 255,
-		(float)0 / 255,
-		(float)0  / 255, 1.0f
-	};*/
-
 	// ===
 
 	sun.setPos(glm::vec3{ 0.5f, 0.4f, 0.5f } *20.0f);
@@ -83,22 +77,18 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 		Texture("planks_specular.png", "specular", 1)
 	};
 
+	// YOU DON'T HAVE TO INCLUDE SPECULAR.
 	atlasMaterial = {
 		Texture("atlas.png", "diffuse", 0)
-		//Texture("texture_atlas_specular.png", "specular", 1)
 	};
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
-	//ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sunColor, sun.pos, skyColor);
-	// sun.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-
 	centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-
 
 	bindMaterial(atlasMaterial, chunkShader);
 	world.draw(atlasMaterial, chunkShader, camera, sun.color, sun.pos, ambientColor);
@@ -112,7 +102,6 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 	// ===
 	
-	//ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 	shadowMap.bind(camera, sun, chunkShadowMap);
 	world.drawShadows(chunkShadowMap, camera);
 	shadowMap.sendToShader(chunkShader);
@@ -128,8 +117,6 @@ void Game::tick(const float interval, ThreadPool& pool) {
 
 	world.smallFlush(pool, atlas);
 	world.smallFlush(pool, atlas);
-
-	//world.flush(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {
