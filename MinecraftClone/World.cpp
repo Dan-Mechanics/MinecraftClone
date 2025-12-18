@@ -114,12 +114,61 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	std::vector<GLuint> chunkTris{};
 
 	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
-		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
+		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
 
 	future.get();
 
 	chunk.chunkMesh = { chunkVerts, chunkTris };
 	chunk.hasMesh = true;
+}
+
+void World::flush(ThreadPool& pool, const Atlas& atlas) {
+	std::vector<std::future<void>> futures{};
+	std::vector<ChunkVertex> chunkVerts{};
+	std::vector<GLuint> chunkTris{};
+	std::vector<glm::ivec3> reloadMeshPositions{};
+
+	auto it = changedChunkPositions.begin();
+	while (it != changedChunkPositions.end()) {
+		const glm::ivec3 chunkPos = *it;
+		if (!chunks.contains(chunkPos)) {
+			++it;
+			continue;
+		}
+
+		if (chunks[chunkPos]->blocks.empty()) {
+			delete chunks[chunkPos];
+			++it;
+			continue;
+		}
+
+		Chunk& chunk = *chunks[chunkPos];
+		if (chunk.hasMesh)
+			chunk.chunkMesh.free();
+
+		reloadMeshPositions.emplace_back(chunkPos);
+		futures.emplace_back(pool.submit(generateChunkMesh, std::ref(chunkVerts),
+			std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunks[chunkPos]->blocks), std::ref(chunks)));
+
+		++it;
+	}
+
+	changedChunkPositions.clear();
+
+	for (size_t i = 0; i < futures.size(); ++i) {
+		futures[i].get();
+		chunks[reloadMeshPositions[i]]->chunkMesh = { chunkVerts, chunkTris };
+		chunks[reloadMeshPositions[i]]->hasMesh = true;
+
+	}
+	/*auto it2 = futures.begin();
+	while (it2 != futures.end()) {
+		it2->get();
+
+		chunk.chunkMesh = { chunkVerts, chunkTris };
+		chunk.hasMesh = true;
+		++it2;
+	}*/
 }
 
 void World::free() {

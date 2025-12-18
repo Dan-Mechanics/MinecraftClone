@@ -29,6 +29,7 @@ public:
 	void remove(const glm::ivec3& blockPos);
 
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
+	void flush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:
