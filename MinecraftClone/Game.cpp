@@ -58,7 +58,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	atlas = generateAtlas();
 	chunkSize = 16;
 	renderRadius = 3;
-	updateVisibleAreaInterval = 1.0f;
+	updateVisibleAreaInterval = 0.5f;
 	world = { chunkSize, renderRadius };
 
 	// ===
@@ -112,15 +112,17 @@ void Game::tick(const float interval, ThreadPool& pool) {
 	timer += interval;
 	if (timer >= updateVisibleAreaInterval) {
 		timer = 0.0f;
-		world.tick(pool, camera.position);
+		if (randomInclusive(0, 1)) {
+			world.allocateNewChunks(pool, camera.position);
+		}
+		else {
+			world.destroyOldChunks(pool, camera.position);
+		}
+
 		return;
 	}
 
-	// THIS THROTTLES THE WORKLOAD OVER MORE FRAMES.
-	const auto reloadCount = 1;
-	for (int i = 0; i < reloadCount; ++i) {
-		world.reloadSingleChunkMesh(pool, atlas);
-	}
+	world.reloadSingleChunkMesh(pool, atlas);
 }
 
 glm::vec4 Game::getClearColor() const {

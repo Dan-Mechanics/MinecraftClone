@@ -20,8 +20,6 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 		return true;
 	}
 
-	return false;
-
 	if (chunkPos.y != -1)
 		return false;
 
