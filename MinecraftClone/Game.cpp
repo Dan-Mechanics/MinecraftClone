@@ -112,13 +112,14 @@ void Game::tick(const float interval, ThreadPool& pool) {
 	timer += interval;
 	if (timer >= updateVisibleAreaInterval) {
 		timer = 0.0f;
-		if (randomInclusive(0, 1)) {
+		if (world.toggle) {
 			world.allocateNewChunks(pool, camera.position);
 		}
 		else {
 			world.destroyOldChunks(pool, camera.position);
 		}
 
+		world.toggle = !world.toggle;
 		return;
 	}
 

@@ -9,7 +9,8 @@
 
 class World {
 public:
-
+	bool toggle{};
+	
 	World();
 	World(const int chunkSize, const int renderRadius);
 
