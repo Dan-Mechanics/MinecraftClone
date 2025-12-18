@@ -9,7 +9,7 @@
 #include <unordered_set>
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
-	const int chunkSize, const Atlas& atlas, const Chunk& chunk,
+	const int chunkSize, const Atlas& atlas, const std::unordered_map<glm::ivec3, BlockType, ivec3hash>& blocks,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
 /// <summary>

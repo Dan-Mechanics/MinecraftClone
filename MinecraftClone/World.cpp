@@ -33,36 +33,35 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
-void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {	
+void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {	
+	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	auto it1 = visibleArea.begin();
+	while (it1 != visibleArea.end()) {
+		const glm::ivec3& chunkPos = *it1 + playerChunkPos;
+		if (!chunks.contains(chunkPos)) {
+			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
+			if (future.get())
+				changedChunkPositions.insert(chunkPos);
+		}
+
+		++it1;
+	}
+}
+
+void World::destroyOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 
-	// REMOVE OLD. ===
+	// !PERFORMANCE ??
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
 		if (!visibleArea.contains(it1->first - playerChunkPos)) {
-			notifyChunkChange(it1->first);
+			changedChunkPositions.insert(it1->first);
 			delete it1->second;
 			it1 = chunks.erase(it1);
 			continue;
 		}
 
 		++it1;
-	}
-
-	// ADD NEW. ===
-	auto it2 = visibleArea.begin();
-	while (it2 != visibleArea.end()) {
-		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
-		if (!chunks.contains(chunkPos) && doesChunkGenerateBlocks(chunkPos)) {
-			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-
-			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
-			future.get();
-
-			notifyChunkChange(chunkPos);
-		}
-
-		++it2;
 	}
 }
 
@@ -115,7 +114,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	std::vector<GLuint> chunkTris{};
 
 	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
-		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk), std::ref(chunks));
+		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
 
 	future.get();
 

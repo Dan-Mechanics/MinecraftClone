@@ -91,6 +91,8 @@ int main() {
 	float currentTime = 0.0f;
 	float timer = 0.0f;
 
+
+
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {

@@ -22,6 +22,9 @@
     <Filter Include="Mesh">
       <UniqueIdentifier>{1b2d2537-3902-446a-b721-838d1d6f4721}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{458d97f6-2407-42bd-a2da-0d335fcbd16a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -30,13 +33,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -54,16 +51,7 @@
     <ClCompile Include="Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world_mesh_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_utils.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
     <ClCompile Include="EBO.cpp">
@@ -81,7 +69,22 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world_mesh_utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="world_data_utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -118,9 +121,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -145,15 +145,6 @@
     <ClInclude Include="Atlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world_mesh_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hashing_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Mesh</Filter>
     </ClInclude>
@@ -161,9 +152,6 @@
       <Filter>Mesh</Filter>
     </ClInclude>
     <ClInclude Include="VAO.h">
-      <Filter>Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_utils.h">
       <Filter>Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -187,8 +175,23 @@
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mesh_utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="world_mesh_utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="world_data_utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="hashing_utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

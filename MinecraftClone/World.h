@@ -9,7 +9,8 @@
 
 class World {
 public:
-
+	bool toggle{};
+	
 	World();
 	World(const int chunkSize, const int renderRadius);
 
@@ -23,19 +24,19 @@ public:
 	/// Manage adding and removing chunks on
 	/// the heap based on player positon.
 	/// </summary>
-	void tick(ThreadPool& pool, const glm::vec3 & playerPos);
+	void allocateNewChunks(ThreadPool& pool, const glm::vec3 & playerPos);
+	void destroyOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:
-	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
-	int chunkSize{};
-	int renderRadius{};
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	std::unordered_set<glm::ivec3, ivec3hash> visibleArea{};
+	int renderRadius{};
+	int chunkSize{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
