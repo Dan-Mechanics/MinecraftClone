@@ -33,7 +33,7 @@ void fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 		return;
 
 	for (int x = 0; x < chunkSize; ++x) {
-		for (int y = 0; y < 3; ++y) {
+		for (int y = 0; y < chunkSize; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
 				if (randomInclusive(0, 1))
 					continue;
@@ -45,5 +45,35 @@ void fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 				chunks[chunkPos]->blocks[blockPos] = blockType;
 			}
 		}
+	}
+}
+
+void getWorldChanges(std::vector<glm::ivec3>& chunksToNotify, const glm::ivec3& playerChunkPos,
+	const std::unordered_set<glm::ivec3, ivec3hash>& visibleArea, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+	// REMOVE OLD. ===
+	auto it1 = chunks.begin();
+	while (it1 != chunks.end()) {
+		if (!visibleArea.contains(it1->first - playerChunkPos)) {
+			chunksToNotify.emplace_back(it1->first);
+			//notifyChunkChange(it1->first);
+			delete it1->second;
+			it1 = chunks.erase(it1);
+			continue;
+		}
+
+		++it1;
+	}
+
+	// ADD NEW. ===
+	auto it2 = visibleArea.begin();
+	while (it2 != visibleArea.end()) {
+		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
+		if (!chunks.contains(chunkPos) && doesChunkGenerateBlocks(chunkPos)) {
+			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+			fillChunkData(chunks, chunkSize, chunkPos);
+			chunksToNotify.emplace_back(chunkPos);
+		}
+
+		++it2;
 	}
 }

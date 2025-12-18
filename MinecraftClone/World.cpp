@@ -35,8 +35,21 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 
 void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {	
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	/*std::vector<glm::ivec3> chunksToNotify{};
 
-	// REMOVE OLD. ===
+	auto future = pool.submit(getWorldChanges,
+		std::ref(chunksToNotify), std::ref(playerChunkPos),
+		std::ref(visibleArea), std::ref(chunks), chunkSize);
+
+	future.get();
+
+	auto it = chunksToNotify.begin();
+	while (it != chunksToNotify.end()) {
+		notifyChunkChange(*it);
+		++it;
+	}*/
+
+	 //REMOVE OLD. ===
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
 		if (!visibleArea.contains(it1->first - playerChunkPos)) {
