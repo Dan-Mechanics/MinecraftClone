@@ -57,7 +57,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 5;
+	renderRadius = 3;
 	updateVisibleAreaInterval = 1.0f;
 	world = { chunkSize, renderRadius };
 
@@ -117,7 +117,7 @@ void Game::tick(const float interval, ThreadPool& pool) {
 	}
 
 	// THIS THROTTLES THE WORKLOAD OVER MORE FRAMES.
-	const int reloadCount = 2;
+	const auto reloadCount = 1;
 	for (int i = 0; i < reloadCount; ++i) {
 		world.reloadSingleChunkMesh(pool, atlas);
 	}

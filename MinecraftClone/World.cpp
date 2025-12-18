@@ -35,25 +35,13 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 
 void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {	
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
-	/*std::vector<glm::ivec3> chunksToNotify{};
 
-	auto future = pool.submit(getWorldChanges,
-		std::ref(chunksToNotify), std::ref(playerChunkPos),
-		std::ref(visibleArea), std::ref(chunks), chunkSize);
-
-	future.get();
-
-	auto it = chunksToNotify.begin();
-	while (it != chunksToNotify.end()) {
-		notifyChunkChange(*it);
-		++it;
-	}*/
-
-	 //REMOVE OLD. ===
+	 // REMOVE OLD. ===
 	auto it1 = chunks.begin();
 	while (it1 != chunks.end()) {
 		if (!visibleArea.contains(it1->first - playerChunkPos)) {
-			notifyChunkChange(it1->first);
+			//notifyChunkChange(it1->first);
+			changedChunkPositions.insert(it1->first);
 			delete it1->second;
 			it1 = chunks.erase(it1);
 			continue;
@@ -66,15 +54,16 @@ void World::tick(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it2 = visibleArea.begin();
 	while (it2 != visibleArea.end()) {
 		const glm::ivec3 chunkPos = *it2 + playerChunkPos;
-		if (!chunks.contains(chunkPos) && doesChunkGenerateBlocks(chunkPos)) {
-			chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
-
-			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
-			future.get();
-
-			notifyChunkChange(chunkPos);
+		if (chunks.contains(chunkPos)) {
+			++it2;
+			continue;
 		}
 
+		auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
+		if (future.get())
+			changedChunkPositions.insert(chunkPos);
+			//notifyChunkChange(chunkPos);
+		
 		++it2;
 	}
 }
