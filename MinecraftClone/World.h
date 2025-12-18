@@ -27,9 +27,7 @@ public:
 	void destroyOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
-	void flush(ThreadPool& pool, const Atlas& atlas);
 	void free();
 
 private:
