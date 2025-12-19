@@ -10,6 +10,8 @@
 #include "mesh_utils.h"
 #include "ThreadPool.h"
 #include "Game.h"
+#include <chrono>
+#include <thread>
 
 const float fpsCap = 300.0f;
 const float minFrameInterval = 1.0f / fpsCap;
@@ -88,34 +90,47 @@ int main() {
 	glFrontFace(GL_CCW);
 
 	float previousTime = 0.0f;
-	float currentTime = 0.0f;
+	//float currentTime = 0.0f;
 	float timer = 0.0f;
 
-
+	typedef std::chrono::high_resolution_clock Time;
+	typedef std::chrono::milliseconds ms;
+	typedef std::chrono::duration<float> fsec;
+	auto t0 = Time::now();
+	auto t1 = Time::now();
+	fsec fs = t1 - t0;
+	ms d = std::chrono::duration_cast<ms>(fs);
+	std::cout << fs.count() << "s\n";
+	std::cout << d.count() << "ms\n";
 
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
-		currentTime = (float)glfwGetTime();
+		float currentTime = (float)glfwGetTime();
 		float deltaTime = currentTime - previousTime;
-
-		// https://discourse.glfw.org/t/frame-limiting/70/4
-		if (deltaTime < minFrameInterval)
-			continue;
-
 		previousTime = currentTime;
 
-		std::string fps = std::to_string(1.0f / deltaTime);
-		std::string ms = std::to_string(deltaTime * 1000);
-		std::string newTitle = "fps: " + fps + " | ms: " + ms;
-		glfwSetWindowTitle(window, newTitle.c_str());
+		// THE DIFFERENCE BETWEEN THE DELTATIME AND THE CAP FPS INTERVAL
+		float waitSeconds = minFrameInterval - deltaTime;
+		if (waitSeconds < 0.0f)
+			waitSeconds = 0.0f;
+
+		if (waitSeconds > 0.0f) {
+			std::this_thread::sleep_for(std::chrono::milliseconds((long)round(waitSeconds * 1000.0f)));
+			std::cout << waitSeconds << std::endl;
+			deltaTime += waitSeconds;
+		}
+
+		const auto title = "fps: " + std::to_string(floor(1.0f / deltaTime));
+		glfwSetWindowTitle(window, title.c_str());
 
 		// ===
 
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			game.tick(tickInterval, pool);
+			if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+				game.tick(tickInterval, pool);
 		}
 
 		game.drawShadows(deltaTime, hasFocus, window);
