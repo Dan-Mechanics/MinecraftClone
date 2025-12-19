@@ -165,6 +165,12 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::DYCELIUM].faces[Direction::UP] = tilePositionToUVs(1, 3);
 	atlas.maps[BlockType::DYCELIUM].faces[Direction::DOWN] = tilePositionToUVs(1, 1);
 
+	// LOG. ===
+	atlas.maps[BlockType::LOG] = generateEmptyMap();
+	setEquatorUVs(atlas.maps[BlockType::LOG], tilePositionToUVs(3, 0));
+	atlas.maps[BlockType::LOG].faces[Direction::UP] = tilePositionToUVs(3, 1);
+	atlas.maps[BlockType::LOG].faces[Direction::DOWN] = tilePositionToUVs(3, 1);
+
 	// ===
 	atlas.maps[BlockType::DIRT] = generateUniformMap(tilePositionToUVs(0, 1));
 	atlas.maps[BlockType::GRAVEL] = generateUniformMap(tilePositionToUVs(1, 1));

@@ -7,5 +7,6 @@ enum BlockType {
     DYCELIUM = 3,
     GRAVEL = 4,
     DIAMOND = 5,
-    REACTOR = 6
+    REACTOR = 6,
+    LOG = 7
 };

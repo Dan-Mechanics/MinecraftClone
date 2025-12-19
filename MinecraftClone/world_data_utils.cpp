@@ -7,12 +7,12 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 		for (int x = 0; x < chunkSize; ++x) {
 			for (int y = 0; y < chunkSize; ++y) {
 				for (int z = 0; z < chunkSize; ++z) {
-					/*if (randomInclusive(0, 3))
-						continue;*/
+					if (randomInclusive(0, 1))
+						continue;
 
 					const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-					const auto blockType = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
-					chunks[chunkPos]->blocks[blockPos] = blockType;
+					// const auto blockType = static_cast<BlockType>(randomInclusive(0, BlockType::REACTOR));
+					chunks[chunkPos]->blocks[blockPos] = BlockType::LOG;
 				}
 			}
 		}
