@@ -103,7 +103,7 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
 
-	// IT STILL WORKS FOR OTHER TEXTURES
+	// IT STILL WORKS FOR OTHER MATERIALS
 	// THAT ARE "OUTSIDE THE BATCH."
 	ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 }

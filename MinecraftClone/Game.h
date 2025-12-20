@@ -48,7 +48,7 @@ private:
 	std::vector<Texture> atlasMaterial{};
 	Mesh cubeMesh{};
 
-	float applyMaxRenderDistanceInterval{};
+	float worldTickInterval{};
 	float timer{};
 
 };
