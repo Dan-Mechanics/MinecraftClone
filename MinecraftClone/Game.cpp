@@ -56,18 +56,18 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	// ===
 
 	atlas = generateAtlas();
-	chunkSize = 16;
-	renderRadius = 3;
-	updateVisibleAreaInterval = 0.5f;
-	world = { chunkSize, renderRadius };
+	const auto chunkSize = 16;
+	const auto maxRenderDistance = 3;
+	worldTickInterval = 0.5f;
+	world = { chunkSize, maxRenderDistance };
 
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };
 	unlitShader = { "default.vert", "unlit_color.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
-	chunkShader = { "chunk.vert", "chunk.frag" };
-	chunkShadowMap = { "chunk_shadow.vert", "shadow_map.frag" };
+	chunkMaterialShader = { "chunk.vert", "chunk.frag" };
+	chunkShadowMapShader = { "chunk_shadow.vert", "shadow_map.frag" };
 	
 	shadowMap = { 2048, 2048, 35.0f };
 
@@ -84,33 +84,47 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	};
 }
 
+void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+	camera.hasFocus = hasFocus;
+	camera.moveCamera(window, deltaTime);
+	camera.rotateCamera(window);
+	camera.updateMatrix(105.0f, 0.01f, 100.0f);
+}
+
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+	 
+	// MAKE IT SO WE DON'T HAVE TO BIND
+	// A TEXTURE FOR EACH SEPARATE CHUNK.
+	bindMaterial(atlasMaterial, chunkMaterialShader);
+	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
 
-	bindMaterial(atlasMaterial, chunkShader);
-	world.draw(atlasMaterial, chunkShader, camera, sun.color, sun.pos, ambientColor);
+	// IT STILL WORKS FOR OTHER MATERIALS
+	// THAT ARE "OUTSIDE THE BATCH."
+	ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
-	camera.hasFocus = hasFocus;
-	camera.moveCamera(window, deltaTime);
-	camera.rotateCamera(window);
-	camera.updateMatrix(105.0f, 0.01f, 100.0f);
+	shadowMap.activate(camera, sun);
 
-	// ===
-	
-	shadowMap.bind(camera, sun, chunkShadowMap);
-	world.drawShadows(chunkShadowMap, camera);
-	shadowMap.sendToShader(chunkShader);
+	shadowMap.bind(shadowMapShader);
+	shadowMap.bind(chunkShadowMapShader);
+
+	ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
+	world.drawShadows(chunkShadowMapShader, camera);
+
+	// WE COULD USE A STD::VECTOR HERE.
+	shadowMap.sendToShader(chunkMaterialShader);
+	shadowMap.sendToShader(materialShader);
 }
 
 void Game::tick(const float interval, ThreadPool& pool) {
 	timer += interval;
-	if (timer >= updateVisibleAreaInterval) {
+	if (timer >= worldTickInterval) {
 		timer = 0.0f;
 		if (world.toggle) {
 			world.allocateNewChunks(pool, camera.position);

@@ -1,16 +1,8 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const int chunkSize, const int renderRadius)
-	: chunkSize{ chunkSize }, renderRadius{ renderRadius } { 
-	for (int x = -renderRadius; x < renderRadius; ++x) {
-		for (int y = -2; y <= 2; ++y) {
-			for (int z = -renderRadius; z < renderRadius; ++z) {
-				visibleArea.insert(glm::ivec3{ x, y, z });
-			}
-		}
-	}
-}
+World::World(const int chunkSize, const int maxRenderDistance)
+	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -33,35 +25,47 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
-void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {	
+void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
-	auto it1 = visibleArea.begin();
-	while (it1 != visibleArea.end()) {
-		const glm::ivec3& chunkPos = *it1 + playerChunkPos;
-		if (!chunks.contains(chunkPos)) {
-			auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
-			if (future.get())
-				changedChunkPositions.insert(chunkPos);
-		}
+	const auto yRenderDistance = maxRenderDistance - 1;
 
-		++it1;
+	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
+		for (int y = -yRenderDistance; y < yRenderDistance; ++y) {
+			for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
+				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
+				if (chunks.contains(chunkPos))
+					continue;
+
+				// WE NEED TO LOAD A CHUNK IN.
+				auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
+				if (future.get())
+					changedChunkPositions.insert(chunkPos);
+			}
+		}
 	}
 }
 
 void World::destroyOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 
-	// !PERFORMANCE ??
-	auto it1 = chunks.begin();
-	while (it1 != chunks.end()) {
-		if (!visibleArea.contains(it1->first - playerChunkPos)) {
-			changedChunkPositions.insert(it1->first);
-			delete it1->second;
-			it1 = chunks.erase(it1);
-			continue;
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
+		const auto chunkPos = it->first;
+		if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
+			chunkPos.x < playerChunkPos.x - maxRenderDistance ||
+			chunkPos.z > playerChunkPos.z + maxRenderDistance ||
+			chunkPos.z < playerChunkPos.z - maxRenderDistance ||
+			chunkPos.y > playerChunkPos.y + maxRenderDistance ||
+			chunkPos.y < playerChunkPos.y - maxRenderDistance) {
+			// WE NEED TO DELETE THIS CHUNK.
+			// IT IS OUT OF BOUNDS.
+			changedChunkPositions.insert(it->first);
+			delete it->second;
+			it = chunks.erase(it);
 		}
-
-		++it1;
+		else {
+			++it;
+		}
 	}
 }
 

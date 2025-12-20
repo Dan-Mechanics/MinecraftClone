@@ -12,6 +12,7 @@ public:
 
 	Game();
 	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
+	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool);
@@ -32,16 +33,14 @@ private:
 
 	World world{};
 	Atlas atlas{};
-	int chunkSize{};
-	int renderRadius{};
 	Camera camera{};
 
 	Shader materialShader{};
 	Shader unlitShader{};
 	Shader shadowMapShader{};
 
-	Shader chunkShader{};
-	Shader chunkShadowMap{};
+	Shader chunkMaterialShader{};
+	Shader chunkShadowMapShader{};
 
 	ShadowMapFBO shadowMap{};
 
@@ -49,7 +48,7 @@ private:
 	std::vector<Texture> atlasMaterial{};
 	Mesh cubeMesh{};
 
-	float updateVisibleAreaInterval{};
+	float worldTickInterval{};
 	float timer{};
 
 };

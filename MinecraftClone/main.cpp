@@ -10,15 +10,19 @@
 #include "mesh_utils.h"
 #include "ThreadPool.h"
 #include "Game.h"
+#include <chrono>
+#include <thread>
+#include <iostream>
 
-const float fpsCap = 300.0f;
-const float minFrameInterval = 1.0f / fpsCap;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
-const float tickInterval = 0.02f;
 bool hasFocus = true;
 
-static void setFocus(GLFWwindow* window, int focus) {
+const float maxFps = 300.0f;
+const float frameInterval = 1.0f / maxFps;
+const float tickInterval = 0.02f;
+
+static void focusCallback(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
@@ -51,7 +55,7 @@ int main() {
 	}
 
 	glfwSetKeyCallback(window, keyCallback);
-	glfwSetWindowFocusCallback(window, &setFocus);
+	glfwSetWindowFocusCallback(window, &focusCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -87,31 +91,26 @@ int main() {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	float previousTime = 0.0f;
-	float currentTime = 0.0f;
-	float timer = 0.0f;
-
-
-
 	glfwSwapInterval(0);
+	auto previous = 0.0f;
+	auto timer = 0.0f;
 
 	while (!glfwWindowShouldClose(window)) {
-		currentTime = (float)glfwGetTime();
-		float deltaTime = currentTime - previousTime;
+		const auto current = (float)glfwGetTime();
+		const auto deltaTime = std::max(current - previous, 0.0f);
 
-		// https://discourse.glfw.org/t/frame-limiting/70/4
-		if (deltaTime < minFrameInterval)
+		if (deltaTime < frameInterval)
 			continue;
 
-		previousTime = currentTime;
-
-		std::string fps = std::to_string(1.0f / deltaTime);
-		std::string ms = std::to_string(deltaTime * 1000);
-		std::string newTitle = "fps: " + fps + " | ms: " + ms;
-		glfwSetWindowTitle(window, newTitle.c_str());
+		previous = current;
+		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
+		glfwSetWindowTitle(window, title.c_str());
 
 		// ===
 
+		game.update(deltaTime, hasFocus, window);
+
+		// FIXED UPDATED.
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
