@@ -57,9 +57,10 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	atlas = generateAtlas();
 	chunkSize = 16;
-	renderRadius = 3;
+	viewingDistance = 3;
+	verticalViewingDistance = 1;
 	updateVisibleAreaInterval = 0.5f;
-	world = { chunkSize, renderRadius };
+	world = { chunkSize, viewingDistance, verticalViewingDistance };
 
 	// ===
 

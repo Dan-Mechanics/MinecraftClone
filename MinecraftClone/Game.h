@@ -33,7 +33,8 @@ private:
 	World world{};
 	Atlas atlas{};
 	int chunkSize{};
-	int renderRadius{};
+	int viewingDistance{};
+	int verticalViewingDistance{};
 	Camera camera{};
 
 	Shader materialShader{};
