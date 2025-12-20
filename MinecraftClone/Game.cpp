@@ -102,24 +102,14 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
-
-	// IT STILL WORKS FOR OTHER MATERIALS
-	// THAT ARE "OUTSIDE THE BATCH."
-	ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	shadowMap.activate(camera, sun);
-
-	shadowMap.bind(shadowMapShader);
 	shadowMap.bind(chunkShadowMapShader);
 
-	ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 	world.drawShadows(chunkShadowMapShader, camera);
-
-	// WE COULD USE A STD::VECTOR HERE.
 	shadowMap.sendToShader(chunkMaterialShader);
-	shadowMap.sendToShader(materialShader);
 }
 
 void Game::tick(const float interval, ThreadPool& pool) {
