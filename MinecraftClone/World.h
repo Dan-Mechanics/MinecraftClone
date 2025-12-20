@@ -12,7 +12,7 @@ public:
 	bool toggle{};
 	
 	World();
-	World(const int chunkSize, const int viewingDistance, const int verticalViewingDistance);
+	World(const int chunkSize, const int maxRenderDistance);
 
 	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
 
@@ -34,8 +34,7 @@ public:
 private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
-	int verticalViewingDistance{};
-	int viewingDistance{};
+	int maxRenderDistance{};
 	int chunkSize{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);

@@ -4,7 +4,7 @@ Chunk::Chunk() = default;
 Chunk::Chunk(const glm::ivec3& chunkPos, const int chunkSize) : chunkPos{ chunkPos } {
 	//generateChunkData(chunkSize);
 	//std::cout << "created: " << std::flush;
-	//log(chunkPos);
+	//logIvec3(chunkPos);
 }
 
 Chunk::~Chunk() {
@@ -12,5 +12,5 @@ Chunk::~Chunk() {
 		chunkMesh.free();
 
 	//std::cout << "destroyed: " << std::flush;
-	//log(chunkPos);
+	//logIvec3(chunkPos);
 }

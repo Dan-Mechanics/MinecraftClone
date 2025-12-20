@@ -109,6 +109,9 @@ int main() {
 
 		// ===
 
+		game.update(deltaTime, hasFocus, window);
+
+		// FIXED UPDATED.
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;

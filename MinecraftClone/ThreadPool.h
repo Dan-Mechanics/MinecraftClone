@@ -17,7 +17,6 @@ private:
     private:
         int m_id;
         ThreadPool* m_pool;
-
     public:
         ThreadWorker(ThreadPool* pool, const int id)
             : m_pool(pool), m_id(id) {
@@ -46,7 +45,6 @@ private:
     std::vector<std::thread> m_threads;
     std::mutex m_conditional_mutex;
     std::condition_variable m_conditional_lock;
-
 public:
     ThreadPool(const int n_threads)
         : m_threads(std::vector<std::thread>(n_threads)), m_shutdown(false) {
@@ -99,5 +97,4 @@ public:
         // Return future from promise
         return task_ptr->get_future();
     }
-
 };

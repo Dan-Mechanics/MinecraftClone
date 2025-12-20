@@ -22,7 +22,8 @@ public:
 	ShadowMapFBO();
 	ShadowMapFBO(const unsigned int shadowMapWidth, const unsigned int shadowMapHeight, const float dist);
 
-	void bind(const Camera& camera, const Object& sun, const Shader& shader);
+	void activate(const Camera& camera, const Object& sun);
+	void bind(const Shader& shader) const;
 	void sendToShader(const Shader& shader) const;
 	void free() const;
 };

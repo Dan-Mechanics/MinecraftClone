@@ -33,7 +33,7 @@ ShadowMapFBO::ShadowMapFBO(const unsigned int shadowMapWidth, const unsigned int
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowMapFBO::bind(const Camera& camera, const Object& sun, const Shader& shader) {
+void ShadowMapFBO::activate(const Camera& camera, const Object& sun) {
 	glEnable(GL_DEPTH_TEST);
 
 	glViewport(0, 0, shadowMapWidth, shadowMapHeight);
@@ -45,7 +45,9 @@ void ShadowMapFBO::bind(const Camera& camera, const Object& sun, const Shader& s
 
 	glm::mat4 translation = glm::translate(glm::mat4{ 1.0f }, -camera.position);
 	lightProjection = orthgonalProjection * lightView * translation;
+}
 
+void ShadowMapFBO::bind(const Shader& shader) const {
 	shader.activate();
 	glUniformMatrix4fv(glGetUniformLocation(shader.id, "lightProjection"), 1, GL_FALSE, glm::value_ptr(lightProjection));
 }
