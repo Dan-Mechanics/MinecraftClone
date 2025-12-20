@@ -14,16 +14,15 @@
 #include <thread>
 #include <iostream>
 
-const float fpsCap = 300.0f;
-
-// 1.0f / fpsCap
-const float minFrameInterval = 1.0f / fpsCap;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
-const float tickInterval = 0.02f;
 bool hasFocus = true;
 
-static void setFocus(GLFWwindow* window, int focus) {
+const float maxFps = 300.0f;
+const float frameInterval = 1.0f / maxFps;
+const float tickInterval = 0.02f;
+
+static void focusCallback(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
@@ -56,7 +55,7 @@ int main() {
 	}
 
 	glfwSetKeyCallback(window, keyCallback);
-	glfwSetWindowFocusCallback(window, &setFocus);
+	glfwSetWindowFocusCallback(window, &focusCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -100,7 +99,7 @@ int main() {
 		const auto current = (float)glfwGetTime();
 		const auto deltaTime = std::max(current - previous, 0.0f);
 
-		if (deltaTime < minFrameInterval)
+		if (deltaTime < frameInterval)
 			continue;
 
 		previous = current;

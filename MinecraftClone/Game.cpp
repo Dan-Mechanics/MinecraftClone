@@ -58,7 +58,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	atlas = generateAtlas();
 	const auto chunkSize = 16;
 	const auto maxRenderDistance = 3;
-	applyMaxRenderDistanceInterval = 0.5f;
+	worldTickInterval = 0.5f;
 	world = { chunkSize, maxRenderDistance };
 
 	// ===
@@ -124,7 +124,7 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 void Game::tick(const float interval, ThreadPool& pool) {
 	timer += interval;
-	if (timer >= applyMaxRenderDistanceInterval) {
+	if (timer >= worldTickInterval) {
 		timer = 0.0f;
 		if (world.toggle) {
 			world.allocateNewChunks(pool, camera.position);
