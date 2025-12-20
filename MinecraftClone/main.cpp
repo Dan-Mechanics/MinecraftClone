@@ -12,8 +12,11 @@
 #include "Game.h"
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 const float fpsCap = 300.0f;
+
+// 1.0f / fpsCap
 const float minFrameInterval = 1.0f / fpsCap;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -89,23 +92,18 @@ int main() {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	const auto interval = std::chrono::nanoseconds((long long)floor(1.0f / 300.0f * 1000.0f * 1000000.0f));
-
-	//float previousTime = 0.0f;
-	//float currentTime = 0.0f;
-	auto previous = std::chrono::high_resolution_clock::now();
-	float timer = 0.0f;
-
 	glfwSwapInterval(0);
+	auto previous = 0.0f;
+	auto timer = 0.0f;
 
 	while (!glfwWindowShouldClose(window)) {
-		//float currentTime = (float)glfwGetTime();
-		const auto current = std::chrono::high_resolution_clock::now();
-		const auto nanoDuration = std::chrono::duration_cast<std::chrono::nanoseconds>(current - previous);
-		auto deltaTime = nanoDuration.count() * 0.000001f; // MS.
-		deltaTime *= 0.001f; // SECONDS.
-		previous = current;
+		const auto current = (float)glfwGetTime();
+		const auto deltaTime = std::max(current - previous, 0.0f);
 
+		if (deltaTime < minFrameInterval)
+			continue;
+
+		previous = current;
 		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
@@ -114,8 +112,7 @@ int main() {
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-				game.tick(tickInterval, pool);
+			game.tick(tickInterval, pool);
 		}
 
 		game.drawShadows(deltaTime, hasFocus, window);
@@ -130,11 +127,6 @@ int main() {
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-		const auto endTime = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current - endTime);
-		duration = std::chrono::milliseconds((long long)floor(minFrameInterval * 1000.0f)) - duration;
-		std::this_thread::sleep_for(duration);
 	}
 
 	game.free();
