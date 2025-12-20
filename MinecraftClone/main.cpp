@@ -89,39 +89,24 @@ int main() {
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	float previousTime = 0.0f;
-	//float currentTime = 0.0f;
-	float timer = 0.0f;
+	const auto interval = std::chrono::nanoseconds((long long)floor(1.0f / 300.0f * 1000.0f * 1000000.0f));
 
-	typedef std::chrono::high_resolution_clock Time;
-	typedef std::chrono::milliseconds ms;
-	typedef std::chrono::duration<float> fsec;
-	auto t0 = Time::now();
-	auto t1 = Time::now();
-	fsec fs = t1 - t0;
-	ms d = std::chrono::duration_cast<ms>(fs);
-	std::cout << fs.count() << "s\n";
-	std::cout << d.count() << "ms\n";
+	//float previousTime = 0.0f;
+	//float currentTime = 0.0f;
+	auto previous = std::chrono::high_resolution_clock::now();
+	float timer = 0.0f;
 
 	glfwSwapInterval(0);
 
 	while (!glfwWindowShouldClose(window)) {
-		float currentTime = (float)glfwGetTime();
-		float deltaTime = currentTime - previousTime;
-		previousTime = currentTime;
+		//float currentTime = (float)glfwGetTime();
+		const auto current = std::chrono::high_resolution_clock::now();
+		const auto nanoDuration = std::chrono::duration_cast<std::chrono::nanoseconds>(current - previous);
+		auto deltaTime = nanoDuration.count() * 0.000001f; // MS.
+		deltaTime *= 0.001f; // SECONDS.
+		previous = current;
 
-		// THE DIFFERENCE BETWEEN THE DELTATIME AND THE CAP FPS INTERVAL
-		float waitSeconds = minFrameInterval - deltaTime;
-		if (waitSeconds < 0.0f)
-			waitSeconds = 0.0f;
-
-		if (waitSeconds > 0.0f) {
-			std::this_thread::sleep_for(std::chrono::milliseconds((long)round(waitSeconds * 1000.0f)));
-			std::cout << waitSeconds << std::endl;
-			deltaTime += waitSeconds;
-		}
-
-		const auto title = "fps: " + std::to_string(floor(1.0f / deltaTime));
+		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
 		// ===
@@ -145,6 +130,11 @@ int main() {
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		const auto endTime = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current - endTime);
+		duration = std::chrono::milliseconds((long long)floor(minFrameInterval * 1000.0f)) - duration;
+		std::this_thread::sleep_for(duration);
 	}
 
 	game.free();
