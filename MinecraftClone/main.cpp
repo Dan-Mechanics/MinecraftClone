@@ -108,13 +108,13 @@ int main() {
 
 		// ===
 
-		game.update(deltaTime, hasFocus, window);
+		game.update(deltaTime, hasFocus, window, pool);
 
 		// FIXED UPDATED.
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
-			game.tick(tickInterval, pool);
+			game.tick(tickInterval, pool, window);
 		}
 
 		game.drawShadows(deltaTime, hasFocus, window);

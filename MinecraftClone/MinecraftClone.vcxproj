@@ -155,6 +155,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="mesh_utils.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
+    <ClCompile Include="Terraformer.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="world_data_utils.cpp" />
     <ClCompile Include="world_mesh_utils.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="hashing_utils.h" />
+    <ClInclude Include="Terraformer.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="World.h" />

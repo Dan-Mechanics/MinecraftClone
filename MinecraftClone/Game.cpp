@@ -11,8 +11,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	ambientColor = glm::vec4{
 		(float)90 / 255,
-		(float)86 / 255,
-		(float)150 / 255, 1.0f
+		(float)110 / 255,
+		(float)194 / 255, 1.0f
 	};
 
 	// ===
@@ -84,11 +84,13 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	};
 }
 
-void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool) {
 	camera.hasFocus = hasFocus;
 	camera.moveCamera(window, deltaTime);
 	camera.rotateCamera(window);
 	camera.updateMatrix(105.0f, 0.01f, 100.0f);
+
+	terraformer.update(window, camera, world, pool, atlas);
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
@@ -112,10 +114,11 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 	shadowMap.sendToShader(chunkMaterialShader);
 }
 
-void Game::tick(const float interval, ThreadPool& pool) {
+void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	timer += interval;
 	if (timer >= worldTickInterval) {
 		timer = 0.0f;
+
 		if (world.toggle) {
 			world.allocateNewChunks(pool, camera.position);
 		}

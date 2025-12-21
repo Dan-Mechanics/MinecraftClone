@@ -90,7 +90,14 @@ void World::remove(const glm::ivec3& blockPos) {
 		return;
 
 	chunks[chunkPos]->blocks.erase(blockPos);
+	//changedChunkPositions.insert(chunkPos);
 	notifyChunkChange(chunkPos);
+}
+
+void World::flush(ThreadPool& pool, const Atlas& atlas) {
+	while (changedChunkPositions.begin() != changedChunkPositions.end()) {
+		reloadSingleChunkMesh(pool, atlas);
+	}
 }
 
 void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
@@ -124,6 +131,31 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 	chunk.chunkMesh = { chunkVerts, chunkTris };
 	chunk.hasMesh = true;
+}
+
+bool World::raycast(glm::vec3 origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock) const {
+	for (int i = 0; i < count; ++i) {
+		hitBlock = posToBlockPos(origin);
+		if (has(hitBlock, chunks, chunkSize)) 
+			return true;
+
+		origin += direction * step;
+	}
+	
+	return false;
+}
+
+bool World::exactRaycast(const glm::vec3& origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock, glm::vec3& point) const {
+	point = origin;
+	for (int i = 0; i < count; ++i) {
+		hitBlock = posToBlockPos(point);
+		if (has(hitBlock, chunks, chunkSize))
+			return true;
+	
+		point += direction * step;
+	}
+	
+	return false;
 }
 
 void World::free() {

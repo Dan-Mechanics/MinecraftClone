@@ -6,16 +6,17 @@
 #include "ShadowMapFBO.h"
 #include "mesh_utils.h"
 #include "world_mesh_utils.h"
+#include "Terraformer.h"
 
 class Game {
 public:
 
 	Game();
 	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
-	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window);
+	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool);
 	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
-	void tick(const float interval, ThreadPool& pool);
+	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
 	glm::vec4 getClearColor() const;
 	void free();
 
@@ -34,6 +35,7 @@ private:
 	World world{};
 	Atlas atlas{};
 	Camera camera{};
+	Terraformer terraformer{};
 
 	Shader materialShader{};
 	Shader unlitShader{};

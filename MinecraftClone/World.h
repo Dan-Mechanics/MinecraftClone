@@ -28,8 +28,11 @@ public:
 	void destroyOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
+	void flush(ThreadPool& pool, const Atlas& atlas);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
-	void free();
+	bool raycast(glm::vec3 origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock) const;
+	bool exactRaycast(const glm::vec3& origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock, glm::vec3& point) const;
+;	void free();
 
 private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};

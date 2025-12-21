@@ -188,7 +188,7 @@ Atlas generateAtlas() {
 }
 
 glm::ivec3 posToBlockPos(const glm::vec3& pos) {
-	return glm::ivec3{ (int)pos.x, (int)pos.y, (int)pos.z };
+	return glm::ivec3{ floor(pos.x), floor(pos.y), floor(pos.z) };
 }
 
 void setEquatorUVs(Map& map, const Face& face) {

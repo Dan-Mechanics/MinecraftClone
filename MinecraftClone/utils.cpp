@@ -43,3 +43,44 @@ void bindMaterial(std::vector<Texture>& material, const Shader& shader) {
 		material[i].bind();
 	}
 }
+
+Direction getDirectionFromVector(const glm::vec3& vec) {
+	int axis = 0;
+	float highest = abs(vec.x);
+
+	if (abs(vec.y) > highest) 
+		axis = 1;
+
+	if (abs(vec.z) > highest) 
+		axis = 2;
+
+	switch (axis) {
+	case 0:
+		return vec.x > 0.0f ? Direction::RIGHT : Direction::LEFT;
+	case 1:
+		return vec.y > 0.0f ? Direction::UP : Direction::DOWN;
+	case 2:
+		return vec.z > 0.0f ? Direction::FORWARD : Direction::BACK;
+	default:
+		break;
+	}
+}
+
+glm::ivec3 directionToIvec3(const Direction dir) {
+	switch (dir) {
+	case UP:
+		return up;
+	case DOWN:
+		return down;
+	case FORWARD:
+		return forward;
+	case RIGHT:
+		return right;
+	case BACK:
+		return back;
+	case LEFT:
+		return left;
+	default:
+		return { 0, 0, 0 };
+	}
+}
