@@ -1,219 +1,218 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="World">
+      <UniqueIdentifier>{53bb2a17-3b2f-4284-bd78-0afa2cbd7bd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Game">
+      <UniqueIdentifier>{b008a45a-70ea-48c7-b5be-52f0ba55391d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Shaders">
+    <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{24715acf-b6eb-4b2f-9ae8-ec6c08a5933e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Textures">
+    <Filter Include="Resources\Textures">
       <UniqueIdentifier>{ff00db2e-e20f-431b-8039-50aeb0de18f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mesh">
+    <Filter Include="Rendering">
       <UniqueIdentifier>{1b2d2537-3902-446a-b721-838d1d6f4721}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{458d97f6-2407-42bd-a2da-0d335fcbd16a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="stb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowMapFBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Chunk.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="EBO.cpp">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="VAO.cpp">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="VBO.cpp">
-      <Filter>Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkMesh.cpp">
-      <Filter>Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world_mesh_utils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="world_data_utils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh_utils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>Utils</Filter>
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="world_mesh_utils.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="world_data_utils.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_utils.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="Chunk.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapFBO.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMesh.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="material.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="normals_debug.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="unlit_color.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="shadow_map.vert">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="chunk.vert">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="chunk.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="chunk_shadow.vert">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Direction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMapFBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Chunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Atlas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="VBO.h">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="VAO.h">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="EBO.h">
-      <Filter>Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkVertex.h">
-      <Filter>Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkMesh.h">
-      <Filter>Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="SafeQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh_utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="world_mesh_utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="world_data_utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Utils</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Mesh</Filter>
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="world_mesh_utils.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="world_data_utils.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_utils.h">
+      <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="hashing_utils.h">
-      <Filter>Utils</Filter>
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Chunk.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockType.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Atlas.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeQueue.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapFBO.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkMesh.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkVertex.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </Text>
     <Text Include="shadow_map.frag">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resources\Shaders</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="atlas.png">
-      <Filter>Resource Files\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="atlas_specular.png">
-      <Filter>Resource Files\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="planks.png">
-      <Filter>Resource Files\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="planks_specular.png">
-      <Filter>Resource Files\Textures</Filter>
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>
