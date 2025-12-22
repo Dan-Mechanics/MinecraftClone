@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AxisPlane.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkMesh.cpp" />
@@ -184,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Atlas.h" />
+    <ClInclude Include="AxisPlane.h" />
     <ClInclude Include="BlockType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />

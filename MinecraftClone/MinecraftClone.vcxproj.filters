@@ -24,6 +24,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{1b2d2537-3902-446a-b721-838d1d6f4721}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{68052128-a535-4f56-b346-4b42cfe253fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -71,9 +74,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -86,8 +86,14 @@
     <ClCompile Include="ChunkMesh.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Terraformer.cpp">
+    <ClCompile Include="AxisPlane.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Terraformer.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +177,6 @@
     <ClInclude Include="Game.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -195,8 +198,14 @@
     <ClInclude Include="ChunkVertex.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Terraformer.h">
+    <ClInclude Include="AxisPlane.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Terraformer.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

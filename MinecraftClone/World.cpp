@@ -1,4 +1,5 @@
 #include "World.h"
+#include "AxisPlane.h"
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
@@ -90,7 +91,6 @@ void World::remove(const glm::ivec3& blockPos) {
 		return;
 
 	chunks[chunkPos]->blocks.erase(blockPos);
-	//changedChunkPositions.insert(chunkPos);
 	notifyChunkChange(chunkPos);
 }
 
@@ -133,29 +133,47 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	chunk.hasMesh = true;
 }
 
-bool World::raycast(glm::vec3 origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock) const {
-	for (int i = 0; i < count; ++i) {
-		hitBlock = posToBlockPos(origin);
-		if (has(hitBlock, chunks, chunkSize)) 
-			return true;
+bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3 blockPos, glm::ivec3 normal) const {
+	auto result = false;
+	normal = { 0.0f, 0.0f, 0.0f };
+	blockPos = normal;
 
-		origin += direction * step;
-	}
-	
-	return false;
-}
+	std::vector<AxisPlane> planes = {
+		AxisPlane{ { 1, 0, 0 }, origin, direction },
+		AxisPlane{ { 0, 1, 0 }, origin, direction },
+		AxisPlane{ { 0, 0, 1 }, origin, direction },
+	};
 
-bool World::exactRaycast(const glm::vec3& origin, const glm::vec3& direction, const int count, const float step, glm::ivec3& hitBlock, glm::vec3& point) const {
-	point = origin;
-	for (int i = 0; i < count; ++i) {
-		hitBlock = posToBlockPos(point);
-		if (has(hitBlock, chunks, chunkSize))
-			return true;
-	
-		point += direction * step;
+	std::sort(planes.begin(), planes.end());
+
+	glm::vec3 a{ origin };
+	glm::vec3 b{ origin };
+
+	while (!result && planes[0].getDistance() <= range) {
+		std::optional<glm::ivec3> maybeBlockPosition =
+			AxisPlane::rayHitsToBlockPosition(planes[0].getPoint(), b);
+
+		if (maybeBlockPosition.has_value() && World::isValidBlockPosition(maybeBlockPosition.value())) {
+			glm::vec3 blockPosition = maybeBlockPosition.value();
+			const BlockData* block = world.getBlockAt(blockPosition);
+
+			if (block->type != BlockData::BlockType::air) {
+				result = true;
+				std::optional<glm::ivec3> maybeNeighbor =
+					AxisPlane::rayHitsToBlockPosition(a, b);
+
+				hitTarget = { blockPosition, *block, maybeNeighbor.value(), hasNeighbor && maybeNeighbor.has_value() };
+			}
+		}
+
+		hasNeighbor = true;
+		a = b;
+		b = planes[0].getPoint();
+		planes[0].extendForward();
+		std::sort(planes.begin(), planes.end());
 	}
-	
-	return false;
+
+	return result;
 }
 
 void World::free() {

@@ -62,7 +62,7 @@ Direction getDirectionFromVector(const glm::vec3& vec) {
 	case 2:
 		return vec.z > 0.0f ? Direction::FORWARD : Direction::BACK;
 	default:
-		break;
+		return Direction::UP;
 	}
 }
 
@@ -81,6 +81,6 @@ glm::ivec3 directionToIvec3(const Direction dir) {
 	case LEFT:
 		return left;
 	default:
-		return { 0, 0, 0 };
+		return up;
 	}
 }

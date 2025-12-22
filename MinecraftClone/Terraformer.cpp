@@ -1,6 +1,7 @@
 #include "Terraformer.h"
 
 Terraformer::Terraformer() = default;
+Terraformer::Terraformer(const float range) : range{ range } { }
 
 void Terraformer::update(GLFWwindow* window, const Camera& camera, World & world, ThreadPool& pool, const Atlas& atlas) {
 	const auto leftPressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
@@ -16,25 +17,22 @@ void Terraformer::update(GLFWwindow* window, const Camera& camera, World & world
 	prevRightPressed = rightPressed;
 }
 
-void Terraformer::remove(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) {
-	glm::ivec3 hitBlock;
-	if (!world.raycast(camera.position, camera.eyesForward, 100, 0.1f, hitBlock))
+void Terraformer::remove(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) const {
+	glm::ivec3 blockPos{};
+	glm::ivec3 normal{};
+	if (!world.raycast(camera.position, camera.eyesForward, range, blockPos, normal))
 		return;
 
-	world.remove(hitBlock);
+	world.remove(blockPos);
 	world.flush(pool, atlas);
 }
 
-void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) {
-	glm::vec3 point;
-	glm::ivec3 hitBlock;
-	if (!world.exactRaycast(camera.position, camera.eyesForward, 100, 0.1f, hitBlock, point))
+void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) const {
+	glm::ivec3 blockPos{};
+	glm::ivec3 normal{};
+	if (!world.raycast(camera.position, camera.eyesForward, range, blockPos, normal))
 		return;
 
-	glm::vec3 direction = point - glm::vec3{ hitBlock };
-	Direction normal = getDirectionFromVector(direction);
-	hitBlock += directionToIvec3(normal);
-
-	world.add(hitBlock, BlockType::SAPPHIRE);
+	world.add(blockPos + normal, BlockType::SAPPHIRE);
 	world.flush(pool, atlas);
 }
