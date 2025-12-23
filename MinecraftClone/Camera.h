@@ -14,9 +14,10 @@ class Camera {
 public:
 	glm::vec3 position{};
 	glm::vec3 eyesForward{};
+	glm::vec3 eyesUp{};
 	glm::vec3 bodyForward{};
 	glm::vec3 bodyRight{};
-	glm::vec3 up = glm::vec3{ 0.0f, 1.0f, 0.0f };
+	glm::vec3 worldUp = glm::vec3{ 0.0f, 1.0f, 0.0f };
 	glm::mat4 cameraMatrix = glm::identity<glm::mat4>();
 	glm::vec3 worldForward{ 0.0f, 0.0f, 1.0f };
 

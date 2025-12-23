@@ -42,6 +42,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
+	held.setScale(glm::vec3{ 0.8f });
+
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -117,6 +119,10 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 }
 
 void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+	held.setPos(camera.position + camera.eyesForward + camera.bodyRight - camera.eyesUp);
+	held.setRot(glm::vec3{ camera.rotX, -camera.rotY, 0.0f });
+	held.drawWithMaterial(cubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
+
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
 }
 

@@ -34,6 +34,7 @@ private:
 	Object ground{};
 
 	Object crosshair{};
+	Object held{};
 
 	World world{};
 	Atlas atlas{};
