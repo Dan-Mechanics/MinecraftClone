@@ -30,7 +30,7 @@ public:
 	void remove(const glm::ivec3& blockPos);
 	void flush(ThreadPool& pool, const Atlas& atlas);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
-	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3 blockPos, glm::ivec3 normal) const;
+	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const;
 ;	void free();
 
 private:

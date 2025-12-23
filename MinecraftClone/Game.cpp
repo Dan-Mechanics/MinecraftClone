@@ -61,6 +61,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	worldTickInterval = 0.5f;
 	world = { chunkSize, maxRenderDistance };
 
+	terraformer = { 10.0f };
+
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };

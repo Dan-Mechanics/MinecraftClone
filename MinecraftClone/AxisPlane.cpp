@@ -1,48 +1,53 @@
 #include "AxisPlane.h"
 
-AxisPlane::AxisPlane(glm::vec3 normal, glm::vec3 origin, glm::vec3 direction)
-    : normal(normal), origin(origin), direction(direction) {
-    planeExtent = std::floor(glm::dot(normal, origin)) + (glm::dot(normal, direction) > 0 ? 1.0f : 0.0f);
-    planeDirection = glm::dot(normal, direction) < 0 ? -1.0f : 1.0f;
-
-    getPoint(point);
-    distance = getDistance();
+AxisPlane::AxisPlane(glm::vec3 planeNormal, glm::vec3 rayPosition, glm::vec3 rayDirection)
+    : planeNormal(planeNormal),
+    rayPosition(rayPosition),
+    rayDirection(rayDirection) {
+    offsetDirection = calculateOffsetDirection(rayDirection);
+    planeOffset = calculateStartOffset(rayPosition, rayDirection);
+    hitPosition = calculateHitPosition();
+    hitDistance = calculateHitDistanceToPosition();
 }
 
-bool AxisPlane::getPoint(glm::vec3& point) const {
-    float extent;
-    if (!intersect(extent))
-        return false;
-    
-    point = origin + (extent * direction);
-    return true;
+glm::vec3 AxisPlane::calculateHitPosition() const {
+    float t = intersect();
+
+    // if the intersection result is less than 0 then it either did not hit or the hit position is behind the cast position
+    if (t < 0)
+        return glm::vec3(std::numeric_limits<float>::infinity());
+
+    return rayPosition + t * rayDirection;
 }
 
-bool AxisPlane::intersect(float& extent) const {
-    extent = 0.0f;
-    const auto dot = glm::dot(normal, direction);
-    if (dot == 0.0f)
-        return false;
+float AxisPlane::intersect() const {
+    float d = glm::dot(planeNormal, rayDirection);
+    if (d == 0)
+        return -std::numeric_limits<float>::infinity();  // the plane and the ray are parallel
 
-    extent = glm::dot(normal, normal * planeExtent - origin) / dot;
-    return true;
+    float t = glm::dot(planeNormal, planeNormal * planeOffset - rayPosition);
+    float td = t / d;
+    return td;
 }
 
-float AxisPlane::getDistance() const {
-    return glm::distance(origin, point);
+float AxisPlane::calculateOffsetDirection(const glm::vec3& direction) const {
+    return glm::dot(planeNormal, direction) < 0 ? -1.0f : 1.0f;
 }
 
-void AxisPlane::extendForward() {
-    planeExtent += planeDirection;
-    getPoint(point);
-    distance = getDistance();
+float AxisPlane::calculateStartOffset(const glm::vec3& position, const glm::vec3& direction) const {
+    return std::floor(glm::dot(planeNormal, position)) + (glm::dot(planeNormal, direction) > 0 ? 1.0f : 0.0f);
 }
 
-bool AxisPlane::getBlockPos(const glm::vec3& a, const glm::vec3& b, glm::ivec3& blockPos) {
-    glm::vec3 diff = glm::abs(a - b);
+void AxisPlane::advanceOffset() {
+    planeOffset += offsetDirection;
+    hitPosition = calculateHitPosition();
+    hitDistance = calculateHitDistanceToPosition();
+}
+
+std::optional<glm::ivec3> AxisPlane::rayHitsToBlockPosition(const glm::vec3& hit1, const glm::vec3& hit2) {
+    glm::vec3 diff = glm::abs(hit1 - hit2);
+
     if (diff.x > 1.001f || diff.y > 1.001f || diff.z > 1.001f)
-        return false;
-
-    blockPos = glm::floor((a + b) / 2.0f);
-    return true;
+        return std::nullopt;
+    return glm::floor((hit1 + hit2) / 2.0f);
 }
