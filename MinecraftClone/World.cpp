@@ -78,8 +78,8 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 		chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
-	//if (chunks[chunkPos]->blocks.contains(blockPos))
-	//	return;
+	if (chunks[chunkPos]->blocks.contains(blockPos))
+		return;
 	
 	chunks[chunkPos]->blocks[blockPos] = blockType;
 	notifyChunkChange(chunkPos);
@@ -134,7 +134,9 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 }
 
 bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const {
-	auto result = false;
+	if (range < 0.0f)
+		return false;
+	
 	std::vector<AxisPlane> planes {
 		AxisPlane{ { 1, 0, 0 }, origin, direction },
 		AxisPlane{ { 0, 1, 0 }, origin, direction },
@@ -142,33 +144,26 @@ bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const f
 	};
 
 	std::sort(planes.begin(), planes.end());
-	glm::vec3 prevClosestHits[2] = { origin, origin };  // the player might be inside a block
+	glm::vec3 pointA = origin;
+	glm::vec3 pointB = origin;
 
-	while (!result && planes[0].getHitDistance() <= range) {
-		std::optional<glm::ivec3> maybeBlockPosition =
-			AxisPlane::rayHitsToBlockPosition(planes[0].getHitPosition(), prevClosestHits[1]);
-
-		if (maybeBlockPosition.has_value() && has(maybeBlockPosition.value(), chunks, chunkSize)) {
-			blockPos = maybeBlockPosition.value();
+	while (planes[0].distance <= range) {
+		if (pointsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
 			logIvec3(blockPos);
-			std::optional<glm::ivec3> maybeNeighbor =
-				AxisPlane::rayHitsToBlockPosition(prevClosestHits[0], prevClosestHits[1]);
 
-			if (maybeNeighbor.has_value()) {
-				normal = maybeNeighbor.value() - blockPos;
+			if (pointsToBlockPos(pointA, pointB, normal))
 				normal -= blockPos;
-			}
 
-			result = true;
+			return true;
 		}
 
-		prevClosestHits[0] = prevClosestHits[1];
-		prevClosestHits[1] = planes[0].getHitPosition();
-		planes[0].advanceOffset();
+		pointA = pointB;
+		pointB = planes[0].point;
+		planes[0].advance();
 		std::sort(planes.begin(), planes.end());
 	}
 
-	return result;
+	return false;
 }
 
 void World::free() {

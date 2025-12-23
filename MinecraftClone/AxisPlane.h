@@ -4,34 +4,40 @@
 #include <glm/ext/vector_int3.hpp>
 #include <glm/geometric.hpp>
 
-class AxisPlane {
-	glm::vec3 planeNormal;
-
-	float offsetDirection;
-	float planeOffset;
-
-	glm::vec3 rayPosition;
-	glm::vec3 rayDirection;
-
-	glm::vec3 hitPosition;
-	float hitDistance;
-
-	[[nodiscard]] float intersect() const;
-
-	[[nodiscard]] float calculateOffsetDirection(const glm::vec3& direction) const;
-	[[nodiscard]] float calculateStartOffset(const glm::vec3& position, const glm::vec3& direction) const;
-
-	[[nodiscard]] float calculateHitDistanceToPosition() const { return glm::distance(rayPosition, hitPosition); }
-	[[nodiscard]] glm::vec3 calculateHitPosition() const;
-
+/// <summary>
+/// CREDIT: https://github.com/Isti01/glCraft/blob/main/src/Math/AxisPlane.h
+/// </summary>
+struct AxisPlane {
 public:
-	static std::optional<glm::ivec3> rayHitsToBlockPosition(const glm::vec3& hit1, const glm::vec3& hit2);
-	AxisPlane(glm::vec3 planeNormal, glm::vec3 rayPosition, glm::vec3 rayDirection);
+	glm::vec3 point{};
+	float distance{};
 
-	[[nodiscard]] glm::vec3 getHitPosition() const { return hitPosition; };
-	[[nodiscard]] float getHitDistance() const { return hitDistance; };
+	AxisPlane(glm::vec3 planeNormal, glm::vec3 origin, glm::vec3 direction);
+	bool operator<(const AxisPlane& other) const;
+	void advance();
 
-	bool operator<(const AxisPlane& other) const { return hitDistance < other.hitDistance; }
+private:
+	glm::vec3 planeNormal{};
+	float planeOffsetMovement{};
+	float planeOffset{};
 
-	void advanceOffset();
+	glm::vec3 origin{};
+	glm::vec3 direction{};
+
+	/// <summary>
+	/// Check for next intersection.
+	/// </summary>
+	/// <returns>Distance to next.</returns>
+	float intersect() const;
+
+	/// <summary>
+	/// Total ray length.
+	/// </summary>
+	float calculateDistance() const;
+
+	/// <summary>
+	/// Ray intersection point.
+	/// </summary>
+	glm::vec3 calculatePoint() const;
+
 };

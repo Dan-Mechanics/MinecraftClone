@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include <string>
 #include "Direction.h"
+#include <glm/common.hpp>
 
 // TODO: ADD NAMESPACE HERE.
 
@@ -18,3 +19,4 @@ void freeMaterial(const std::vector<Texture>& material);
 void bindMaterial(std::vector<Texture>& material, const Shader& shader);
 Direction getDirectionFromVector(const glm::vec3& vec);
 glm::ivec3 directionToIvec3(const Direction dir);
+bool pointsToBlockPos(const glm::vec3& a, const glm::vec3& b, glm::ivec3& blockPos);

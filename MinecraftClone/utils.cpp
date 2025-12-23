@@ -84,3 +84,14 @@ glm::ivec3 directionToIvec3(const Direction dir) {
 		return up;
 	}
 }
+
+bool pointsToBlockPos(const glm::vec3& a, const glm::vec3& b, glm::ivec3& blockPos) {
+	const auto difference = glm::abs(a - b);
+
+	// ! ??
+	if (difference.x > 1.001f || difference.y > 1.001f || difference.z > 1.001f)
+		return false;
+
+	blockPos = glm::floor((a + b) / 2.0f);
+	return true;
+}
