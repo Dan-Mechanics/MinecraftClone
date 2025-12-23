@@ -171,6 +171,12 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::LOG].faces[Direction::UP] = tilePositionToUVs(3, 1);
 	atlas.maps[BlockType::LOG].faces[Direction::DOWN] = tilePositionToUVs(3, 1);
 
+	// GHOST LOG. ===
+	atlas.maps[BlockType::GHOST_LOG] = generateEmptyMap();
+	setEquatorUVs(atlas.maps[BlockType::GHOST_LOG], tilePositionToUVs(4, 0));
+	atlas.maps[BlockType::GHOST_LOG].faces[Direction::UP] = tilePositionToUVs(4, 1);
+	atlas.maps[BlockType::GHOST_LOG].faces[Direction::DOWN] = tilePositionToUVs(4, 1);
+
 	// ===
 	atlas.maps[BlockType::DIRT] = generateUniformMap(tilePositionToUVs(0, 1));
 	atlas.maps[BlockType::GRAVEL] = generateUniformMap(tilePositionToUVs(1, 1));
@@ -182,7 +188,7 @@ Atlas generateAtlas() {
 }
 
 glm::ivec3 posToBlockPos(const glm::vec3& pos) {
-	return glm::ivec3{ (int)pos.x, (int)pos.y, (int)pos.z };
+	return glm::ivec3{ floor(pos.x), floor(pos.y), floor(pos.z) };
 }
 
 void setEquatorUVs(Map& map, const Face& face) {

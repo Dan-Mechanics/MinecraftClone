@@ -8,5 +8,8 @@
 #include "hashing_utils.h"
 #include <unordered_set>
 
-bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, 
+bool fillChunkDataRandom(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, 
+	const int chunkSize, const glm::ivec3& chunkPos);
+
+bool fillChunkDataForest(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks,
 	const int chunkSize, const glm::ivec3& chunkPos);

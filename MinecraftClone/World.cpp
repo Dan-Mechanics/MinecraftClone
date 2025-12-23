@@ -1,4 +1,5 @@
 #include "World.h"
+#include "AxisPlane.h"
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
@@ -37,7 +38,7 @@ void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 					continue;
 
 				// WE NEED TO LOAD A CHUNK IN.
-				auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
+				auto future = pool.submit(fillChunkDataForest, std::ref(chunks), chunkSize, chunkPos);
 				if (future.get())
 					changedChunkPositions.insert(chunkPos);
 			}
@@ -93,6 +94,12 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyChunkChange(chunkPos);
 }
 
+void World::flush(ThreadPool& pool, const Atlas& atlas) {
+	while (changedChunkPositions.begin() != changedChunkPositions.end()) {
+		reloadSingleChunkMesh(pool, atlas);
+	}
+}
+
 void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	if (it == changedChunkPositions.end())
@@ -124,6 +131,39 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 	chunk.chunkMesh = { chunkVerts, chunkTris };
 	chunk.hasMesh = true;
+}
+
+bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const {
+	if (range < 0.0f)
+		return false;
+	
+	std::vector<AxisPlane> planes {
+		AxisPlane{ { 1, 0, 0 }, origin, direction },
+		AxisPlane{ { 0, 1, 0 }, origin, direction },
+		AxisPlane{ { 0, 0, 1 }, origin, direction },
+	};
+
+	std::sort(planes.begin(), planes.end());
+	glm::vec3 pointA = origin;
+	glm::vec3 pointB = origin;
+
+	while (planes[0].distance <= range) {
+		if (pointsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
+			logIvec3(blockPos);
+
+			if (pointsToBlockPos(pointA, pointB, normal))
+				normal -= blockPos;
+
+			return true;
+		}
+
+		pointA = pointB;
+		pointB = planes[0].point;
+		planes[0].advance();
+		std::sort(planes.begin(), planes.end());
+	}
+
+	return false;
 }
 
 void World::free() {

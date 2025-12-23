@@ -11,8 +11,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	ambientColor = glm::vec4{
 		(float)90 / 255,
-		(float)86 / 255,
-		(float)150 / 255, 1.0f
+		(float)110 / 255,
+		(float)194 / 255, 1.0f
 	};
 
 	// ===
@@ -61,6 +61,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	worldTickInterval = 0.5f;
 	world = { chunkSize, maxRenderDistance };
 
+	terraformer = { 10.0f };
+
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };
@@ -84,11 +86,13 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	};
 }
 
-void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool) {
 	camera.hasFocus = hasFocus;
 	camera.moveCamera(window, deltaTime);
 	camera.rotateCamera(window);
 	camera.updateMatrix(105.0f, 0.01f, 100.0f);
+
+	terraformer.update(window, camera, world, pool, atlas);
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
@@ -102,30 +106,21 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
-
-	// IT STILL WORKS FOR OTHER MATERIALS
-	// THAT ARE "OUTSIDE THE BATCH."
-	ground.drawWithMaterial(cubeMesh, woodMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	shadowMap.activate(camera, sun);
-
-	shadowMap.bind(shadowMapShader);
 	shadowMap.bind(chunkShadowMapShader);
 
-	ground.drawAsUnlitColor(cubeMesh, shadowMapShader, camera);
 	world.drawShadows(chunkShadowMapShader, camera);
-
-	// WE COULD USE A STD::VECTOR HERE.
 	shadowMap.sendToShader(chunkMaterialShader);
-	shadowMap.sendToShader(materialShader);
 }
 
-void Game::tick(const float interval, ThreadPool& pool) {
+void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	timer += interval;
 	if (timer >= worldTickInterval) {
 		timer = 0.0f;
+
 		if (world.toggle) {
 			world.allocateNewChunks(pool, camera.position);
 		}

@@ -8,5 +8,6 @@ enum BlockType {
     GRAVEL = 4,
     DIAMOND = 5,
     REACTOR = 6,
-    LOG = 7
+    LOG = 7,
+    GHOST_LOG = 8
 };

@@ -28,8 +28,14 @@ public:
 	void destroyOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
+	void flush(ThreadPool& pool, const Atlas& atlas);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
-	void free();
+	
+	/// <summary>
+	/// CREDIT: https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
+	/// </summary>
+	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const;
+;	void free();
 
 private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
