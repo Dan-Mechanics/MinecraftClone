@@ -135,28 +135,18 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const {
 	auto result = false;
-	
 	std::vector<AxisPlane> planes {
 		AxisPlane{ { 1, 0, 0 }, origin, direction },
-	   AxisPlane{ { 0, 1, 0 }, origin, direction },
-	   AxisPlane{ { 0, 0, 1 }, origin, direction },
+		AxisPlane{ { 0, 1, 0 }, origin, direction },
+		AxisPlane{ { 0, 0, 1 }, origin, direction },
 	};
 
 	std::sort(planes.begin(), planes.end());
 	glm::vec3 prevClosestHits[2] = { origin, origin };  // the player might be inside a block
-	bool hasNeighbor = false;
-	std::cout << "1" << std::endl;
+
 	while (!result && planes[0].getHitDistance() <= range) {
-		std::cout << "2" << std::endl;
-		
 		std::optional<glm::ivec3> maybeBlockPosition =
 			AxisPlane::rayHitsToBlockPosition(planes[0].getHitPosition(), prevClosestHits[1]);
-
-		//std::cout << "hello ??" << std::endl;
-
-		//if (maybeBlockPosition.has_value())
-		//	logIvec3(maybeBlockPosition.value());
-
 
 		if (maybeBlockPosition.has_value() && has(maybeBlockPosition.value(), chunks, chunkSize)) {
 			blockPos = maybeBlockPosition.value();
@@ -165,17 +155,13 @@ bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const f
 				AxisPlane::rayHitsToBlockPosition(prevClosestHits[0], prevClosestHits[1]);
 
 			if (maybeNeighbor.has_value()) {
-				normal = maybeNeighbor.value();
+				normal = maybeNeighbor.value() - blockPos;
 				normal -= blockPos;
-			//	normal = glm::normalize(normal);
 			}
 
 			result = true;
-
-			// hitTarget = { blockPosition, *block, maybeNeighbor.value(), hasNeighbor && maybeNeighbor.has_value() };
 		}
 
-		hasNeighbor = true;
 		prevClosestHits[0] = prevClosestHits[1];
 		prevClosestHits[1] = planes[0].getHitPosition();
 		planes[0].advanceOffset();
