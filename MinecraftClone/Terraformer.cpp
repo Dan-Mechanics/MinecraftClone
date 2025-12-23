@@ -24,7 +24,7 @@ void Terraformer::remove(const Camera& camera, World& world, ThreadPool& pool, c
 		return;
 
 	world.remove(blockPos);
-	world.flush(pool, atlas);
+	world.reloadSingleChunkMesh(pool, atlas);
 }
 
 void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) const {
@@ -34,5 +34,5 @@ void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, cons
 		return;
 
 	world.add(blockPos + normal, BlockType::SAPPHIRE);
-	world.flush(pool, atlas);
+	world.reloadSingleChunkMesh(pool, atlas);
 }

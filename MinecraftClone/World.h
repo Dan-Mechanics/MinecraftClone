@@ -28,7 +28,6 @@ public:
 	void destroyOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
-	void flush(ThreadPool& pool, const Atlas& atlas);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	
 	/// <summary>
@@ -44,5 +43,11 @@ private:
 	int chunkSize{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
+
+	/// <summary>
+	/// Only update the surroundng chunks if
+	/// the block is on the border of the chunk.
+	/// </summary>
+	void notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3  blockPos);
 
 };
