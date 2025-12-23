@@ -76,6 +76,15 @@ void Camera::rotateCamera(GLFWwindow* window) {
 	if (rotX < -ang)
 		rotX = -ang;
 
+	updateDirections();
+
+	// RESET ===
+	glfwSetCursorPos(window, halfWidth, halfHeight);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+}
+
+void Camera::updateDirections() {
 	// UP DOWN ===
 	eyesForward = glm::rotate(worldForward, glm::radians(rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
 
@@ -83,9 +92,4 @@ void Camera::rotateCamera(GLFWwindow* window) {
 	eyesForward = glm::rotate(eyesForward, glm::radians(-rotY), up);
 	bodyForward = glm::rotate(worldForward, glm::radians(-rotY), up);
 	bodyRight = glm::rotate(bodyForward, glm::radians(-90.0f), up);
-
-	// RESET ===
-	glfwSetCursorPos(window, halfWidth, halfHeight);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }

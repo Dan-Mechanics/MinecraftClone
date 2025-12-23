@@ -38,6 +38,10 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	ground.setPos(glm::vec3{ 0.0f, -3.0f, 0.0f });
 	ground.setScale(glm::vec3{ 100.0f, 1.0f, 100.0f });
 
+	crosshair.setPos(glm::vec3{ 0.0f, 0.0f, 3.0f });
+	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+	crosshair.setScale(glm::vec3{ 0.05f });
+
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -52,6 +56,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	float standardSpeed = 15.0f;
 	float sensitivity = 0.1f;
 	camera = { window, width, height, standardSpeed, sensitivity };
+	displayCamera = camera;
+	displayCamera.updateDirections();
 
 	// ===
 
@@ -90,7 +96,9 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	camera.hasFocus = hasFocus;
 	camera.moveCamera(window, deltaTime);
 	camera.rotateCamera(window);
+
 	camera.updateMatrix(105.0f, 0.01f, 100.0f);
+	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f);
 
 	terraformer.update(window, camera, world, pool, atlas);
 }
@@ -106,6 +114,10 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
+}
+
+void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {

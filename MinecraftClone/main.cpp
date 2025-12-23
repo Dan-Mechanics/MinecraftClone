@@ -117,15 +117,20 @@ int main() {
 			game.tick(tickInterval, pool, window);
 		}
 
+		glEnable(GL_DEPTH_TEST);
 		game.drawShadows(deltaTime, hasFocus, window);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, width, height);
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glEnable(GL_DEPTH_TEST);
 
 		game.draw(deltaTime, hasFocus, window);
+
+		glDisable(GL_DEPTH_TEST);
+		game.drawDisplay(deltaTime, hasFocus, window);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

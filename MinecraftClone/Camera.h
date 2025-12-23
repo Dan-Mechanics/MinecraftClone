@@ -36,7 +36,7 @@ public:
 	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
 	void moveCamera(GLFWwindow* window, const float dt);
 	void rotateCamera(GLFWwindow* window);
-
+	void updateDirections();
 };
 
 #endif 

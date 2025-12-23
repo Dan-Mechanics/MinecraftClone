@@ -38,7 +38,7 @@ void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 					continue;
 
 				// WE NEED TO LOAD A CHUNK IN.
-				auto future = pool.submit(fillChunkDataForest, std::ref(chunks), chunkSize, chunkPos);
+				auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
 				if (future.get())
 					changedChunkPositions.insert(chunkPos);
 			}
