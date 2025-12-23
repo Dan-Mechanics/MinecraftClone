@@ -7,6 +7,7 @@
 #include "mesh_utils.h"
 #include "world_mesh_utils.h"
 #include "Terraformer.h"
+#include "BlockSelector.h"
 
 class Game {
 public:
@@ -14,7 +15,7 @@ public:
 	Game();
 	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
 	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool);
-	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
+	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window, int& scrollInput);
 	void drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
@@ -41,6 +42,7 @@ private:
 	Camera camera{};
 	Camera displayCamera{};
 	Terraformer terraformer{};
+	BlockSelector selector{};
 
 	Shader materialShader{};
 	Shader unlitShader{};

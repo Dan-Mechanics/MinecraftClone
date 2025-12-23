@@ -17,13 +17,25 @@
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 bool hasFocus = true;
+auto scrollInput = 0;
 
-const float maxFps = 300.0f;
-const float frameInterval = 1.0f / maxFps;
-const float tickInterval = 0.02f;
+const auto maxFps = 300.0f;
+const auto frameInterval = 1.0f / maxFps;
+const auto tickInterval = 0.02f;
 
 static void focusCallback(GLFWwindow* window, int focus) {
 	hasFocus = focus;
+}
+
+static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+	// up or down??
+	std::cout << "hello ?? " << std::endl;
+	if (yOffset > 0) {
+		scrollInput++;
+	}
+	else {
+		scrollInput--;
+	}
 }
 
 /// <summary>
@@ -61,6 +73,8 @@ int main() {
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	// glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 144);
 
+	glfwSetScrollCallback(window, scrollCallback);
+
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 	glViewport(0, 0, width, height);
@@ -96,13 +110,13 @@ int main() {
 	auto timer = 0.0f;
 
 	while (!glfwWindowShouldClose(window)) {
-		const auto current = (float)glfwGetTime();
-		const auto deltaTime = std::max(current - previous, 0.0f);
+		const auto index = (float)glfwGetTime();
+		const auto deltaTime = std::max(index - previous, 0.0f);
 
 		if (deltaTime < frameInterval)
 			continue;
 
-		previous = current;
+		previous = index;
 		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
@@ -127,7 +141,7 @@ int main() {
 
 		glEnable(GL_DEPTH_TEST);
 
-		game.draw(deltaTime, hasFocus, window);
+		game.draw(deltaTime, hasFocus, window, scrollInput);
 
 		glDisable(GL_DEPTH_TEST);
 		game.drawDisplay(deltaTime, hasFocus, window);

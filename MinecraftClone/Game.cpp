@@ -105,7 +105,7 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	terraformer.update(window, camera, world, pool, atlas);
 }
 
-void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window, int& scrollInput) {
 	centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -116,6 +116,8 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
+
+	selector.onScroll(scrollInput);
 }
 
 void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {

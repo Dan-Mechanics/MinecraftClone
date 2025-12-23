@@ -95,6 +95,9 @@
     <ClCompile Include="Terraformer.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="BlockSelector.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
@@ -205,6 +208,9 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Terraformer.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSelector.h">
       <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
