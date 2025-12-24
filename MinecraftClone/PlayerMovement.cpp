@@ -1,18 +1,38 @@
 #include "PlayerMovement.h"
 
 PlayerMovement::PlayerMovement() = default;
+PlayerMovement::PlayerMovement(const float standardSpeed) : standardSpeed{ standardSpeed } { }
 
-void PlayerMovement::update(const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
-	// ISOLATE THE PLAYER'S MOTION INTO ESSENTIAL ELEMENTS
-	// BOX CAST EACH ELEMENT
-	// CLAMP THE ELEMENTS THAT FAIL
-	
-	
-	const auto blockPos = posToBlockPos(pos);
-	if (!has(blockPos, chunks, chunkSize)) {
+void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward, const float deltaTime, const bool hasFocus) {
+	if (!hasFocus)
+		return;
 
-	}
+	// !ADD BLOCK COLLISION
+	glm::vec3 movement{};
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		movement += bodyForward;
 
-	if (blockPos != prevBlockPos)
-		prevBlockPos = blockPos;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		movement -= bodyRight;
+
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		movement -= bodyForward;
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		movement += bodyRight;
+
+	if (glm::length(movement) > 0.0f)
+		movement = glm::normalize(movement);
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		movement += worldUp;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		movement -= worldUp;
+
+	auto currentSpeed = standardSpeed;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		currentSpeed *= 3.0f;
+
+	pos += deltaTime * currentSpeed * movement;
 }

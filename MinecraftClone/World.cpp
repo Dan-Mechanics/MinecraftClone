@@ -126,21 +126,23 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	chunk.hasMesh = true;
 }
 
-bool World::raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const {
-	if (range < 0.0f)
-		return false;
+bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const {
 	
+	logVec3(raycast.origin);
+	logVec3(raycast.direction);
+	std::cout << raycast.range << std::endl;
+
 	std::vector<AxisPlane> planes {
-		AxisPlane{ { 1, 0, 0 }, origin, direction },
-		AxisPlane{ { 0, 1, 0 }, origin, direction },
-		AxisPlane{ { 0, 0, 1 }, origin, direction },
+		AxisPlane{ { 1, 0, 0 }, raycast.origin, raycast.direction },
+		AxisPlane{ { 0, 1, 0 }, raycast.origin, raycast.direction },
+		AxisPlane{ { 0, 0, 1 }, raycast.origin, raycast.direction },
 	};
 
 	std::sort(planes.begin(), planes.end());
-	glm::vec3 pointA = origin;
-	glm::vec3 pointB = origin;
+	glm::vec3 pointA = raycast.origin;
+	glm::vec3 pointB = raycast.origin;
 
-	while (planes[0].distance <= range) {
+	while (planes[0].distance <= raycast.range) {
 		if (pointsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
 			logIvec3(blockPos);
 

@@ -20,7 +20,11 @@ public:
 	float rotY{};
 
 	MouseLook();
-	void rotateCamera(GLFWwindow* window, const unsigned int width, const unsigned int height, const bool hasFocus);
+	MouseLook(GLFWwindow* window, const unsigned int width, const unsigned int height, const float sensitivity);
+
+	void update(GLFWwindow* window, const unsigned int width, const unsigned int height, const bool hasFocus);
+
+private:
 	void updateDirections();
 
 };

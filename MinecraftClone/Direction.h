@@ -11,6 +11,8 @@ const glm::ivec3 back = -forward;
 
 // ===
 
+const glm::vec3 worldOrigin{ 0.0f, 0.0f, 0.0f };
+
 const glm::vec3 worldUp{ 0.0f, 1.0f, 0.0f };
 const glm::vec3 worldDown = -worldUp;
 

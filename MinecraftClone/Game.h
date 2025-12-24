@@ -8,13 +8,15 @@
 #include "world_mesh_utils.h"
 #include "Terraformer.h"
 #include "BlockSelector.h"
+#include "MouseLook.h"
+#include "PlayerMovement.h"
 
 class Game {
 public:
 
 	Game();
 	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
-	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int & scrollInput);
+	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput);
 	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
@@ -23,6 +25,11 @@ public:
 	void free();
 
 private:
+	unsigned int width{};
+	unsigned int height{};
+	float worldTickInterval{};
+	float timer{};
+
 	glm::vec4 ambientColor{};
 	glm::vec4 sunColor{};
 
@@ -39,8 +46,13 @@ private:
 
 	World world{};
 	Atlas atlas{};
+
 	Camera camera{};
 	Camera displayCamera{};
+
+	MouseLook mouseLook{};
+	PlayerMovement playerMovement{};
+
 	Terraformer terraformer{};
 	BlockSelector blockSelector{};
 
@@ -57,9 +69,6 @@ private:
 	std::vector<Texture> atlasMaterial{};
 	Mesh cubeMesh{};
 	Mesh heldCubeMesh{};
-
-	float worldTickInterval{};
-	float timer{};
 
 };
 

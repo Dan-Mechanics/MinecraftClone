@@ -6,6 +6,7 @@
 #include "ThreadPool.h"
 #include "AxisPlane.h"
 #include "utils.h"
+#include "Raycast.h"
 
 class World {
 public:
@@ -33,7 +34,7 @@ public:
 	/// <summary>
 	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
-	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const;
+	bool raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const;
 ;	void free();
 
 private:

@@ -2,7 +2,14 @@
 
 MouseLook::MouseLook() = default;
 
-void MouseLook::rotateCamera(GLFWwindow* window, const unsigned int width, const unsigned int height, const bool hasFocus) {
+MouseLook::MouseLook(GLFWwindow* window, const unsigned int width, const unsigned int height, const float sensitivity) :
+	sensitivity{ sensitivity } {
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetCursorPos(window, (double)width / 2.0, (double)height / 2.0f);
+	updateDirections();
+}
+
+void MouseLook::update(GLFWwindow* window, const unsigned int width, const unsigned int height, const bool hasFocus) {
 	if (!hasFocus)
 		return;
 

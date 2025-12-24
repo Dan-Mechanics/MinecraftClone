@@ -3,11 +3,14 @@
 
 class PlayerMovement {
 public:
+	glm::vec3 pos{};
+
 	PlayerMovement();
-	void update(const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
+	PlayerMovement(const float standardSpeed);
+	void update(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward, const float deltaTime, const bool hasFocus);
 
 private:
-	glm::vec3 pos{};
 	glm::ivec3 prevBlockPos{};
+	float standardSpeed{};
 };
 
