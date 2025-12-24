@@ -11,7 +11,7 @@ void Camera::updateMatrix(float fovDeg, float nearPlane, float farPlane) {
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	view = glm::lookAt(position, position + eyesForward, up);
+	view = glm::lookAt(position, position + eyesForward, worldUp);
 	projection = glm::perspective(glm::radians(fovDeg), (float)width / height, nearPlane, farPlane);
 
 	cameraMatrix = projection * view;
@@ -43,10 +43,10 @@ void Camera::moveCamera(GLFWwindow* window, const float dt) {
 		movement = glm::normalize(movement);
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		movement += up;
+		movement += worldUp;
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		movement -= up;
+		movement -= worldUp;
 
 	auto currentSpeed = standardSpeed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
@@ -76,16 +76,23 @@ void Camera::rotateCamera(GLFWwindow* window) {
 	if (rotX < -ang)
 		rotX = -ang;
 
-	// UP DOWN ===
-	eyesForward = glm::rotate(worldForward, glm::radians(rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
-
-	// LEFT RIGHT ===
-	eyesForward = glm::rotate(eyesForward, glm::radians(-rotY), up);
-	bodyForward = glm::rotate(worldForward, glm::radians(-rotY), up);
-	bodyRight = glm::rotate(bodyForward, glm::radians(-90.0f), up);
+	updateDirections();
 
 	// RESET ===
 	glfwSetCursorPos(window, halfWidth, halfHeight);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+}
+
+void Camera::updateDirections() {
+	// UP DOWN ===
+	eyesForward = glm::rotate(worldForward, glm::radians(rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
+	eyesUp = glm::rotate(worldUp, glm::radians(rotX), glm::vec3{ 1.0f, 0.0f, 0.0f });
+
+	// LEFT RIGHT ===
+	eyesForward = glm::rotate(eyesForward, glm::radians(-rotY), worldUp);
+	eyesUp = glm::rotate(eyesUp, glm::radians(-rotY), worldUp);
+
+	bodyForward = glm::rotate(worldForward, glm::radians(-rotY), worldUp);
+	bodyRight = glm::rotate(bodyForward, glm::radians(-90.0f), worldUp);
 }

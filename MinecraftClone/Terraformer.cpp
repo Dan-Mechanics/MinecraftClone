@@ -17,6 +17,10 @@ void Terraformer::update(GLFWwindow* window, const Camera& camera, World & world
 	prevRightPressed = rightPressed;
 }
 
+void Terraformer::setBlockType(const BlockType blockType) {
+	this->blockType = blockType;
+}
+
 void Terraformer::remove(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) const {
 	glm::ivec3 blockPos{};
 	glm::ivec3 normal{};
@@ -24,7 +28,7 @@ void Terraformer::remove(const Camera& camera, World& world, ThreadPool& pool, c
 		return;
 
 	world.remove(blockPos);
-	world.flush(pool, atlas);
+	world.reloadSingleChunkMesh(pool, atlas);
 }
 
 void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas) const {
@@ -33,6 +37,6 @@ void Terraformer::add(const Camera& camera, World& world, ThreadPool& pool, cons
 	if (!world.raycast(camera.position, camera.eyesForward, range, blockPos, normal))
 		return;
 
-	world.add(blockPos + normal, BlockType::SAPPHIRE);
-	world.flush(pool, atlas);
+	world.add(blockPos + normal, blockType);
+	world.reloadSingleChunkMesh(pool, atlas);
 }

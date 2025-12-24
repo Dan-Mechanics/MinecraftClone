@@ -38,7 +38,7 @@ void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 					continue;
 
 				// WE NEED TO LOAD A CHUNK IN.
-				auto future = pool.submit(fillChunkDataForest, std::ref(chunks), chunkSize, chunkPos);
+				auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
 				if (future.get())
 					changedChunkPositions.insert(chunkPos);
 			}
@@ -82,7 +82,7 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 		return;
 	
 	chunks[chunkPos]->blocks[blockPos] = blockType;
-	notifyChunkChange(chunkPos);
+	notifyBlockChange(chunkPos, blockPos);
 }
 
 void World::remove(const glm::ivec3& blockPos) {
@@ -91,13 +91,7 @@ void World::remove(const glm::ivec3& blockPos) {
 		return;
 
 	chunks[chunkPos]->blocks.erase(blockPos);
-	notifyChunkChange(chunkPos);
-}
-
-void World::flush(ThreadPool& pool, const Atlas& atlas) {
-	while (changedChunkPositions.begin() != changedChunkPositions.end()) {
-		reloadSingleChunkMesh(pool, atlas);
-	}
+	notifyBlockChange(chunkPos, blockPos);
 }
 
 void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
@@ -184,4 +178,27 @@ void World::notifyChunkChange(const glm::ivec3& chunkPos) {
 	changedChunkPositions.insert(chunkPos + right);
 	changedChunkPositions.insert(chunkPos + forward);
 	changedChunkPositions.insert(chunkPos + back);
+}
+
+void World::notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3 blockPos) {
+	changedChunkPositions.insert(chunkPos);
+	blockPos -= chunkPos * chunkSize;
+
+	if (blockPos.x <= 0)
+		changedChunkPositions.insert(chunkPos + left);
+
+	if (blockPos.x >= chunkSize - 1)
+		changedChunkPositions.insert(chunkPos + right);
+
+	if (blockPos.y <= 0)
+		changedChunkPositions.insert(chunkPos + down);
+
+	if (blockPos.y >= chunkSize - 1)
+		changedChunkPositions.insert(chunkPos + up);
+
+	if (blockPos.z <= 0)
+		changedChunkPositions.insert(chunkPos + back);
+
+	if (blockPos.z >= chunkSize - 1)
+		changedChunkPositions.insert(chunkPos + forward);
 }
