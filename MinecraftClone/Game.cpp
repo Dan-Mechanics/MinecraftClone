@@ -42,7 +42,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
-	held.setScale(glm::vec3{ 0.8f });
+	//hand.setScale(glm::vec3{ 1f });
 
 	// ===
 
@@ -71,6 +71,9 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	terraformer = { 10.0f };
 
+	setCubeFacesAsBlockType(cubeVerts, atlas, blockSelector.getBlockType());
+	heldCubeMesh = { cubeVerts, cubeTris, cubeMatrix };
+
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };
@@ -94,7 +97,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	};
 }
 
-void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool) {
+void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
 	camera.hasFocus = hasFocus;
 	camera.moveCamera(window, deltaTime);
 	camera.rotateCamera(window);
@@ -102,10 +105,21 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	camera.updateMatrix(105.0f, 0.01f, 100.0f);
 	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f);
 
+	// ===
+
+	const auto hasScrolled = blockSelector.onScroll(scrollInput);
+	if (hasScrolled) {
+		std::vector<Vertex> verts = heldCubeMesh.vertices;
+		setCubeFacesAsBlockType(verts, atlas, blockSelector.getBlockType());
+		heldCubeMesh = { verts, heldCubeMesh.indices, heldCubeMesh.modelMatrix };
+
+		terraformer.setBlockType(blockSelector.getBlockType());
+	}
+
 	terraformer.update(window, camera, world, pool, atlas);
 }
 
-void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window, int& scrollInput) {
+void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -116,14 +130,17 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window, 
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
-
-	selector.onScroll(scrollInput);
 }
 
 void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
-	held.setPos(camera.position + camera.eyesForward + camera.bodyRight - camera.eyesUp);
-	held.setRot(glm::vec3{ camera.rotX, -camera.rotY, 0.0f });
-	held.drawWithMaterial(cubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
+	hand.setPos (
+		camera.position + 
+		camera.eyesForward * 1.25f + 
+		camera.bodyRight - camera.eyesUp
+	);
+
+	hand.setRot(glm::vec3{ camera.rotX, -camera.rotY, 0.0f });
+	hand.drawWithMaterial(heldCubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
 }
@@ -134,6 +151,7 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 	world.drawShadows(chunkShadowMapShader, camera);
 	shadowMap.sendToShader(chunkMaterialShader);
+	shadowMap.sendToShader(materialShader);
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {

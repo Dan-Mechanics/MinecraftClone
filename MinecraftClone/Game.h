@@ -14,8 +14,8 @@ public:
 
 	Game();
 	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
-	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool);
-	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window, int& scrollInput);
+	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int & scrollInput);
+	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
@@ -35,14 +35,14 @@ private:
 	Object ground{};
 
 	Object crosshair{};
-	Object held{};
+	Object hand{};
 
 	World world{};
 	Atlas atlas{};
 	Camera camera{};
 	Camera displayCamera{};
 	Terraformer terraformer{};
-	BlockSelector selector{};
+	BlockSelector blockSelector{};
 
 	Shader materialShader{};
 	Shader unlitShader{};
@@ -56,6 +56,7 @@ private:
 	std::vector<Texture> woodMaterial{};
 	std::vector<Texture> atlasMaterial{};
 	Mesh cubeMesh{};
+	Mesh heldCubeMesh{};
 
 	float worldTickInterval{};
 	float timer{};

@@ -99,6 +99,15 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	}
 }
 
+void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType) {
+	for (int i = 0; i < verts.size(); i += 4) {
+		const auto& face = atlas.maps.at(blockType).faces[static_cast<Direction>(i / 4)];
+		for (int j = 0; j < 4; ++j) {
+			verts[i + j].texUv = face.uvs[j];
+		}
+	}
+}
+
 Face tilePositionToUVs(const int x, const int y) {
 	const auto scale = 16.0f;
 	const auto low = 0.0f;
@@ -144,9 +153,9 @@ void setCurrentFaceUVs(std::vector<ChunkVertex>& verts, const Face& face) {
 	auto beginFaceVert = verts.size() - 4;
 	for (int i = 0; i < 4; ++i) {
 		verts[beginFaceVert + i].texUv = face.uvs[i];
-		verts[beginFaceVert + i].texUv = face.uvs[i];
-		verts[beginFaceVert + i].texUv = face.uvs[i];
-		verts[beginFaceVert + i].texUv = face.uvs[i];
+		//verts[beginFaceVert + i].texUv = face.uvs[i];
+		//verts[beginFaceVert + i].texUv = face.uvs[i];
+		//verts[beginFaceVert + i].texUv = face.uvs[i];
 	}
 }
 

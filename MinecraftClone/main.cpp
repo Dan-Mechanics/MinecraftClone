@@ -28,8 +28,6 @@ static void focusCallback(GLFWwindow* window, int focus) {
 }
 
 static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
-	// up or down??
-	std::cout << "hello ?? " << std::endl;
 	if (yOffset > 0) {
 		scrollInput++;
 	}
@@ -122,7 +120,7 @@ int main() {
 
 		// ===
 
-		game.update(deltaTime, hasFocus, window, pool);
+		game.update(deltaTime, hasFocus, window, pool, scrollInput);
 
 		// FIXED UPDATED.
 		timer += deltaTime;
@@ -141,7 +139,7 @@ int main() {
 
 		glEnable(GL_DEPTH_TEST);
 
-		game.draw(deltaTime, hasFocus, window, scrollInput);
+		game.draw(deltaTime, hasFocus, window);
 
 		glDisable(GL_DEPTH_TEST);
 		game.drawDisplay(deltaTime, hasFocus, window);

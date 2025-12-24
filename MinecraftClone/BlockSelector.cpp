@@ -1,24 +1,30 @@
 #include "BlockSelector.h"
+#include <iostream>
 
-BlockSelector::BlockSelector() {
-	index = 0;
-	current = static_cast<BlockType>(index);
-}
+BlockSelector::BlockSelector() = default;
 
-void BlockSelector::onScroll(int& scrollInput) {
-	// ORDER !!
+bool BlockSelector::onScroll(int& scrollInput) {
 	if (scrollInput > 0) {
 		scrollInput--;
-		index--;
-		if (index < 0)
-			index = BlockType::END - index;
-	}
-	else if (scrollInput < 0) {
-		scrollInput++;
 		index++;
-		if (index >= BlockType::END) 
-			index = BlockType::END - 1;
+		if (index >= BlockType::END)
+			index = 0;
+
+		return true;
 	}
 
-	current = static_cast<BlockType>(index);
+	if (scrollInput < 0) {
+		scrollInput++;
+		index--;
+		if (index < 0)
+			index = BlockType::END + index;
+		
+		return true;
+	}
+
+	return false;
+}
+
+BlockType BlockSelector::getBlockType() const {
+	return static_cast<BlockType>(index);
 }

@@ -5,11 +5,11 @@
 class BlockSelector {
 public:
 	BlockSelector();
-	void onScroll(int& scrollInput);
-
+	bool onScroll(int& scrollInput);
+	BlockType getBlockType() const;
 
 private:
 	int index{};
-	BlockType current{};
+
 };
 
