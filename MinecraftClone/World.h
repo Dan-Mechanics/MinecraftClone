@@ -1,11 +1,11 @@
 #pragma once
-#include <unordered_set>
 #include "shader.h"
 #include "Camera.h"
-#include "Texture.h"
 #include "world_mesh_utils.h"
 #include "world_data_utils.h"
 #include "ThreadPool.h"
+#include "AxisPlane.h"
+#include "utils.h"
 
 class World {
 public:

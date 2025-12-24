@@ -6,7 +6,7 @@ public:
 	Terraformer();
 	Terraformer(const float range);
 
-	void update(GLFWwindow* window, const Camera& camera, World & world, ThreadPool& pool, const Atlas& atlas);
+	void update(GLFWwindow* window, const Camera& camera, World& world, ThreadPool& pool, const Atlas& atlas);
 	void setBlockType(const BlockType blockType);
 
 private:

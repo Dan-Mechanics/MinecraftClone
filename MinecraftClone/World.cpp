@@ -1,5 +1,4 @@
 #include "World.h"
-#include "AxisPlane.h"
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
