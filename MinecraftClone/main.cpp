@@ -31,7 +31,7 @@ static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
 	if (yOffset > 0) {
 		scrollInput++;
 	}
-	else {
+	else if (yOffset < 0) {
 		scrollInput--;
 	}
 }
@@ -118,17 +118,17 @@ int main() {
 		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
-		// ===
-
+		// UPDATE. ===
 		game.update(deltaTime, hasFocus, window, pool, scrollInput);
 
-		// FIXED UPDATED.
+		// FIXED UPDATE.
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
 			game.tick(tickInterval, pool, window);
 		}
 
+		// RENDER SHADOWS. ===
 		glEnable(GL_DEPTH_TEST);
 		game.drawShadows(deltaTime, hasFocus, window);
 
@@ -137,10 +137,11 @@ int main() {
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// RENDER. ===
 		glEnable(GL_DEPTH_TEST);
-
 		game.draw(deltaTime, hasFocus, window);
 
+		// UI. ===
 		glDisable(GL_DEPTH_TEST);
 		game.drawDisplay(deltaTime, hasFocus, window);
 
