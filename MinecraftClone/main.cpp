@@ -108,13 +108,13 @@ int main() {
 	auto timer = 0.0f;
 
 	while (!glfwWindowShouldClose(window)) {
-		const auto index = (float)glfwGetTime();
-		const auto deltaTime = std::max(index - previous, 0.0f);
+		const auto current = (float)glfwGetTime();
+		const auto deltaTime = std::max(current - previous, 0.0f);
 
 		if (deltaTime < frameInterval)
 			continue;
 
-		previous = index;
+		previous = current;
 		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
