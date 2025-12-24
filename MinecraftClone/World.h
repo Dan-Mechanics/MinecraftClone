@@ -31,7 +31,7 @@ public:
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	
 	/// <summary>
-	/// CREDIT: https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
+	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
 	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const;
 ;	void free();

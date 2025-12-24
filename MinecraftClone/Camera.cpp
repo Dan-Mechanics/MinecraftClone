@@ -8,8 +8,8 @@ Camera::Camera(GLFWwindow* window, const unsigned int width, const unsigned int 
 }
 
 void Camera::updateMatrix(float fovDeg, float nearPlane, float farPlane) {
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
+	auto view = glm::mat4{ 1.0f };
+	auto projection = glm::mat4{ 1.0f };
 
 	view = glm::lookAt(position, position + eyesForward, worldUp);
 	projection = glm::perspective(glm::radians(fovDeg), (float)width / height, nearPlane, farPlane);
