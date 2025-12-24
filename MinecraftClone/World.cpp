@@ -126,6 +126,14 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	chunk.hasMesh = true;
 }
 
+int World::getChunkSize() const {
+	return chunkSize;
+}
+
+std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& World::getChunks() {
+	return chunks;
+}
+
 bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const {
 	
 	logVec3(raycast.origin);

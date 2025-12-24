@@ -31,6 +31,9 @@ public:
 	void remove(const glm::ivec3& blockPos);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	
+	int getChunkSize() const;
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& getChunks();
+
 	/// <summary>
 	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
