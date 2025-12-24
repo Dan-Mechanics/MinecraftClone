@@ -1,6 +1,4 @@
-#ifndef CAMERA_CLASS_H
-#define CAMERA_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -9,35 +7,19 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include "Shader.h"
+#include "Direction.h"
 
 class Camera {
 public:
 	glm::vec3 position{};
-	glm::vec3 eyesForward{};
-	glm::vec3 eyesUp{};
-	glm::vec3 bodyForward{};
-	glm::vec3 bodyRight{};
-	glm::vec3 worldUp = glm::vec3{ 0.0f, 1.0f, 0.0f };
-	glm::mat4 cameraMatrix = glm::identity<glm::mat4>();
-	glm::vec3 worldForward{ 0.0f, 0.0f, 1.0f };
-
-	unsigned int width{};
-	unsigned int height{};
-	float standardSpeed{};
-	float sensitivity{};
-
-	int hasFocus{};
-	float rotX{};
-	float rotY{};
-
+	
 	Camera();
-	Camera(GLFWwindow* window, const unsigned int width, const unsigned int height, const float standardSpeed, const float sensitivity);
-
-	void updateMatrix(float fovDeg, float nearPlane, float farPlane);
 	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
-	void moveCamera(GLFWwindow* window, const float dt);
-	void rotateCamera(GLFWwindow* window);
-	void updateDirections();
-};
+	void updateMatrix(const float fovDeg, const float nearPlane, 
+		const float farPlane, const glm::vec3& pos, const glm::vec3& forward,
+		const unsigned int width, const unsigned int height);
 
-#endif 
+private:
+	glm::mat4 cameraMatrix{};
+
+};

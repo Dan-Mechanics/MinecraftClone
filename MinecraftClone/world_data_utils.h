@@ -7,6 +7,7 @@
 #include "Chunk.h"
 #include "hashing_utils.h"
 #include <unordered_set>
+#include "utils.h"
 
 bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks,
 	const int chunkSize, const glm::ivec3& chunkPos);

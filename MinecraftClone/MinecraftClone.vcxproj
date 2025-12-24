@@ -156,6 +156,9 @@
     <ClCompile Include="ChunkMesh.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="mesh_utils.cpp" />
+    <ClCompile Include="MouseLook.cpp" />
+    <ClCompile Include="PlayerMovement.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="Terraformer.cpp" />
     <ClCompile Include="World.cpp" />
@@ -196,6 +199,9 @@
     <ClInclude Include="ChunkVertex.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="mesh_utils.h" />
+    <ClInclude Include="MouseLook.h" />
+    <ClInclude Include="PlayerMovement.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="hashing_utils.h" />

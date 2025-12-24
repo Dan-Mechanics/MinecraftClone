@@ -3,6 +3,9 @@
 Game::Game() = default;
 
 void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned int height) {
+	this->width = width;
+	this->height = height;
+	
 	sunColor = glm::vec4{
 		(float)255 / 255,
 		(float)255 / 255,
@@ -42,8 +45,6 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
-	//hand.setScale(glm::vec3{ 1f });
-
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -55,11 +56,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	// ===
 
-	float standardSpeed = 15.0f;
-	float sensitivity = 0.1f;
-	camera = { window, width, height, standardSpeed, sensitivity };
-	displayCamera = camera;
-	displayCamera.updateDirections();
+	mouseLook = { window, width, height, 0.1f };
+	playerMovement = { 15.0f };
 
 	// ===
 
@@ -68,8 +66,6 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	const auto maxRenderDistance = 3;
 	worldTickInterval = 0.5f;
 	world = { chunkSize, maxRenderDistance };
-
-	terraformer = { 10.0f };
 
 	setCubeFacesAsBlockType(cubeVerts, atlas, blockSelector.getBlockType());
 	heldCubeMesh = { cubeVerts, cubeTris, cubeMatrix };
@@ -98,12 +94,11 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 }
 
 void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
-	camera.hasFocus = hasFocus;
-	camera.moveCamera(window, deltaTime);
-	camera.rotateCamera(window);
+	mouseLook.update(window, width, height, hasFocus);
+	playerMovement.update(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus, world.getChunks(), world.getChunkSize());
 
-	camera.updateMatrix(105.0f, 0.01f, 100.0f);
-	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f);
+	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
+	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
 
 	// ===
 
@@ -116,7 +111,8 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 		terraformer.setBlockType(blockSelector.getBlockType());
 	}
 
-	terraformer.update(window, camera, world, pool, atlas);
+	const auto raycast = Raycast{ playerMovement.pos, mouseLook.eyesForward, 10.0f };
+	terraformer.update(window, raycast, world, pool, atlas);
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
@@ -134,12 +130,12 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 
 void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	hand.setPos (
-		camera.position + 
-		camera.eyesForward * 1.25f + 
-		camera.bodyRight - camera.eyesUp
+		playerMovement.pos +
+		mouseLook.eyesForward * 1.25f +
+		mouseLook.bodyRight - mouseLook.eyesUp
 	);
 
-	hand.setRot(glm::vec3{ camera.rotX, -camera.rotY, 0.0f });
+	hand.setRot(glm::vec3{ mouseLook.rotX, -mouseLook.rotY, 0.0f });
 	hand.drawWithMaterial(heldCubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
@@ -160,10 +156,10 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 		timer = 0.0f;
 
 		if (world.toggle) {
-			world.allocateNewChunks(pool, camera.position);
+			world.allocateNewChunks(pool, playerMovement.pos);
 		}
 		else {
-			world.destroyOldChunks(pool, camera.position);
+			world.destroyOldChunks(pool, playerMovement.pos);
 		}
 
 		world.toggle = !world.toggle;

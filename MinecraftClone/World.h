@@ -1,11 +1,12 @@
 #pragma once
-#include <unordered_set>
 #include "shader.h"
 #include "Camera.h"
-#include "Texture.h"
 #include "world_mesh_utils.h"
 #include "world_data_utils.h"
 #include "ThreadPool.h"
+#include "AxisPlane.h"
+#include "utils.h"
+#include "Raycast.h"
 
 class World {
 public:
@@ -30,10 +31,13 @@ public:
 	void remove(const glm::ivec3& blockPos);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
 	
+	int getChunkSize() const;
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& getChunks();
+
 	/// <summary>
-	/// CREDIT: https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
+	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
-	bool raycast(const glm::vec3& origin, const glm::vec3& direction, const float range, glm::ivec3& blockPos, glm::ivec3& normal) const;
+	bool raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const;
 ;	void free();
 
 private:

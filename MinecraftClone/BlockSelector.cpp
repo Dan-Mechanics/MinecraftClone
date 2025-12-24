@@ -1,5 +1,4 @@
 #include "BlockSelector.h"
-#include <iostream>
 
 BlockSelector::BlockSelector() = default;
 

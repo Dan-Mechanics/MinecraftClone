@@ -1,11 +1,10 @@
 #pragma once
 #include <glm/ext/vector_float3.hpp>
-#include <optional>
 #include <glm/ext/vector_int3.hpp>
 #include <glm/geometric.hpp>
 
 /// <summary>
-/// CREDIT: https://github.com/Isti01/glCraft/blob/main/src/Math/AxisPlane.h
+/// https://github.com/Isti01/glCraft/blob/main/src/Math/AxisPlane.h
 /// </summary>
 struct AxisPlane {
 public:
