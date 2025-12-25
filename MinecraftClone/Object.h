@@ -7,6 +7,7 @@ public:
 	glm::vec3 rot{};
 	glm::vec3 scale{};
 	glm::vec4 color{};
+	bool visible{};
 
 	Object();
 
