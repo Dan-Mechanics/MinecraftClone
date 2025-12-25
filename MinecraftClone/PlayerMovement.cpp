@@ -36,9 +36,26 @@ void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, cons
 		currentSpeed *= 3.0f;
 
 	movement *= currentSpeed * deltaTime;
-	const auto blockPos = posToBlockPos(pos);
+	pos += movement;
 
+	// MAKE FIELD !!
 	const auto halfPlayerSize = 0.5f;
+	const auto collisionSpeed = 0.1f;
+
+	while (has(posToBlockPos(pos + glm::vec3{ 0.0f, halfPlayerSize, 0.0f }), chunks, chunkSize)) {
+		pos += glm::vec3{ 0.0f, -currentSpeed * deltaTime, 0.0f };
+	}
+
+	while (has(posToBlockPos(pos + glm::vec3{ 0.0f, -halfPlayerSize, 0.0f }), chunks, chunkSize)) {
+		pos += glm::vec3{ 0.0f, currentSpeed * deltaTime, 0.0f };
+	}
+
+	while (has(posToBlockPos(pos + glm::vec3{ halfPlayerSize, 0.0f, 0.0f }), chunks, chunkSize)) {
+		pos += glm::vec3{ -currentSpeed * deltaTime, 0.0f, 0.0f };
+	}
+
+	/*const auto blockPos = posToBlockPos(pos);
+
 	if (movement.x != 0.0f) {
 		const auto xDir = movement.x > 0.0f ? 1.0f : -1.0f;
 		pos += glm::vec3{ movement.x, 0.0f, 0.0f };
@@ -58,5 +75,5 @@ void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, cons
 		pos += glm::vec3{ 0.0f, 0.0f, movement.z };
 		if (has(posToBlockPos(pos + glm::vec3{ 0.0f, 0.0f, zDir * halfPlayerSize }), chunks, chunkSize))
 			pos.z = blockPos.z + halfPlayerSize;
-	}
+	}*/
 }
