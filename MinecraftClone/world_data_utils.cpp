@@ -12,7 +12,7 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 				if (y == 0) {
 					if (randomInclusive(0, 50) == 0) {
 						for (int i = 0; i < chunkSize; i++) {
-							chunks[chunkPos]->blocks[blockPos + glm::ivec3{ 0, i, 0 }] = BlockType::GHOST_LOG;
+							chunks[chunkPos]->blocks[blockPos + glm::ivec3{ 0, i, 0 }] = BlockType::LOG;
 						}
 					}
 					else
