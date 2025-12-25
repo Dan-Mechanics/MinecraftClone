@@ -3,9 +3,8 @@
 PlayerMovement::PlayerMovement() = default;
 PlayerMovement::PlayerMovement(const float standardSpeed) : standardSpeed{ standardSpeed } { }
 
-void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward,
-	const float deltaTime, const bool hasFocus, 
-	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward,
+	const float deltaTime, const bool hasFocus) {
 	if (!hasFocus)
 		return;
 
@@ -37,43 +36,34 @@ void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, cons
 
 	movement *= currentSpeed * deltaTime;
 	pos += movement;
+}
 
-	// MAKE FIELD !!
-	const auto halfPlayerSize = 0.5f;
-	const auto collisionSpeed = 0.1f;
+void PlayerMovement::collideWithWorld(const float playerHalfSize, const float blockSize,
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+	const auto upBlockPos = posToBlockPos(pos + glm::vec3{ 0.0f, playerHalfSize, 0.0f });
+	// UP DOWN. ===
+	if (has(upBlockPos, chunks, chunkSize))
+		pos.y = upBlockPos.y - playerHalfSize;
 
-	while (has(posToBlockPos(pos + glm::vec3{ 0.0f, halfPlayerSize, 0.0f }), chunks, chunkSize)) {
-		pos += glm::vec3{ 0.0f, -currentSpeed * deltaTime, 0.0f };
-	}
+	const auto downBlockPos = posToBlockPos(pos - glm::vec3{ 0.0f, playerHalfSize, 0.0f });
+	if (has(downBlockPos, chunks, chunkSize))
+		pos.y = downBlockPos.y + playerHalfSize + blockSize;
 
-	while (has(posToBlockPos(pos + glm::vec3{ 0.0f, -halfPlayerSize, 0.0f }), chunks, chunkSize)) {
-		pos += glm::vec3{ 0.0f, currentSpeed * deltaTime, 0.0f };
-	}
+	// FORWARD BACK. ===
+	const auto forwardBlockPos = posToBlockPos(pos + glm::vec3{ 0.0f, 0.0f, playerHalfSize });
+	if (has(forwardBlockPos, chunks, chunkSize))
+		pos.z = forwardBlockPos.z - playerHalfSize;
 
-	while (has(posToBlockPos(pos + glm::vec3{ halfPlayerSize, 0.0f, 0.0f }), chunks, chunkSize)) {
-		pos += glm::vec3{ -currentSpeed * deltaTime, 0.0f, 0.0f };
-	}
+	const auto backBlockPos = posToBlockPos(pos - glm::vec3{ 0.0f, 0.0f, playerHalfSize });
+	if (has(backBlockPos, chunks, chunkSize))
+		pos.z = backBlockPos.z + playerHalfSize + blockSize;
 
-	/*const auto blockPos = posToBlockPos(pos);
+	// RIGHT LEFT. ===
+	const auto rightBlockPos = posToBlockPos(pos + glm::vec3{ playerHalfSize, 0.0f, 0.0f });
+	if (has(rightBlockPos, chunks, chunkSize))
+		pos.x = rightBlockPos.x - playerHalfSize;
 
-	if (movement.x != 0.0f) {
-		const auto xDir = movement.x > 0.0f ? 1.0f : -1.0f;
-		pos += glm::vec3{ movement.x, 0.0f, 0.0f };
-		if (has(posToBlockPos(pos + glm::vec3{ xDir * halfPlayerSize, 0.0f, 0.0f }), chunks, chunkSize))
-			pos.x = blockPos.x + halfPlayerSize;
-	}
-	
-	if (movement.y != 0.0f) {
-		const auto yDir = movement.y > 0.0f ? 1.0f : -1.0f;
-		pos += glm::vec3{ 0.0f, movement.y, 0.0f };
-		if (has(posToBlockPos(pos + glm::vec3{ 0.0f, yDir * halfPlayerSize, 0.0f }), chunks, chunkSize))
-			pos.y = blockPos.y + halfPlayerSize;
-	}
-
-	if (movement.z != 0.0f) {
-		const auto zDir = movement.z > 0.0f ? 1.0f : -1.0f;
-		pos += glm::vec3{ 0.0f, 0.0f, movement.z };
-		if (has(posToBlockPos(pos + glm::vec3{ 0.0f, 0.0f, zDir * halfPlayerSize }), chunks, chunkSize))
-			pos.z = blockPos.z + halfPlayerSize;
-	}*/
+	const auto leftBlockPos = posToBlockPos(pos - glm::vec3{ playerHalfSize, 0.0f, 0.0f });
+	if (has(leftBlockPos, chunks, chunkSize))
+		pos.x = leftBlockPos.x + playerHalfSize + blockSize;
 }
