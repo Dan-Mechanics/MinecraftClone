@@ -38,15 +38,25 @@ void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, cons
 	movement *= currentSpeed * deltaTime;
 	const auto blockPos = posToBlockPos(pos);
 
-	pos += glm::vec3{ movement.x, 0.0f, 0.0f };
-	if (has(posToBlockPos(pos), chunks, chunkSize)) 
-		pos.x = blockPos.x + 0.5f;
+	const auto halfPlayerSize = 0.5f;
+	if (movement.x != 0.0f) {
+		const auto xDir = movement.x > 0.0f ? 1.0f : -1.0f;
+		pos += glm::vec3{ movement.x, 0.0f, 0.0f };
+		if (has(posToBlockPos(pos + glm::vec3{ xDir * halfPlayerSize, 0.0f, 0.0f }), chunks, chunkSize))
+			pos.x = blockPos.x + halfPlayerSize;
+	}
 	
-	pos += glm::vec3{ 0.0f, movement.y, 0.0f };
-	if (has(posToBlockPos(pos), chunks, chunkSize))
-		pos.y = blockPos.y + 0.5f;
+	if (movement.y != 0.0f) {
+		const auto yDir = movement.y > 0.0f ? 1.0f : -1.0f;
+		pos += glm::vec3{ 0.0f, movement.y, 0.0f };
+		if (has(posToBlockPos(pos + glm::vec3{ 0.0f, yDir * halfPlayerSize, 0.0f }), chunks, chunkSize))
+			pos.y = blockPos.y + halfPlayerSize;
+	}
 
-	pos += glm::vec3{ 0.0f, 0.0f, movement.z };
-	if (has(posToBlockPos(pos), chunks, chunkSize))
-		pos.z = blockPos.z + 0.5f;
+	if (movement.z != 0.0f) {
+		const auto zDir = movement.z > 0.0f ? 1.0f : -1.0f;
+		pos += glm::vec3{ 0.0f, 0.0f, movement.z };
+		if (has(posToBlockPos(pos + glm::vec3{ 0.0f, 0.0f, zDir * halfPlayerSize }), chunks, chunkSize))
+			pos.z = blockPos.z + halfPlayerSize;
+	}
 }
