@@ -5,7 +5,7 @@ class Terraformer {
 public:
 	Terraformer();
 
-	void update(GLFWwindow* window, const Raycast& raycast, World& world, ThreadPool& pool, const Atlas& atlas);
+	void update(GLFWwindow* window, const Raycast& raycast, World& world, ThreadPool& pool, const Atlas& atlas, const glm::ivec3& bannedBlockPos);
 	void setBlockType(const BlockType blockType);
 
 private:
@@ -14,5 +14,5 @@ private:
 	BlockType blockType{};
 
 	void remove(const Raycast& raycast, World& world, ThreadPool& pool, const Atlas& atlas) const;
-	void add(const Raycast& raycast, World& world, ThreadPool& pool, const Atlas& atlas) const;
+	void add(const Raycast& raycast, World& world, ThreadPool& pool, const Atlas& atlas, const glm::ivec3& bannedBlockPos) const;
 };

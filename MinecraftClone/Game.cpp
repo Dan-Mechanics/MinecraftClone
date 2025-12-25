@@ -57,7 +57,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	// ===
 
 	mouseLook = { window, width, height, 0.1f };
-	playerMovement = { 15.0f };
+	playerMovement = { 15.0f, glm::vec3{ 0.0f, 30.0f, 0.0f } };
 
 	// ===
 
@@ -96,7 +96,7 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
 	mouseLook.update(window, width, height, hasFocus);
 	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus);
-	playerMovement.collideWithWorld(0.5f, 1.0f, world.getChunks(), world.getChunkSize());
+	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
 	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
@@ -113,7 +113,7 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	}
 
 	const auto raycast = Raycast{ playerMovement.pos, mouseLook.eyesForward, 10.0f };
-	terraformer.update(window, raycast, world, pool, atlas);
+	terraformer.update(window, raycast, world, pool, atlas, posToBlockPos(playerMovement.pos));
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
