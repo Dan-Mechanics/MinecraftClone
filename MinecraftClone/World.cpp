@@ -135,11 +135,6 @@ std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& World::getChunks() {
 }
 
 bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const {
-	
-	logVec3(raycast.origin);
-	logVec3(raycast.direction);
-	std::cout << raycast.range << std::endl;
-
 	std::vector<AxisPlane> planes {
 		AxisPlane{ { 1, 0, 0 }, raycast.origin, raycast.direction },
 		AxisPlane{ { 0, 1, 0 }, raycast.origin, raycast.direction },
@@ -151,10 +146,8 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 	glm::vec3 pointB = raycast.origin;
 
 	while (planes[0].distance <= raycast.range) {
-		if (pointsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
-			logIvec3(blockPos);
-
-			if (pointsToBlockPos(pointA, pointB, normal))
+		if (validPositionsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
+			if (validPositionsToBlockPos(pointA, pointB, normal))
 				normal -= blockPos;
 
 			return true;

@@ -45,6 +45,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
+	faceHighlight.setColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -56,8 +58,9 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 	// ===
 
+	const glm::vec3 playerSpawnPos{ 0.0f, 30.0f, 0.0f };
+	playerMovement = { 10.0f, playerSpawnPos };
 	mouseLook = { window, width, height, 0.1f };
-	playerMovement = { 15.0f };
 
 	// ===
 
@@ -95,7 +98,8 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 
 void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
 	mouseLook.update(window, width, height, hasFocus);
-	playerMovement.update(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus, world.getChunks(), world.getChunkSize());
+	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus);
+	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
 	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
@@ -112,7 +116,7 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	}
 
 	const auto raycast = Raycast{ playerMovement.pos, mouseLook.eyesForward, 10.0f };
-	terraformer.update(window, raycast, world, pool, atlas);
+	terraformer.update(window, raycast, world, pool, atlas, posToBlockPos(playerMovement.pos));
 }
 
 void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
@@ -121,7 +125,8 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-	 
+	faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+
 	// MAKE IT SO WE DON'T HAVE TO BIND
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
 	bindMaterial(atlasMaterial, chunkMaterialShader);
@@ -151,10 +156,21 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
+	const auto raycast = Raycast{ playerMovement.pos, mouseLook.eyesForward, 10.0f };
+	glm::vec3 pos{};
+	glm::vec3 scale{};
+
+	faceHighlight.visible = terraformer.getFaceHighlight(raycast, world, pos, scale);
+	if (faceHighlight.visible) {
+		faceHighlight.setPos(pos);
+		faceHighlight.setScale(scale);
+	}
+
+	// ===
+
 	timer += interval;
 	if (timer >= worldTickInterval) {
 		timer = 0.0f;
-
 		if (world.toggle) {
 			world.allocateNewChunks(pool, playerMovement.pos);
 		}
@@ -163,10 +179,10 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 		}
 
 		world.toggle = !world.toggle;
-		return;
 	}
-
-	world.reloadSingleChunkMesh(pool, atlas);
+	else {
+		world.reloadSingleChunkMesh(pool, atlas);
+	}
 }
 
 glm::vec4 Game::getClearColor() const {

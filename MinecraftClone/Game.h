@@ -41,6 +41,8 @@ private:
 	Object up{};
 	Object ground{};
 
+	Object faceHighlight{};
+
 	Object crosshair{};
 	Object hand{};
 
