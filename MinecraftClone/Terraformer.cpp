@@ -10,7 +10,7 @@ void Terraformer::update(GLFWwindow* window, const Raycast& raycast, World & wor
 		remove(raycast, world, pool, atlas);
 	
 	if (rightPressed && !prevRightPressed)
-		add(raycast, world, pool, atlas, bannedBlockPos);
+		add(raycast, world, pool, atlas, eyeBlockPos);
 
 	prevLeftPressed = leftPressed;
 	prevRightPressed = rightPressed;
@@ -31,14 +31,14 @@ void Terraformer::remove(const Raycast& raycast, World& world, ThreadPool& pool,
 }
 
 void Terraformer::add(const Raycast& raycast, World& world, ThreadPool& pool,
-	const Atlas& atlas, const glm::ivec3& bannedBlockPos) const {
+	const Atlas& atlas, const glm::ivec3& eyeBlockPos) const {
 	glm::ivec3 blockPos{};
 	glm::ivec3 normal{};
 	if (!world.raycast(raycast, blockPos, normal))
 		return;
 
 	blockPos += normal;
-	if (blockPos == bannedBlockPos || blockPos == bannedBlockPos + down)
+	if (blockPos == eyeBlockPos || blockPos == eyeBlockPos + down)
 		return;
 
 	world.add(blockPos, blockType);
