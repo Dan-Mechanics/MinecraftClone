@@ -153,9 +153,6 @@ void setCurrentFaceUVs(std::vector<ChunkVertex>& verts, const Face& face) {
 	auto beginFaceVert = verts.size() - 4;
 	for (int i = 0; i < 4; ++i) {
 		verts[beginFaceVert + i].texUv = face.uvs[i];
-		//verts[beginFaceVert + i].texUv = face.uvs[i];
-		//verts[beginFaceVert + i].texUv = face.uvs[i];
-		//verts[beginFaceVert + i].texUv = face.uvs[i];
 	}
 }
 
