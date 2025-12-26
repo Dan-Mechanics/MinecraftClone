@@ -44,6 +44,8 @@ private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	int maxRenderDistance{};
+	int maxDestroyDist{};
+	int yMaxRendDist{};
 	int chunkSize{};
 
 	void notifyChunkChange(const glm::ivec3& chunkPos);
