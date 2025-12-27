@@ -1,18 +1,14 @@
-#ifndef VAO_CLASS_H
-#define VAO_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
-#include "VBO.h"
+#include "vbo.h"
 
-class VAO {
+class vao {
 public:
 	GLuint id;
-	VAO();
+	vao();
 
-	void linkAttribute(VBO& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) const;
+	void linkAttribute(vbo& vbo, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) const;
 	void bind() const;
 	void unbind() const;
 	void free() const;
 };
-
-#endif

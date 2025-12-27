@@ -1,6 +1,4 @@
-#ifndef SHADOW_MAP_CLASS_FBO_H
-#define SHADOW_MAP_CLASS_FBO_H
-
+#pragma once
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include <iostream>
@@ -27,5 +25,3 @@ public:
 	void sendToShader(const Shader& shader) const;
 	void free() const;
 };
-
-#endif

@@ -1,26 +1,26 @@
 #include "vbo.h"
 
-VBO::VBO() = default;
-VBO::VBO(const std::vector<Vertex>& vertices) {
+vbo::vbo() = default;
+vbo::vbo(const std::vector<Vertex>& vertices) {
 	glGenBuffers(1, &id);
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
 
-VBO::VBO(const std::vector<ChunkVertex>& vertices) {
+vbo::vbo(const std::vector<ChunkVertex>& vertices) {
 	glGenBuffers(1, &id);
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(ChunkVertex), vertices.data(), GL_STATIC_DRAW);
 }
 
-void VBO::bind() const {
+void vbo::bind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, id);
 }
 
-void VBO::unbind() const {
+void vbo::unbind() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VBO::free() const {
+void vbo::free() const {
 	glDeleteBuffers(1, &id);
 }

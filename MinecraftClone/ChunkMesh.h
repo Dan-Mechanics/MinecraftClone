@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "VAO.h"
-#include "EBO.h"
+#include "vao.h"
+#include "ebo.h"
 #include "Camera.h"
 #include "Texture.h"
 #include <vector>
@@ -10,9 +10,9 @@ class ChunkMesh {
 public:
 	std::vector<ChunkVertex> vertices{};
 	std::vector<GLuint> indices{};
-	VAO vao{};
-	EBO ebo{};
-	VBO vbo{};
+	vao vao{};
+	ebo ebo{};
+	vbo vbo{};
 
 	ChunkMesh();
 	ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);

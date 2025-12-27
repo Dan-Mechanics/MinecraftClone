@@ -1,18 +1,14 @@
-#ifndef EBO_CLASS_H
-#define EBO_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
 #include <vector>
 
-class EBO {
+class ebo {
 public:
 	GLuint id;
-	EBO();
-	EBO(const std::vector<GLuint>& indices);
+	ebo();
+	ebo(const std::vector<GLuint>& indices);
 
 	void bind() const;
 	void unbind() const;
 	void free() const;
 };
-
-#endif

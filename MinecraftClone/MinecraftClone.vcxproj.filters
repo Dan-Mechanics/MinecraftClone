@@ -41,13 +41,13 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="EBO.cpp">
+    <ClCompile Include="ebo.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="VAO.cpp">
+    <ClCompile Include="vao.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="VBO.cpp">
+    <ClCompile Include="vbo.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
@@ -107,6 +107,9 @@
     <ClCompile Include="MouseLook.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="file_utils.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
@@ -141,16 +144,16 @@
     <ClInclude Include="Vertex.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
+    <ClInclude Include="vbo.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="VAO.h">
+    <ClInclude Include="vao.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="EBO.h">
+    <ClInclude Include="ebo.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
@@ -230,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="file_utils.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

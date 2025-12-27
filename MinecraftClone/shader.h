@@ -1,14 +1,6 @@
-#ifndef SHADER_CLASS_H
-#define SHADER_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <cerrno>
-
-std::string getFileContents(const char* filename);
+#include "file_utils.h"
 
 class Shader {
 public:
@@ -22,5 +14,3 @@ public:
 private:
 	void compileErrors(unsigned int shader, const char* type);
 };
-
-#endif

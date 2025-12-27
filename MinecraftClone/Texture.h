@@ -1,6 +1,4 @@
-#ifndef TEXTURE_CLASS_H
-#define TEXTURE_CLASS_H
-
+#pragma once
 #include <glad/glad.h>
 #include <stb/stb_image.h>
 #include "shader.h"
@@ -19,5 +17,3 @@ public:
 	void free() const;
 
 };
-
-#endif

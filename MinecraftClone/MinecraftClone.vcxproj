@@ -154,6 +154,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkMesh.cpp" />
+    <ClCompile Include="file_utils.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="mesh_utils.cpp" />
     <ClCompile Include="MouseLook.cpp" />
@@ -165,7 +166,7 @@
     <ClCompile Include="world_data_utils.cpp" />
     <ClCompile Include="world_mesh_utils.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="EBO.cpp" />
+    <ClCompile Include="ebo.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -173,8 +174,8 @@
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="utils.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="vao.cpp" />
+    <ClCompile Include="vbo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="chunk.frag" />
@@ -197,6 +198,7 @@
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Direction.h" />
     <ClInclude Include="ChunkVertex.h" />
+    <ClInclude Include="file_utils.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="mesh_utils.h" />
     <ClInclude Include="MouseLook.h" />
@@ -212,13 +214,13 @@
     <ClInclude Include="world_data_utils.h" />
     <ClInclude Include="world_mesh_utils.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="EBO.h" />
+    <ClInclude Include="ebo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="utils.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
+    <ClInclude Include="vao.h" />
+    <ClInclude Include="vbo.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="lit_color.frag" />

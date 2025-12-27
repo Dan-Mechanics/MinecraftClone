@@ -1,10 +1,7 @@
-#ifndef MESH_CLASS_H
-#define MESH_CLASS_H
-
+#pragma once
 #include <string>
-
-#include "VAO.h"
-#include "EBO.h"
+#include "vao.h"
+#include "ebo.h"
 #include "Camera.h"
 #include "Texture.h"
 #include <vector>
@@ -14,9 +11,9 @@ public:
 	std::vector<Vertex> vertices{};
 	std::vector<GLuint> indices{};
 	glm::mat4 modelMatrix{};
-	VAO vao{};
-	EBO ebo{};
-	VBO vbo{};
+	vao vao{};
+	ebo ebo{};
+	vbo vbo{};
 
 	Mesh();
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
@@ -40,5 +37,3 @@ public:
 	void free() const;
 
 };
-
-#endif

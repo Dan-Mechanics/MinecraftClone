@@ -1,24 +1,9 @@
 #include "shader.h"
-
-std::string getFileContents(const char* filename) {
-	std::ifstream in{ filename, std::ios::binary };
-	if (!in)
-		throw(errno);
-	
-	std::string contents;
-	in.seekg(0, std::ios::end);
-	contents.resize(in.tellg());
-	in.seekg(0, std::ios::beg);
-	in.read(&contents[0], contents.size());
-	in.close();
-
-	return { contents };
-}
  
 Shader::Shader() = default;
 Shader::Shader(const char* vertexFile, const char* fragmentFile) {
-	std::string vertexCode = getFileContents(vertexFile);
-	std::string fragmentCode = getFileContents(fragmentFile);
+	std::string vertexCode = getFileContent(vertexFile);
+	std::string fragmentCode = getFileContent(fragmentFile);
 
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
