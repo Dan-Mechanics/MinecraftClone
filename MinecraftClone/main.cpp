@@ -1,13 +1,3 @@
-#include "Chunk.h"
-#include "Mesh.h"
-#include "Object.h"
-#include "utils.h"
-#include "world_mesh_utils.h"
-#include <unordered_map>
-#include "BlockType.h"
-#include "World.h"
-#include "ShadowMapFBO.h"
-#include "mesh_utils.h"
 #include "ThreadPool.h"
 #include "Game.h"
 #include <chrono>
