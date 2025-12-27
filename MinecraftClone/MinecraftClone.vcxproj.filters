@@ -98,6 +98,15 @@
     <ClCompile Include="BlockSelector.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMovement.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseLook.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
@@ -211,6 +220,15 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="BlockSelector.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseLook.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovement.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
       <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
