@@ -8,11 +8,8 @@
 #include "hashing_utils.h"
 #include <unordered_set>
 
-void generateChunkMeshInline(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
+void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const std::unordered_map<glm::ivec3, BlockType, ivec3hash>& blocks,
-	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
-
-ChunkMesh* generateChunkMesh(const int chunkSize, const Atlas& atlas, const std::unordered_map<glm::ivec3, BlockType, ivec3hash>& blocks,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
 void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType);

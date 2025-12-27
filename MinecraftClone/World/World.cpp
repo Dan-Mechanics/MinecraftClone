@@ -11,7 +11,7 @@ void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->hasMesh)
-			it->second->chunkMesh->drawShadows(shader, camera);
+			it->second->chunkMesh.drawShadows(shader, camera);
 
 		++it;
 	}
@@ -22,7 +22,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->hasMesh)
-			it->second->chunkMesh->draw(shader, camera, lightPos, lightColor, worldColor, material);
+			it->second->chunkMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
 
 		++it;
 	}
@@ -95,10 +95,11 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
-	if (changedChunkPositions.empty())
+	auto it = changedChunkPositions.begin();
+	if (it == changedChunkPositions.end())
 		return;
 
-	const glm::ivec3 chunkPos = *changedChunkPositions.begin();
+	const glm::ivec3 chunkPos = *it;
 	changedChunkPositions.erase(chunkPos);
 
 	if (!chunks.contains(chunkPos))
@@ -113,30 +114,18 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 	Chunk& chunk = *chunks[chunkPos];
 	if (chunk.hasMesh)
-		chunk.chunkMesh->free();
+		chunk.chunkMesh.free();
 
-	/*std::vector<ChunkVertex> chunkVerts{};
+	std::vector<ChunkVertex> chunkVerts{};
 	std::vector<GLuint> chunkTris{};
 
-	auto future = pool.submit(generateChunkMeshInline, std::ref(chunkVerts),
+	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
 		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
 
 	future.get();
 
 	chunk.chunkMesh = { chunkVerts, chunkTris };
-	chunk.hasMesh = true;*/
-
-	auto future = pool.submit(generateChunkMesh, chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
-	chunk.chunkMesh = future.get();
 	chunk.hasMesh = true;
-}
-
-void World::newFlushAll(ThreadPool& pool, const Atlas& atlas) {
-	auto it = changedChunkPositions.begin();
-	while (it != changedChunkPositions.end()) {
-
-		++it;
-	}
 }
 
 int World::getChunkSize() const {
