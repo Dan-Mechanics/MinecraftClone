@@ -1,6 +1,6 @@
 #include "world_mesh_utils.h"
 
-void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
+void generateChunkMeshInline(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const std::unordered_map<glm::ivec3, BlockType, ivec3hash>& blocks,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
 	verts.clear();
@@ -97,6 +97,16 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 
 		++it;
 	}
+}
+
+ChunkMesh* generateChunkMesh(const int chunkSize, const Atlas& atlas, const std::unordered_map<glm::ivec3, BlockType, ivec3hash>& blocks,
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
+	std::vector<ChunkVertex> verts{};
+	std::vector<GLuint> tris{};
+	generateChunkMeshInline(verts, tris, chunkSize, atlas, blocks, chunks);
+
+	// NOTE THIS WILL CAUSE MEMORY LEAK.
+	return new ChunkMesh{ verts, tris };
 }
 
 void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType) {

@@ -15,7 +15,7 @@ public:
 	vbo vbo{};
 
 	ChunkMesh();
-	ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);
+	ChunkMesh(const std::vector<ChunkVertex> vertices, const std::vector<GLuint> indices);
 
 	void drawShadows(const Shader& shader, const Camera& camera) const;
 

@@ -1,7 +1,7 @@
 #include "ChunkMesh.h"
 
 ChunkMesh::ChunkMesh() = default;
-ChunkMesh::ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices) {
+ChunkMesh::ChunkMesh(const std::vector<ChunkVertex> vertices, const std::vector<GLuint> indices) {
 	this->vertices = vertices;
 	this->indices = indices;
 
