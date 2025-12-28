@@ -27,6 +27,8 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
+
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
 		for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 			for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
@@ -34,12 +36,17 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 				if (chunks.contains(chunkPos))
 					continue;
 
-				// WE NEED TO LOAD A CHUNK IN.
-				//auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
-				if (fillChunkData(chunks, chunkSize, chunkPos))
-					changedChunkPositions.insert(chunkPos);
+				futures.emplace_back(pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos));
 			}
 		}
+	}
+
+	for (size_t i = 0; i < futures.size(); ++i) {
+		const auto opt = futures[i].get();
+		if (!opt.has_value())
+			continue;
+
+		changedChunkPositions.insert(opt.value());
 	}
 }
 
