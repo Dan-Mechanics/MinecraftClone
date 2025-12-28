@@ -4,7 +4,7 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 	if (chunkPos.y != 0)
 		return false;
 
-	chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+	chunks[chunkPos] = new Chunk{ };
 	for (int x = 0; x < chunkSize; ++x) {
 		for (int y = 0; y < 2; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
@@ -15,8 +15,7 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 							chunks[chunkPos]->blocks[blockPos + glm::ivec3{ 0, i, 0 }] = BlockType::LOG;
 						}
 					}
-					else
-					{
+					else {
 						chunks[chunkPos]->blocks[blockPos] = BlockType::DIRT;
 					}
 				}

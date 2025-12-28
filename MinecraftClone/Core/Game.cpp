@@ -181,7 +181,8 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 		world.toggle = !world.toggle;
 	}
 	else {
-		world.reloadSingleChunkMesh(pool, atlas);
+		// world.reloadSingleChunkMesh(pool, atlas);
+		world.flushAll(pool, atlas);
 	}
 }
 
