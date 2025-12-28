@@ -6,4 +6,6 @@ Chunk::Chunk(const glm::ivec3& chunkPos, const int chunkSize) : chunkPos{ chunkP
 Chunk::~Chunk() {
 	if (hasMesh)
 		chunkMesh.free();
+
+	hasMesh = false;
 }
