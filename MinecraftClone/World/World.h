@@ -28,7 +28,6 @@ public:
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
-	void flushAll(ThreadPool& pool, const Atlas& atlas);
 
 	int getChunkSize() const;
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& getChunks();

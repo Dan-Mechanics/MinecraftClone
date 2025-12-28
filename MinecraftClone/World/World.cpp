@@ -116,7 +116,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	std::vector<GLuint> chunkTris{};
 
 	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
-		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
+		std::ref(chunkTris), chunkSize, std::ref(atlas), chunkPos, std::ref(chunks));
 
 	future.get();
 
