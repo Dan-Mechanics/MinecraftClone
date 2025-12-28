@@ -74,8 +74,8 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 
 	// ADD NEW CHUNK.
-	if (!chunks.contains(chunkPos)) 
-		chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+	if (!chunks.contains(chunkPos))
+		chunks[chunkPos] = new Chunk{ };
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
