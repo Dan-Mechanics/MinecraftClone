@@ -2,10 +2,7 @@
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
-	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } {
-	maxDestroyDist = maxRenderDistance + 1;
-	yMaxRendDist = maxRenderDistance - 1;
-}
+	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -31,7 +28,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
-		for (int y = -yMaxRendDist; y < yMaxRendDist; ++y) {
+		for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 			for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
@@ -52,15 +49,14 @@ void World::destroyOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		const auto chunkPos = it->first;
-		if (chunkPos.x > playerChunkPos.x + maxDestroyDist ||
-			chunkPos.x < playerChunkPos.x - maxDestroyDist ||
-			chunkPos.z > playerChunkPos.z + maxDestroyDist ||
-			chunkPos.z < playerChunkPos.z - maxDestroyDist ||
-			chunkPos.y > playerChunkPos.y + maxDestroyDist ||
-			chunkPos.y < playerChunkPos.y - maxDestroyDist) {
+		if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
+			chunkPos.x < playerChunkPos.x - maxRenderDistance ||
+			chunkPos.z > playerChunkPos.z + maxRenderDistance ||
+			chunkPos.z < playerChunkPos.z - maxRenderDistance ||
+			chunkPos.y > playerChunkPos.y + maxRenderDistance ||
+			chunkPos.y < playerChunkPos.y - maxRenderDistance) {
 			// WE NEED TO DELETE THIS CHUNK.
 			// IT IS OUT OF BOUNDS.
-			changedChunkPositions.insert(it->first);
 			delete it->second;
 			it = chunks.erase(it);
 		}
@@ -75,7 +71,7 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 
 	// ADD NEW CHUNK.
 	if (!chunks.contains(chunkPos)) 
-		chunks[chunkPos] = new Chunk{ chunkPos, chunkSize };
+		chunks[chunkPos] = new Chunk{};
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
