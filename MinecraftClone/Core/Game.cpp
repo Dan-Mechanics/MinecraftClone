@@ -171,14 +171,14 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	timer += interval;
 	if (timer >= worldTickInterval) {
 		timer = 0.0f;
-		if (world.toggle) {
+		if (worldToggle) {
 			world.allocateNewChunks(pool, playerMovement.pos);
 		}
 		else {
 			world.destroyOldChunks(pool, playerMovement.pos);
 		}
 
-		world.toggle = !world.toggle;
+		worldToggle = !worldToggle;
 	}
 	else {
 		// world.reloadSingleChunkMesh(pool, atlas);

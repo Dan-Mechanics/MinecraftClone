@@ -4,24 +4,15 @@ bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, co
 	if (chunkPos.y != 0)
 		return false;
 
-	chunks[chunkPos] = new Chunk{ };
+	chunks[chunkPos] = new Chunk{};
 	for (int x = 0; x < chunkSize; ++x) {
-		for (int y = 0; y < 2; ++y) {
+		for (int y = 0; y < chunkSize; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
+				if (randomInclusive(0, 1) == 0)
+					continue;
+
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-				if (y == 0) {
-					if (randomInclusive(0, 50) == 0) {
-						for (int i = 0; i < chunkSize; i++) {
-							chunks[chunkPos]->blocks[blockPos + glm::ivec3{ 0, i, 0 }] = BlockType::LOG;
-						}
-					}
-					else {
-						chunks[chunkPos]->blocks[blockPos] = BlockType::DIRT;
-					}
-				}
-				else if (randomInclusive(0, 1) != 0) {
-					chunks[chunkPos]->blocks[blockPos] = BlockType::NYCELIUM;
-				}
+				chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(randomInclusive(0, BlockType::END - 1));
 			}
 		}
 	}

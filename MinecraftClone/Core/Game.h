@@ -27,6 +27,7 @@ private:
 	unsigned int width{};
 	unsigned int height{};
 	float worldTickInterval{};
+	bool worldToggle{};
 	float timer{};
 
 	glm::vec4 ambientColor{};

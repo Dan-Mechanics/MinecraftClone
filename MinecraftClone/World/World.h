@@ -10,8 +10,6 @@
 
 class World {
 public:
-	bool toggle{};
-	
 	World();
 	World(const int chunkSize, const int maxRenderDistance);
 
@@ -45,10 +43,11 @@ private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	int maxRenderDistance{};
-	int maxDestroyDist{};
-	int yMaxRendDist{};
 	int chunkSize{};
 
+	/// <summary>
+	/// Update all surrounding chunks too.
+	/// </summary>
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
 	/// <summary>

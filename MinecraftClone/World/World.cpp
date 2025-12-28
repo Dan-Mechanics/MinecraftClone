@@ -2,10 +2,7 @@
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
-	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } {
-	maxDestroyDist = maxRenderDistance + 1;
-	yMaxRendDist = maxRenderDistance - 1;
-}
+	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -31,7 +28,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
-		for (int y = -yMaxRendDist; y < yMaxRendDist; ++y) {
+		for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 			for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
@@ -52,15 +49,14 @@ void World::destroyOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		const auto chunkPos = it->first;
-		if (chunkPos.x > playerChunkPos.x + maxDestroyDist ||
-			chunkPos.x < playerChunkPos.x - maxDestroyDist ||
-			chunkPos.z > playerChunkPos.z + maxDestroyDist ||
-			chunkPos.z < playerChunkPos.z - maxDestroyDist ||
-			chunkPos.y > playerChunkPos.y + maxDestroyDist ||
-			chunkPos.y < playerChunkPos.y - maxDestroyDist) {
+		if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
+			chunkPos.x < playerChunkPos.x - maxRenderDistance ||
+			chunkPos.z > playerChunkPos.z + maxRenderDistance ||
+			chunkPos.z < playerChunkPos.z - maxRenderDistance ||
+			chunkPos.y > playerChunkPos.y + maxRenderDistance ||
+			chunkPos.y < playerChunkPos.y - maxRenderDistance) {
 			// WE NEED TO DELETE THIS CHUNK.
 			// IT IS OUT OF BOUNDS.
-			changedChunkPositions.insert(it->first);
 			delete it->second;
 			it = chunks.erase(it);
 		}
@@ -74,8 +70,8 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 
 	// ADD NEW CHUNK.
-	if (!chunks.contains(chunkPos))
-		chunks[chunkPos] = new Chunk{ };
+	if (!chunks.contains(chunkPos)) 
+		chunks[chunkPos] = new Chunk{};
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
@@ -95,10 +91,11 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
-	if (changedChunkPositions.empty())
+	auto it = changedChunkPositions.begin();
+	if (it == changedChunkPositions.end())
 		return;
 
-	const glm::ivec3 chunkPos = *changedChunkPositions.begin();
+	const glm::ivec3 chunkPos = *it;
 	changedChunkPositions.erase(chunkPos);
 
 	if (!chunks.contains(chunkPos))
@@ -115,55 +112,16 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (chunk.hasMesh)
 		chunk.chunkMesh.free();
 
-	std::vector<ChunkVertex> verts{};
-	std::vector<GLuint> tris{};
-	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
-	chunk.chunkMesh = { verts, tris };
+	std::vector<ChunkVertex> chunkVerts{};
+	std::vector<GLuint> chunkTris{};
+
+	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
+		std::ref(chunkTris), chunkSize, std::ref(atlas), std::ref(chunk.blocks), std::ref(chunks));
+
+	future.get();
+
+	chunk.chunkMesh = { chunkVerts, chunkTris };
 	chunk.hasMesh = true;
-}
-
-void World::flushAll(ThreadPool& pool, const Atlas& atlas) {
-	std::vector<std::future<std::pair<std::vector<ChunkVertex>, std::vector<GLuint>>>> futures{};
-	std::vector<glm::ivec3> positions{};
-
-	auto it = changedChunkPositions.begin();
-	while (it != changedChunkPositions.end()) {
-		const glm::ivec3 chunkPos = *it;
-		if (!chunks.contains(chunkPos)) {
-			++it;
-			continue;
-		}
-
-		// THIS CHUNK IS EMPTY SO WE CAN REMOVE IT.
-		if (chunks[chunkPos]->blocks.empty()) {
-			delete chunks[chunkPos];
-			chunks.erase(chunkPos);
-
-			++it;
-			continue;
-		}
-
-		Chunk& chunk = *chunks[chunkPos];
-		if (chunk.hasMesh)
-			chunk.chunkMesh.free();
-
-		// NOTE TO SELF:
-		// YOU NEED TO MAKE SURE THE REFERENCES INPUT DOESN'T CHANGE.
-		futures.emplace_back(pool.submit(getChunkMesh, chunkSize, std::ref(atlas), chunkPos, std::ref(chunks)));
-		positions.emplace_back(chunkPos);
-
-		++it;
-	}
-
-	changedChunkPositions.clear();
-
-	for (size_t i = 0; i < futures.size(); ++i) {
-		Chunk& chunk = *chunks[positions[i]];
-
-		const auto pair = futures[i].get();
-		chunk.chunkMesh = { pair.first, pair.second };
-		chunk.hasMesh = true;
-	}
 }
 
 int World::getChunkSize() const {
