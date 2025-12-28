@@ -1,8 +1,8 @@
 #include "world_data_utils.h"
 
-std::optional<glm::ivec3> fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3 chunkPos) {
+bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
 	if (chunkPos.y != 0)
-		return std::nullopt;
+		return false;
 
 	chunks[chunkPos] = new Chunk{};
 	for (int x = 0; x < chunkSize; ++x) {
@@ -17,5 +17,5 @@ std::optional<glm::ivec3> fillChunkData(std::unordered_map<glm::ivec3, Chunk*, i
 		}
 	}
 
-	return std::optional<glm::ivec3>{ chunkPos };
+	return true;
 }
