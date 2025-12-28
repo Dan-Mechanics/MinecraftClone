@@ -35,7 +35,6 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 					continue;
 
 				// WE NEED TO LOAD A CHUNK IN.
-				//auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
 				if (fillChunkData(chunks, chunkSize, chunkPos))
 					changedChunkPositions.insert(chunkPos);
 			}
@@ -115,12 +114,10 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	std::vector<ChunkVertex> verts{};
 	std::vector<GLuint> tris{};
 
+	// TODO:
+	// SPLIT UP THE WORK INTO SIX SIDES
+	// AND GIVE TO THREADPOOL.
 	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
-
-	/*auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
-		std::ref(chunkTris), chunkSize, std::ref(atlas), chunkPos, std::ref(chunks));
-
-	future.get();*/
 
 	chunk.chunkMesh = { verts, tris };
 	chunk.hasMesh = true;
