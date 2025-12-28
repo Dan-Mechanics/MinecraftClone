@@ -25,7 +25,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
-void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
 		for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
@@ -35,15 +35,15 @@ void World::allocateNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 					continue;
 
 				// WE NEED TO LOAD A CHUNK IN.
-				auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
-				if (future.get())
+				//auto future = pool.submit(fillChunkData, std::ref(chunks), chunkSize, chunkPos);
+				if (fillChunkData(chunks, chunkSize, chunkPos))
 					changedChunkPositions.insert(chunkPos);
 			}
 		}
 	}
 }
 
-void World::destroyOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 
 	auto it = chunks.begin();
@@ -112,15 +112,17 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (chunk.hasMesh)
 		chunk.chunkMesh.free();
 
-	std::vector<ChunkVertex> chunkVerts{};
-	std::vector<GLuint> chunkTris{};
+	std::vector<ChunkVertex> verts{};
+	std::vector<GLuint> tris{};
 
-	auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
+	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
+
+	/*auto future = pool.submit(generateChunkMesh, std::ref(chunkVerts),
 		std::ref(chunkTris), chunkSize, std::ref(atlas), chunkPos, std::ref(chunks));
 
-	future.get();
+	future.get();*/
 
-	chunk.chunkMesh = { chunkVerts, chunkTris };
+	chunk.chunkMesh = { verts, tris };
 	chunk.hasMesh = true;
 }
 

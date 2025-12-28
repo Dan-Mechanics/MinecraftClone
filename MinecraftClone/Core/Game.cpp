@@ -172,10 +172,10 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	if (timer >= worldTickInterval) {
 		timer = 0.0f;
 		if (worldToggle) {
-			world.allocateNewChunks(pool, playerMovement.pos);
+			world.addInsideRenderDistance(pool, playerMovement.pos);
 		}
 		else {
-			world.destroyOldChunks(pool, playerMovement.pos);
+			world.removeOutsideRenderDistance(pool, playerMovement.pos);
 		}
 
 		worldToggle = !worldToggle;
