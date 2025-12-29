@@ -122,7 +122,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	// TODO:
 	// SPLIT UP THE WORK INTO SIX SIDES
 	// AND GIVE TO THREADPOOL.
-	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks, pool);
+	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
 
 	chunk.chunkMesh = { verts, tris };
 	chunk.hasMesh = true;
