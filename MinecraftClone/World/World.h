@@ -49,6 +49,9 @@ private:
 	FastNoiseLite noise{};
 	int chunkSize{};
 
+	//std::vector<ChunkVertex> vertexBuffer{};
+	//std::vector<GLuint> triangleBuffer{};
+
 	/// <summary>
 	/// Update all surrounding chunks too.
 	/// </summary>
