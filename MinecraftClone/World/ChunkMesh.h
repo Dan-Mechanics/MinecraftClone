@@ -8,17 +8,15 @@
 
 class ChunkMesh {
 public:
-	//std::vector<ChunkVertex> vertices{};
-	//std::vector<GLuint> indices{};
+	std::vector<ChunkVertex> vertices{};
+	std::vector<GLuint> indices{};
 	vao vao{};
 	ebo ebo{};
 	vbo vbo{};
-	GLsizei triangleCount{};
 
 	ChunkMesh();
-	//ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);
+	ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);
 
-	void bind(std::vector<ChunkVertex>& vertices, std::vector<GLuint>& indices);
 	void drawShadows(const Shader& shader, const Camera& camera) const;
 
 	void draw(const Shader& shader, const Camera& camera,

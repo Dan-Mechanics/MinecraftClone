@@ -3,8 +3,8 @@
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
-	//verts.clear();
-	//tris.clear();
+	verts.clear();
+	tris.clear();
 
 	// THIS WAY WE CAN CHANGE HOW WE 
 	// WANT THE CHUNKS TO LOOK.
@@ -97,6 +97,90 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		++it;
+	}
+}
+
+void generateBlockMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris, const int chunkSize, const Atlas& atlas, const glm::ivec3 blockPos, const BlockType blockType, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
+	const auto low = 0;
+	const auto high = 1;
+
+	const int startingVertIndex = verts.size();
+	auto faceCount = 0;
+
+	// UP. ===
+	if (!has(blockPos + up, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, up);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::UP]);
+		faceCount++;
+	}
+
+	// DOWN. ===
+	if (!has(blockPos + down, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, down);
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, down);
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, down);
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, down);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::DOWN]);
+		faceCount++;
+	}
+
+	// FORWARD. ===
+	if (!has(blockPos + forward, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, forward);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::FORWARD]);
+		faceCount++;
+	}
+
+	// RIGHT. ===
+	if (!has(blockPos + right, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, right);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::RIGHT]);
+		faceCount++;
+	}
+
+	// BACK. ===
+	if (!has(blockPos + back, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
+		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
+		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, back);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::BACK]);
+		faceCount++;
+	}
+
+	// LEFT. ===
+	if (!has(blockPos + left, chunks, chunkSize)) {
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
+		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
+		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, left);
+
+		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::LEFT]);
+		faceCount++;
+	}
+
+	// GENERATE TRIANGLES. ===
+	for (int i = 0; i < faceCount; ++i) {
+		tris.push_back(startingVertIndex + i * 4);
+		tris.push_back(startingVertIndex + i * 4 + 1);
+		tris.push_back(startingVertIndex + i * 4 + 2);
+		tris.push_back(startingVertIndex + i * 4);
+		tris.push_back(startingVertIndex + i * 4 + 2);
+		tris.push_back(startingVertIndex + i * 4 + 3);
 	}
 }
 
