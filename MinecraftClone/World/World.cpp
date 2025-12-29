@@ -2,7 +2,12 @@
 
 World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
-	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { }
+	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { 
+	noise.SetFractalOctaves(3);
+	noise.SetFractalLacunarity(7.5f);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+}
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
@@ -27,15 +32,18 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	const auto height = 25.0f;
+	
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
-		for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
-			for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
+		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
+			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
+
+			for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
 					continue;
 
-				// WE NEED TO LOAD A CHUNK IN.
-				if (fillChunkData(chunks, chunkSize, chunkPos))
+				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
 					changedChunkPositions.insert(chunkPos);
 			}
 		}
@@ -68,10 +76,6 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 
-	// ADD NEW CHUNK.
-	if (!chunks.contains(chunkPos)) 
-		chunks[chunkPos] = new Chunk{};
-
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
 		return;
@@ -94,6 +98,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (it == changedChunkPositions.end())
 		return;
 
+	//std::cout << "reloadSingleChunkMesh" << std::endl;
 	const glm::ivec3 chunkPos = *it;
 	changedChunkPositions.erase(chunkPos);
 

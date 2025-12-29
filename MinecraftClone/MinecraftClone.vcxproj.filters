@@ -205,6 +205,9 @@
     <ClInclude Include="Rendering\Camera.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="World\FastNoiseLite.h">
+      <Filter>World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\atlas.png">

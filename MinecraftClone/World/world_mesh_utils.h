@@ -12,7 +12,8 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
-std::pair<std::vector<ChunkVertex>, std::vector<GLuint>> getChunkMesh(const int chunkSize, const Atlas& atlas, const glm::ivec3 chunkPos,
+void generateBlockMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
+	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
 void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType);

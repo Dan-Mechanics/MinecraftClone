@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include "../World/FastNoiseLite.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;

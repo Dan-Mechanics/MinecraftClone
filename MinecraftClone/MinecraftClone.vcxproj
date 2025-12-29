@@ -206,6 +206,7 @@
     <ClInclude Include="World\ChunkMesh.h" />
     <ClInclude Include="World\ChunkVertex.h" />
     <ClInclude Include="World\Direction.h" />
+    <ClInclude Include="World\FastNoiseLite.h" />
     <ClInclude Include="World\hashing_utils.h" />
     <ClInclude Include="World\World.h" />
     <ClInclude Include="World\world_data_utils.h" />

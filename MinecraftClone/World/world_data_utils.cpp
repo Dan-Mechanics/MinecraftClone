@@ -1,21 +1,41 @@
 #include "world_data_utils.h"
 
-bool fillChunkData(std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize, const glm::ivec3& chunkPos) {
-	if (chunkPos.y != 0)
-		return false;
+std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, const int chunkX, const int chunkZ, const int chunkSize) {
+	std::vector<int> result(chunkSize * chunkSize);
+	auto xOffset = chunkX * chunkSize;
+	auto zOffset = chunkZ * chunkSize;
 
+	auto index = 0;
+	for (int x = 0; x < chunkSize; ++x) {
+		for (int z = 0; z < chunkSize; ++z) {
+			result[index++] = noise.GetNoise((float)x + xOffset, (float)z + zOffset) * height;
+		}
+	}
+
+	return result;
+}
+
+bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vector<int>& heightGrid, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
 	chunks[chunkPos] = new Chunk{};
+	auto& blocks = chunks[chunkPos]->blocks;
+	auto hasChanged = false;
+
 	for (int x = 0; x < chunkSize; ++x) {
 		for (int y = 0; y < chunkSize; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
-				if (randomInclusive(0, 1) == 0)
-					continue;
-
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-				chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(randomInclusive(0, BlockType::END - 1));
+				int height = heightGrid[z + x * chunkSize];
+				if (blockPos.y < height) {
+					blocks[blockPos] = BlockType::DIRT;
+					hasChanged = true;
+				}
+				else if (blockPos.y == height) {
+					blocks[blockPos] = NYCELIUM;
+					hasChanged = true;
+				}
 			}
 		}
 	}
 
-	return true;
+	return hasChanged;
 }

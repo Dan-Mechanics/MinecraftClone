@@ -11,6 +11,10 @@
 class World {
 public:
 	World();
+
+	/// <summary>
+	/// https://github.com/Isti01/glCraft/blob/main/src/World/WorldGenerator.cpp
+	/// </summary>
 	World(const int chunkSize, const int maxRenderDistance);
 
 	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
@@ -42,6 +46,7 @@ private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	int maxRenderDistance{};
+	FastNoiseLite noise{};
 	int chunkSize{};
 
 	/// <summary>
