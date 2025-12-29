@@ -16,8 +16,8 @@ std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, co
 }
 
 bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vector<int>& heightGrid, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
-	chunks[chunkPos] = new Chunk{};
-	auto& blocks = chunks[chunkPos]->blocks;
+	//chunks[chunkPos] = new Chunk{};
+	//auto& blocks = chunks[chunkPos]->blocks;
 	auto hasChanged = false;
 
 	for (int x = 0; x < chunkSize; ++x) {
@@ -26,11 +26,17 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
 				int height = heightGrid[z + x * chunkSize];
 				if (blockPos.y < height) {
-					blocks[blockPos] = BlockType::DIRT;
+					if(!chunks.contains(chunkPos))
+						chunks[chunkPos] = new Chunk{};
+
+					chunks[chunkPos]->blocks[blockPos] = BlockType::DIRT;
 					hasChanged = true;
 				}
 				else if (blockPos.y == height) {
-					blocks[blockPos] = NYCELIUM;
+					if (!chunks.contains(chunkPos))
+						chunks[chunkPos] = new Chunk{};
+					
+					chunks[chunkPos]->blocks[blockPos] = NYCELIUM;
 					hasChanged = true;
 				}
 			}

@@ -119,9 +119,9 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	std::vector<ChunkVertex> verts{};
 	std::vector<GLuint> tris{};
 
-	// TODO:
-	// SPLIT UP THE WORK INTO SIX SIDES
-	// AND GIVE TO THREADPOOL.
+	verts.reserve(2000);
+	tris.reserve(3000);
+
 	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
 
 	chunk.chunkMesh = { verts, tris };
