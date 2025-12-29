@@ -7,14 +7,14 @@
 #include "Chunk.h"
 #include "hashing_utils.h"
 #include <unordered_set>
+#include "../Core/ThreadPool.h"
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
-	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, ThreadPool& pool);
 
-void generateBlockMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
-	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
-	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+std::pair< std::vector<ChunkVertex>, std::vector<GLuint>> generateBlockMesh(
+	const int chunkSize, const Atlas& atlas, const glm::ivec3 blockPos, const BlockType blockType, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
 void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType);
 
