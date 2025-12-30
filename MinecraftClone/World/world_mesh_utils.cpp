@@ -3,11 +3,6 @@
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
-	verts.clear();
-	tris.clear();
-
-	// THIS WAY WE CAN CHANGE HOW WE 
-	// WANT THE CHUNKS TO LOOK.
 	const auto low = 0;
 	const auto high = 1;
 
@@ -17,8 +12,8 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		const int startingVertIndex = verts.size();
 		auto faceCount = 0;
 
-		const glm::ivec3 blockPos = it->first;
-		const BlockType blockType = it->second;
+		const auto& blockPos = it->first;
+		const auto& blockType = it->second;
 
 		// UP. ===
 		if (!assumptiveHas(blockPos + up, chunks, chunkSize)) {
@@ -151,7 +146,7 @@ void rotateUVsClockwise(Face& face) {
 }
 
 void setCurrentFaceUVs(std::vector<ChunkVertex>& verts, const Face& face) {
-	auto beginFaceVert = verts.size() - 4;
+	const int beginFaceVert = verts.size() - 4;
 	for (int i = 0; i < 4; ++i) {
 		verts[beginFaceVert + i].texUv = face.uvs[i];
 	}

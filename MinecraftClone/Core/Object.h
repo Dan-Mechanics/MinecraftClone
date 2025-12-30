@@ -27,6 +27,9 @@ public:
 	void setRot(const glm::vec3& to);
 	void setScale(const glm::vec3& to);
 	void setColor(const glm::vec4& to);
+	void setVisible(const bool to);
+
+	void setAs(const Object& other);
 
 private:
 	glm::quat calculateQuat();

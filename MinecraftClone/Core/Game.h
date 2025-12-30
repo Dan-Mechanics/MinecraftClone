@@ -28,9 +28,8 @@ public:
 private:
 	unsigned int width{};
 	unsigned int height{};
-	float worldTickInterval{};
-	bool worldToggle{};
-	float timer{};
+
+	float slotRotation{};
 
 	glm::vec4 ambientColor{};
 	glm::vec4 sunColor{};
@@ -46,7 +45,8 @@ private:
 	Object faceHighlight{};
 
 	Object crosshair{};
-	Object hand{};
+	Object heldBlock{};
+	Object slot{};
 
 	World world{};
 	Atlas atlas{};
@@ -71,8 +71,8 @@ private:
 
 	std::vector<Texture> woodMaterial{};
 	std::vector<Texture> atlasMaterial{};
+	std::vector<Mesh> singleBlockMeshes{};
 	Mesh cubeMesh{};
-	Mesh heldCubeMesh{};
 
 };
 

@@ -55,6 +55,18 @@ void Object::setColor(const glm::vec4& to) {
 	color = to;
 }
 
+void Object::setVisible(const bool to) {
+	visible = to;
+}
+
+void Object::setAs(const Object& other) {
+	setPos(other.pos);
+	setRot(other.rot);
+	setScale(other.scale);
+	setColor(other.color);
+	setVisible(other.visible);
+}
+
 glm::quat Object::calculateQuat() {
 	while (rot.x >= 360.0f) {
 		rot.x -= 360.0f;
