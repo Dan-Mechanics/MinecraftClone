@@ -16,7 +16,8 @@ public:
 
 	OrthographicCamera();
 	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
-	void updateMatrix(const float left, const float right, const float bottom, const float top, const float zNear, const float zFar, const glm::vec3& pos, const glm::vec3& forward);
+	void updateMatrix(const std::vector<float>& bounds, const glm::vec3& pos,
+		const glm::vec3& forward);
 
 private:
 	glm::mat4 matrix{};

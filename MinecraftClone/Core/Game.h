@@ -51,7 +51,8 @@ private:
 	Atlas atlas{};
 
 	Camera camera{};
-	OrthographicCamera uiCamera{};
+	Camera displayCamera{};
+	std::vector<float> bounds{};
 
 	MouseLook mouseLook{};
 	PlayerMovement playerMovement{};
