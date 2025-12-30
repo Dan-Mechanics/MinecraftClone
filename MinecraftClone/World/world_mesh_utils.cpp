@@ -21,7 +21,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		const BlockType blockType = it->second;
 
 		// UP. ===
-		if (!has(blockPos + up, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + up, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
@@ -32,7 +32,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// DOWN. ===
-		if (!has(blockPos + down, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + down, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, down);
@@ -43,7 +43,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// FORWARD. ===
-		if (!has(blockPos + forward, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + forward, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
@@ -54,7 +54,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// RIGHT. ===
-		if (!has(blockPos + right, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + right, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
@@ -65,7 +65,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// BACK. ===
-		if (!has(blockPos + back, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + back, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
@@ -76,7 +76,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// LEFT. ===
-		if (!has(blockPos + left, chunks, chunkSize)) {
+		if (!assumptiveHas(blockPos + left, chunks, chunkSize)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
@@ -97,90 +97,6 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		++it;
-	}
-}
-
-void generateBlockMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris, const int chunkSize, const Atlas& atlas, const glm::ivec3 blockPos, const BlockType blockType, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
-	const auto low = 0;
-	const auto high = 1;
-
-	const int startingVertIndex = verts.size();
-	auto faceCount = 0;
-
-	// UP. ===
-	if (!has(blockPos + up, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, up);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::UP]);
-		faceCount++;
-	}
-
-	// DOWN. ===
-	if (!has(blockPos + down, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, down);
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, down);
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, down);
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, down);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::DOWN]);
-		faceCount++;
-	}
-
-	// FORWARD. ===
-	if (!has(blockPos + forward, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, forward);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::FORWARD]);
-		faceCount++;
-	}
-
-	// RIGHT. ===
-	if (!has(blockPos + right, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, right);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::RIGHT]);
-		faceCount++;
-	}
-
-	// BACK. ===
-	if (!has(blockPos + back, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
-		verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
-		verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, back);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::BACK]);
-		faceCount++;
-	}
-
-	// LEFT. ===
-	if (!has(blockPos + left, chunks, chunkSize)) {
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
-		verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
-		verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, left);
-
-		setCurrentFaceUVs(verts, atlas.maps.at(blockType).faces[Direction::LEFT]);
-		faceCount++;
-	}
-
-	// GENERATE TRIANGLES. ===
-	for (int i = 0; i < faceCount; ++i) {
-		tris.push_back(startingVertIndex + i * 4);
-		tris.push_back(startingVertIndex + i * 4 + 1);
-		tris.push_back(startingVertIndex + i * 4 + 2);
-		tris.push_back(startingVertIndex + i * 4);
-		tris.push_back(startingVertIndex + i * 4 + 2);
-		tris.push_back(startingVertIndex + i * 4 + 3);
 	}
 }
 
@@ -324,6 +240,14 @@ bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
 		return false;
+
+	return chunks.at(chunkPos)->blocks.contains(blockPos);
+}
+
+bool assumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	if (!chunks.contains(chunkPos))
+		return true;
 
 	return chunks.at(chunkPos)->blocks.contains(blockPos);
 }

@@ -9,16 +9,17 @@
 #include "../Player/BlockSelector.h"
 #include "../Player/MouseLook.h"
 #include "../Player/PlayerMovement.h"
-#include "../Rendering/OrthographicCamera.h"
 
 class Game {
 public:
 
 	Game();
-	void setup(GLFWwindow* window, const unsigned int width, const unsigned int height);
+	Game(const unsigned int width, const unsigned int height);
+
+	void setup(GLFWwindow* window);
 	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput);
 	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
-	void drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window);
+	void drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
 	glm::vec4 getClearColor() const;
@@ -51,8 +52,7 @@ private:
 	Atlas atlas{};
 
 	Camera camera{};
-	Camera displayCamera{};
-	std::vector<float> bounds{};
+	Camera uiCamera{};
 
 	MouseLook mouseLook{};
 	PlayerMovement playerMovement{};

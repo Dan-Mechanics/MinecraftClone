@@ -70,8 +70,8 @@ int main() {
 
 	// ===
 
-	Game game{};
-	game.setup(window, width, height);
+	Game game{ width, height };
+	game.setup(window);
 
 	// ===
 
@@ -134,7 +134,7 @@ int main() {
 
 		// UI. ===
 		glDisable(GL_DEPTH_TEST);
-		game.drawDisplay(deltaTime, hasFocus, window);
+		game.drawUI(deltaTime, hasFocus, window);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

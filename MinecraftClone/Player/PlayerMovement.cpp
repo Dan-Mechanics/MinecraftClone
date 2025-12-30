@@ -27,17 +27,11 @@ void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const 
 	if (glm::length(movement) > 0.0f)
 		movement = glm::normalize(movement);
 
-	/*if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		movement += worldUp;*/
-
 	const auto spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 	if (!previousSpacePressed && spacePressed)
 		jump();
 
 	previousSpacePressed = spacePressed;
-	/*if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		movement -= worldUp;*/
-
 	auto currentSpeed = standardSpeed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		currentSpeed *= 3.0f;

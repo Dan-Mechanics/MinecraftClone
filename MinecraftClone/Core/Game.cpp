@@ -1,11 +1,10 @@
 #include "Game.h"
 
 Game::Game() = default;
+Game::Game(const unsigned int width, const unsigned int height)
+	: width{ width }, height{ height } { }
 
-void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned int height) {
-	this->width = width;
-	this->height = height;
-	
+void Game::setup(GLFWwindow* window) {
 	sunColor = glm::vec4{
 		(float)255 / 255,
 		(float)255 / 255,
@@ -99,10 +98,10 @@ void Game::setup(GLFWwindow* window, const unsigned int width, const unsigned in
 void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
 	mouseLook.update(window, width, height, hasFocus);
 	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus);
-	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
+	// playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
-	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
+	uiCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
 
 	// ===
 
@@ -135,7 +134,7 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
 }
 
-void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	hand.setPos (
 		playerMovement.pos +
 		mouseLook.eyesForward * 1.25f +
@@ -145,7 +144,7 @@ void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* w
 	hand.setRot(glm::vec3{ mouseLook.rotX, -mouseLook.rotY, 0.0f });
 	hand.drawWithMaterial(heldCubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 
-	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
+	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
