@@ -102,8 +102,9 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
-	displayCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
-
+	float temp = 25.0f;
+	uiCamera.updateMatrix(-temp, temp, -temp/2.0f, temp/2.0f, 0.0f, temp, glm::vec3{ 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+	
 	// ===
 
 	world.update(deltaTime, atlas, pool, playerMovement.pos);
@@ -145,7 +146,7 @@ void Game::drawDisplay(const float deltaTime, const bool hasFocus, GLFWwindow* w
 	hand.setRot(glm::vec3{ mouseLook.rotX, -mouseLook.rotY, 0.0f });
 	hand.drawWithMaterial(heldCubeMesh, atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
 
-	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, displayCamera);
+	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
 }
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
