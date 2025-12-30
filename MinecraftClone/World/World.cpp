@@ -4,9 +4,12 @@ World::World() = default;
 World::World(const int chunkSize, const int maxRenderDistance)
 	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { 
 	noise.SetFractalOctaves(3);
-	noise.SetFractalLacunarity(7.5f);
+	noise.SetFractalLacunarity(4.0f);
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+
+	reloadChunkInterval = 0.04f;
+	updateChunksInterval = 0.25f;
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -30,6 +33,29 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
+void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos) {
+	updateChunksTimer += dt;
+	reloadChunkTimer += dt;
+
+	if (reloadChunkTimer >= reloadChunkInterval) {
+		reloadChunkTimer = 0.0f;
+		reloadSingleChunkMesh(pool, atlas);
+		return;
+	}
+
+	if (updateChunksTimer >= updateChunksInterval) {
+		updateChunksTimer = 0.0f;
+		if (addOrRemoveToggle) {
+			addInsideRenderDistance(pool, playerPos);
+		}
+		else {
+			removeOutsideRenderDistance(pool, playerPos);
+		}
+
+		addOrRemoveToggle = !addOrRemoveToggle;
+	}
+}
+
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	const auto height = 25.0f;
@@ -37,6 +63,8 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
 		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
 			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
+
+			maxRenderDistance--;
 
 			for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
@@ -46,6 +74,8 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
 					changedChunkPositions.insert(chunkPos);
 			}
+
+			maxRenderDistance++;
 		}
 	}
 }
@@ -53,6 +83,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 
+	maxRenderDistance++;
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		const auto chunkPos = it->first;
@@ -71,10 +102,16 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 			++it;
 		}
 	}
+
+	maxRenderDistance--;
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+
+	// this means it wont work.
+	if (!chunks.contains(chunkPos))
+		chunks[chunkPos] = new Chunk{};
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
@@ -109,6 +146,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (chunks[chunkPos]->blocks.empty()) {
 		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
+		std::cout << "if (chunks[chunkPos]->blocks.empty()) {" << std::endl;
 		return;
 	}
 

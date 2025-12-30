@@ -8,16 +8,16 @@
 #include <glm/gtx/vector_angle.hpp>
 #include "../Rendering/Shader.h"
 #include "../World/Direction.h"
+#include <vector>
 
-class Camera {
+class OrthographicCamera {
 public:
 	glm::vec3 position{};
-	
-	Camera();
+
+	OrthographicCamera();
 	void sendMatrixToShader(const Shader& shader, const char* uniform) const;
-	void updateMatrix(const float fovDeg, const float nearPlane, 
-		const float farPlane, const glm::vec3& pos, const glm::vec3& forward,
-		const unsigned int width, const unsigned int height);
+	void updateMatrix(const std::vector<float>& bounds, const glm::vec3& pos,
+		const glm::vec3& forward);
 
 private:
 	glm::mat4 matrix{};

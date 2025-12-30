@@ -23,12 +23,12 @@ public:
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	
+	void update(const float dt, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos);
+
 	/// <summary>
 	/// Manage adding and removing chunks on
 	/// the heap based on player positon.
 	/// </summary>
-	void addInsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
-	void removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
@@ -48,12 +48,20 @@ private:
 	int maxRenderDistance{};
 	FastNoiseLite noise{};
 	int chunkSize{};
+	float reloadChunkTimer{};
+	float updateChunksTimer{};
+
+	float reloadChunkInterval{};
+	float updateChunksInterval{};
+	bool addOrRemoveToggle{};
 
 	/// <summary>
 	/// Update all surrounding chunks too.
 	/// </summary>
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
+	void addInsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
+	void removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
 	/// <summary>
 	/// Only update the surroundng chunks if
 	/// the block is on the border of the chunk.

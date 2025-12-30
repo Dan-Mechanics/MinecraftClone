@@ -9,6 +9,7 @@
 #include "../Player/BlockSelector.h"
 #include "../Player/MouseLook.h"
 #include "../Player/PlayerMovement.h"
+#include "../Rendering/OrthographicCamera.h"
 
 class Game {
 public:
@@ -51,6 +52,7 @@ private:
 
 	Camera camera{};
 	Camera displayCamera{};
+	std::vector<float> bounds{};
 
 	MouseLook mouseLook{};
 	PlayerMovement playerMovement{};

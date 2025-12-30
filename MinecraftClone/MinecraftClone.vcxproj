@@ -166,6 +166,7 @@
     <ClCompile Include="Rendering\ebo.cpp" />
     <ClCompile Include="Rendering\Mesh.cpp" />
     <ClCompile Include="Rendering\mesh_utils.cpp" />
+    <ClCompile Include="Rendering\OrthographicCamera.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\ShadowMapFBO.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Rendering\ebo.h" />
     <ClInclude Include="Rendering\Mesh.h" />
     <ClInclude Include="Rendering\mesh_utils.h" />
+    <ClInclude Include="Rendering\OrthographicCamera.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShadowMapFBO.h" />
     <ClInclude Include="Rendering\Texture.h" />

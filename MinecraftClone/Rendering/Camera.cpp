@@ -12,9 +12,9 @@ void Camera::updateMatrix(const float fovDeg, const float nearPlane, const float
 	view = glm::lookAt(pos, pos + forward, worldUp);
 	projection = glm::perspective(glm::radians(fovDeg), (float)width / height, nearPlane, farPlane);
 
-	cameraMatrix = projection * view;
+	matrix = projection * view;
 }
 
 void Camera::sendMatrixToShader(const Shader& shader, const char* uniform) const {
-	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, uniform), 1, GL_FALSE, glm::value_ptr(matrix));
 }

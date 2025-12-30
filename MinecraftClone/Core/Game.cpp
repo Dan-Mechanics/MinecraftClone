@@ -106,6 +106,8 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 
 	// ===
 
+	world.update(deltaTime, atlas, pool, playerMovement.pos);
+
 	const auto hasScrolled = blockSelector.onScroll(scrollInput);
 	if (hasScrolled) {
 		std::vector<Vertex> verts = heldCubeMesh.vertices;
@@ -164,28 +166,6 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	if (faceHighlight.visible) {
 		faceHighlight.setPos(pos);
 		faceHighlight.setScale(scale);
-	}
-
-	// ===
-	
-	//std::cout << "tick" << std::endl;
-	timer += interval;
-	if (timer >= worldTickInterval) {
-		timer = 0.0f;
-		if (worldToggle) {
-			std::cout << "addInsideRenderDistance" << std::endl;
-			world.addInsideRenderDistance(pool, playerMovement.pos);
-		}
-		else {
-			std::cout << "removeOutsideRenderDistance" << std::endl;
-			world.removeOutsideRenderDistance(pool, playerMovement.pos);
-		}
-
-		worldToggle = !worldToggle;
-	}
-	else {
-		//std::cout << "reloadSingleChunkMesh" << std::endl;
-		world.reloadSingleChunkMesh(pool, atlas);
 	}
 }
 
