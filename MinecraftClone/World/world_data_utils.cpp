@@ -25,11 +25,11 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 				if (blockPos.y > height)
 					continue;
 
-				/*if (!hasChanged)
-					chunks[chunkPos] = new Chunk{};*/
+				if (!hasChanged)
+					chunks[chunkPos] = new Chunk{};
 
 				//chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
-				chunks[chunkPos]->blocks[blockPos] = BlockType::DIRT;
+				chunks[chunkPos]->blocks[blockPos] = BlockType::REACTOR;
 				hasChanged = true;
 			}
 		}

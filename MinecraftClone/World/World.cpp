@@ -65,19 +65,19 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 	const auto height = 25.0f;
 
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	for (int x = -renderDistance; x < renderDistance; ++x) {
-		for (int z = -renderDistance; z < renderDistance; ++z) {
+	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
+		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
 			for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
 					continue;
 
-				chunks[chunkPos] = new Chunk{};
 				const auto heightMapPos = glm::ivec3{ chunkPos.x, 0, chunkPos.z };
-				if(!heightMaps.contains(heightMapPos))
-					heightMaps[heightMapPos] = getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize);
+				if (!heightMaps.contains(heightMapPos))
+					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
-			 	if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
+				// I THINK FILLCHUNK IS CAUSING LAG.
+				if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
 					changedChunkPositions.insert(chunkPos);
 			}
 		}
