@@ -254,5 +254,8 @@
     <None Include="Resources\Shaders\unlit_color.frag">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\simple_material.frag">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

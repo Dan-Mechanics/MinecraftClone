@@ -77,7 +77,6 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 				if(!heightMaps.contains(heightMapPos))
 					heightMaps[heightMapPos] = getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize);
 
-				// I THINK FILLCHUNK IS CAUSING LAG.
 			 	if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
 					changedChunkPositions.insert(chunkPos);
 			}
