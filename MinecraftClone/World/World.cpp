@@ -47,6 +47,7 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 	if (reloadChunkTimer >= reloadChunkInterval) {
 		reloadChunkTimer = 0.0f;
 		reloadSingleChunkMesh(pool, atlas);
+		return;
 	}
 
 	if (updateChunksTimer >= updateChunksInterval) {
