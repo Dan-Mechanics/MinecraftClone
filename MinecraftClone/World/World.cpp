@@ -86,21 +86,21 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 
 void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
+
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		const auto chunkPos = it->first;
-		if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
-			chunkPos.x < playerChunkPos.x - maxRenderDistance ||
-			chunkPos.z > playerChunkPos.z + maxRenderDistance ||
-			chunkPos.z < playerChunkPos.z - maxRenderDistance ||
-			chunkPos.y > playerChunkPos.y + maxRenderDistance ||
-			chunkPos.y < playerChunkPos.y - maxRenderDistance) {
-			delete it->second;
-			it = chunks.erase(it);
-		}
-		else {
-			++it;
-		}
+		futures.emplace_back(pool.submit(checkKeepChunkLoaded, it->first, std::ref(playerChunkPos), maxRenderDistance));
+		++it;
+	}
+
+	for (int i = 0; i < futures.size(); ++i) {
+		const auto opt = futures[i].get();
+		if (!opt.has_value())
+			continue;
+		
+		delete chunks[opt.value()];
+		chunks.erase(opt.value());
 	}
 }
 
