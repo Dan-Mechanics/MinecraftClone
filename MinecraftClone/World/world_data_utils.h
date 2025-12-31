@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include "../Core/utils.h"
 #include "FastNoiseLite.h"
+#include <optional>
 
 /// <summary>
 /// https://github.com/Auburn/FastNoiseLite/tree/master/Cpp
@@ -17,3 +18,5 @@ std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, co
 
 bool fillChunk(const glm::ivec3& chunkPos,
 	const int chunkSize, const std::vector<int>& heightGrid, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+
+bool checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int maxRenderDistance);
