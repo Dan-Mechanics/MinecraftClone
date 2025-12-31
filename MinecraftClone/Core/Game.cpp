@@ -44,7 +44,7 @@ void Game::setup(GLFWwindow* window) {
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
-	faceHighlight.setColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+	faceHighlight.setColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	hotbarRotation = -10.0f;
 	slot.setScale(glm::vec3{ 0.375f });

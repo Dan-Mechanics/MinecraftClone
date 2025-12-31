@@ -16,16 +16,25 @@ void Terraformer::update(GLFWwindow* window, const Raycast& raycast, World & wor
 	prevRightPressed = rightPressed;
 }
 
-bool Terraformer::getFaceHighlight(const Raycast& raycast, const World& world, glm::vec3& pos, glm::vec3& scale) const {
+bool Terraformer::getFaceHighlight(const Raycast& raycast, const World& world, glm::vec3& pos, glm::vec3& scale) {
+	ticks++;
+	if (ticks >= 8) {
+		ticks = 0;
+		visible = !visible;
+	}
+	
+	if (!visible)
+		return false;
+
 	glm::ivec3 blockPos{};
 	glm::ivec3 normal{};
 	if (!world.raycast(raycast, blockPos, normal))
 		return false;
 
 	glm::vec3 absNormal = glm::abs(normal);
-	scale = glm::vec3{ 1.0f } - absNormal + absNormal * 0.5f;
-	scale /= 2.0f;
+	scale = glm::vec3{ 1.0f } - absNormal + absNormal * 0.1f;
 	pos = glm::vec3{ blockPos + normal } + glm::vec3{ 0.5f } - glm::vec3{ normal } * 0.5f;
+	return true;
 }
 
 void Terraformer::setBlockType(const BlockType blockType) {
