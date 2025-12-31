@@ -47,7 +47,7 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 	if (reloadChunkTimer >= reloadChunkInterval) {
 		reloadChunkTimer = 0.0f;
 		reloadSingleChunkMesh(pool, atlas);
-		return;
+		//return;
 	}
 
 	if (updateChunksTimer >= updateChunksInterval) {
@@ -75,7 +75,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 				chunks[chunkPos] = new Chunk{};
 				const auto heightMapPos = glm::ivec3{ chunkPos.x, 0, chunkPos.z };
 				if(!heightMaps.contains(heightMapPos))
-					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
+					heightMaps[heightMapPos] = getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize);
 
 				// I THINK FILLCHUNK IS CAUSING LAG.
 			 	if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
@@ -143,7 +143,6 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (chunks[chunkPos]->blocks.empty()) {
 		delete chunks[chunkPos];
 		chunks.erase(chunkPos);
-		std::cout << "if (chunks[chunkPos]->blocks.empty()) {" << std::endl;
 		return;
 	}
 
