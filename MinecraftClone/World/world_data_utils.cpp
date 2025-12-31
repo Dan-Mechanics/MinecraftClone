@@ -38,10 +38,8 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 	return hasChanged;
 }
 
-bool checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int maxRenderDistance) {
-	return true;
-	
-	/*if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
+std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int maxRenderDistance) {
+	if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
 		chunkPos.x < playerChunkPos.x - maxRenderDistance ||
 		chunkPos.z > playerChunkPos.z + maxRenderDistance ||
 		chunkPos.z < playerChunkPos.z - maxRenderDistance ||
@@ -50,5 +48,5 @@ bool checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChu
 		return std::optional<glm::ivec3>{ chunkPos };
 	}
 
-	return std::nullopt;*/
+	return std::nullopt;
 }
