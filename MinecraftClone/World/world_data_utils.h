@@ -19,4 +19,4 @@ std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, co
 bool fillChunk(const glm::ivec3& chunkPos,
 	const int chunkSize, const std::vector<int>& heightGrid, std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
-std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int maxRenderDistance);
+std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int renderDistance);

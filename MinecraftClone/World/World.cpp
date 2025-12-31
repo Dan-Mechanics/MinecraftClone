@@ -4,8 +4,8 @@ World::World() = default;
 World::World(const int chunkSize, const int renderDistance)
 	: chunkSize{ chunkSize }, renderDistance{ renderDistance } { 
 
-	maxRenderDistance = renderDistance + 1;
-	minRenderDistance = renderDistance - 1;
+	largeRenderDistance = renderDistance + 1;
+	smallRenderDistance = renderDistance - 1;
 
 	noise.SetFractalOctaves(3);
 	noise.SetFractalLacunarity(4.0f);
@@ -16,7 +16,7 @@ World::World(const int chunkSize, const int renderDistance)
 	updateChunksInterval = 0.2f;*/
 
 	reloadChunkInterval = 0.04f;
-	updateChunksInterval = 0.2f;
+	updateChunksInterval = 0.25f;
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -47,27 +47,30 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 	if (reloadChunkTimer >= reloadChunkInterval) {
 		reloadChunkTimer = 0.0f;
 		reloadSingleChunkMesh(pool, atlas);
-		//return;
+		return;
 	}
 
 	if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
+		if (toggle) {
+			addInsideRenderDistance(pool, playerPos);
+		}
+		else {
+			removeOutsideRenderDistance(pool, playerPos);
+		}
 
-		removeOutsideRenderDistance(pool, playerPos);
-		addInsideRenderDistance(pool, playerPos);
-
-		//addOrRemoveToggle = !addOrRemoveToggle;
+		toggle = !toggle;
 	}
 }
 
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	const auto height = 25.0f;
 
-	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
-		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
-			for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
+	for (int x = -renderDistance; x < renderDistance; ++x) {
+		for (int z = -renderDistance; z < renderDistance; ++z) {
+			for (int y = -smallRenderDistance; y < smallRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
 					continue;
@@ -76,7 +79,6 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 				if (!heightMaps.contains(heightMapPos))
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
-				// I THINK FILLCHUNK IS CAUSING LAG.
 				if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
 					changedChunkPositions.insert(chunkPos);
 			}
@@ -90,7 +92,7 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		futures.emplace_back(pool.submit(checkKeepChunkLoaded, it->first, std::ref(playerChunkPos), maxRenderDistance));
+		futures.emplace_back(pool.submit(checkKeepChunkLoaded, it->first, std::ref(playerChunkPos), largeRenderDistance));
 		++it;
 	}
 

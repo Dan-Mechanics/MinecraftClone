@@ -1,6 +1,7 @@
 #include "world_data_utils.h"
 
 std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, const int chunkX, const int chunkZ, const int chunkSize) {
+	// DON'T CHANGE THE FOLLOWING:
 	std::vector<int> result(chunkSize * chunkSize);
 	auto xOffset = chunkX * chunkSize;
 	auto zOffset = chunkZ * chunkSize;
@@ -28,8 +29,9 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 				if (!hasChanged)
 					chunks[chunkPos] = new Chunk{};
 
-				//chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
-				chunks[chunkPos]->blocks[blockPos] = BlockType::REACTOR;
+				chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
+				//chunks[chunkPos]->blocks[blockPos] = BlockType::NYCELIUM;
+
 				hasChanged = true;
 			}
 		}
@@ -38,13 +40,13 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 	return hasChanged;
 }
 
-std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int maxRenderDistance) {
-	if (chunkPos.x > playerChunkPos.x + maxRenderDistance ||
-		chunkPos.x < playerChunkPos.x - maxRenderDistance ||
-		chunkPos.z > playerChunkPos.z + maxRenderDistance ||
-		chunkPos.z < playerChunkPos.z - maxRenderDistance ||
-		chunkPos.y > playerChunkPos.y + maxRenderDistance ||
-		chunkPos.y < playerChunkPos.y - maxRenderDistance) {
+std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int renderDistance) {
+	if (chunkPos.x > playerChunkPos.x + renderDistance ||
+		chunkPos.x < playerChunkPos.x - renderDistance ||
+		chunkPos.z > playerChunkPos.z + renderDistance ||
+		chunkPos.z < playerChunkPos.z - renderDistance ||
+		chunkPos.y > playerChunkPos.y + renderDistance ||
+		chunkPos.y < playerChunkPos.y - renderDistance) {
 		return std::optional<glm::ivec3>{ chunkPos };
 	}
 

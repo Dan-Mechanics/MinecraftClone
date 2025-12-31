@@ -46,16 +46,16 @@ private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	int renderDistance{};
-	int maxRenderDistance{};
-	int minRenderDistance{};
+	int largeRenderDistance{};
+	int smallRenderDistance{};
 	FastNoiseLite noise{};
 	int chunkSize{};
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
+	bool toggle{};
 
 	float reloadChunkInterval{};
 	float updateChunksInterval{};
-	bool addOrRemoveToggle{};
 
 	/// <summary>
 	/// Update all surrounding chunks too.
