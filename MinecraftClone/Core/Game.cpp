@@ -86,7 +86,7 @@ void Game::setup(GLFWwindow* window) {
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };
-	shadowless_material = { "default.vert", "material.frag" };
+	simpleMaterialShader = { "default.vert", "simple_material.frag" };
 	unlitShader = { "default.vert", "unlit_color.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
 	chunkMaterialShader = { "chunk.vert", "chunk.frag" };
@@ -155,11 +155,11 @@ void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window
 		if (index >= BlockType::END)
 			index -= BlockType::END;
 
-		slot.drawWithMaterial(singleBlockMeshes[index], atlasMaterial, shadowless_material, uiCamera, sun.color, sun.pos, ambientColor);
+		slot.drawWithMaterial(singleBlockMeshes[index], atlasMaterial, simpleMaterialShader, uiCamera, sun.color, sun.pos, ambientColor);
 		slot.pos -= worldLeft;
 	}
 
-	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()], atlasMaterial, shadowless_material, uiCamera, sun.color, sun.pos, ambientColor);
+	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()], atlasMaterial, simpleMaterialShader, uiCamera, sun.color, sun.pos, ambientColor);
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
 }
 

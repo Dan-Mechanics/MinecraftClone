@@ -130,6 +130,8 @@ int main() {
 
 		// RENDER. ===
 		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
 		game.draw(deltaTime, hasFocus, window);
 
 		// UI. ===

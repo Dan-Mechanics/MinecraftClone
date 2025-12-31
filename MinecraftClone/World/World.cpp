@@ -8,8 +8,8 @@ World::World(const int chunkSize, const int maxRenderDistance)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 
-	reloadChunkInterval = 0.04f;
-	updateChunksInterval = 0.25f;
+	reloadChunkInterval = 0.035f;
+	updateChunksInterval = 0.2f;
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -43,8 +43,14 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 		return;
 	}
 
-	if (updateChunksTimer >= updateChunksInterval) {
+	if (!changedChunkPositions.empty())
+		return;
+
+	removeOutsideRenderDistance(pool, playerPos);
+	addInsideRenderDistance(pool, playerPos);
+	/*if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
+
 		if (addOrRemoveToggle) {
 			addInsideRenderDistance(pool, playerPos);
 		}
@@ -53,7 +59,7 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 		}
 
 		addOrRemoveToggle = !addOrRemoveToggle;
-	}
+	}*/
 }
 
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
@@ -65,14 +71,14 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
 
 			maxRenderDistance--;
-
 			for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
 					continue;
 
 				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
-					changedChunkPositions.insert(chunkPos);
+					notifyChunkChange(chunkPos);
+					//changedChunkPositions.insert(chunkPos);
 			}
 
 			maxRenderDistance++;
@@ -109,7 +115,6 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 
-	// this means it wont work.
 	if (!chunks.contains(chunkPos))
 		chunks[chunkPos] = new Chunk{};
 
@@ -135,7 +140,6 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (it == changedChunkPositions.end())
 		return;
 
-	//std::cout << "reloadSingleChunkMesh" << std::endl;
 	const glm::ivec3 chunkPos = *it;
 	changedChunkPositions.erase(chunkPos);
 
@@ -156,7 +160,6 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 	std::vector<ChunkVertex> verts{};
 	std::vector<GLuint> tris{};
-
 	verts.reserve(2000);
 	tris.reserve(3000);
 

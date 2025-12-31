@@ -22,6 +22,7 @@ public:
 	void drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
+
 	glm::vec4 getClearColor() const;
 	void free();
 
@@ -60,7 +61,7 @@ private:
 	BlockSelector blockSelector{};
 
 	Shader materialShader{};
-	Shader shadowless_material{};
+	Shader simpleMaterialShader{};
 	Shader unlitShader{};
 	Shader shadowMapShader{};
 
@@ -71,6 +72,7 @@ private:
 
 	std::vector<Texture> woodMaterial{};
 	std::vector<Texture> atlasMaterial{};
+
 	std::vector<Mesh> singleBlockMeshes{};
 	Mesh cubeMesh{};
 
