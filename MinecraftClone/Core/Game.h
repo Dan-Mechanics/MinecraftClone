@@ -28,8 +28,7 @@ public:
 private:
 	unsigned int width{};
 	unsigned int height{};
-
-	float slotRotation{};
+	float hotbarRotation{};
 
 	glm::vec4 ambientColor{};
 	glm::vec4 sunColor{};
@@ -61,6 +60,7 @@ private:
 	BlockSelector blockSelector{};
 
 	Shader materialShader{};
+	Shader shadowless_material{};
 	Shader unlitShader{};
 	Shader shadowMapShader{};
 

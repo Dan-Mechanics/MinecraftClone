@@ -107,9 +107,6 @@
     <ClCompile Include="Rendering\Camera.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\OrthographicCamera.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\AxisPlane.h">
@@ -210,9 +207,6 @@
     </ClInclude>
     <ClInclude Include="World\FastNoiseLite.h">
       <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\OrthographicCamera.h">
-      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

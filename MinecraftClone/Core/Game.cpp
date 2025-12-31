@@ -46,6 +46,13 @@ void Game::setup(GLFWwindow* window) {
 
 	faceHighlight.setColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
+	hotbarRotation = -10.0f;
+	slot.setScale(glm::vec3{ 0.375f });
+	heldBlock.setPos (
+		worldForward * 1.25f +
+		worldLeft - worldUp
+	);
+
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -79,6 +86,7 @@ void Game::setup(GLFWwindow* window) {
 	// ===
 
 	materialShader = { "default.vert", "material.frag" };
+	shadowless_material = { "default.vert", "material.frag" };
 	unlitShader = { "default.vert", "unlit_color.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
 	chunkMaterialShader = { "chunk.vert", "chunk.frag" };
@@ -134,25 +142,12 @@ void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) 
 }
 
 void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
-	heldBlock.setPos (
-		playerMovement.pos +
-		mouseLook.eyesForward * 1.25f +
-		mouseLook.bodyRight - mouseLook.eyesUp
-	);
+	slot.setPos(heldBlock.pos);
 
-	heldBlock.setRot(glm::vec3{ mouseLook.rotX, -mouseLook.rotY, 0.0f });
+	slot.pos -= worldLeft;
+	slot.rotateOverTime(worldUp * hotbarRotation, deltaTime);
 
-	slot.setAs(heldBlock);
-	slot.setScale(glm::vec3{ 0.375f });
-	slot.pos -= mouseLook.bodyRight;
-	slotRotation += 10.0f * deltaTime;
-	if (slotRotation >= 360.0f)
-		slotRotation -= 360.0f;
-	if (slotRotation < 360.0f)
-		slotRotation += 360.0f;
-	slot.setRot(glm::vec3{ mouseLook.rotX + slotRotation, -mouseLook.rotY, 0.0f });
-
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; ++i) {
 		auto index = blockSelector.getBlockType() + i + 1;
 		if (index < 0)
 			index += BlockType::END;
@@ -160,11 +155,11 @@ void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window
 		if (index >= BlockType::END)
 			index -= BlockType::END;
 
-		slot.drawWithMaterial(singleBlockMeshes[index], atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
-		slot.pos -= mouseLook.bodyRight;
+		slot.drawWithMaterial(singleBlockMeshes[index], atlasMaterial, shadowless_material, uiCamera, sun.color, sun.pos, ambientColor);
+		slot.pos -= worldLeft;
 	}
 
-	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()], atlasMaterial, materialShader, camera, sun.color, sun.pos, ambientColor);
+	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()], atlasMaterial, shadowless_material, uiCamera, sun.color, sun.pos, ambientColor);
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
 }
 

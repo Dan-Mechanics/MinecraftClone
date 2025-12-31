@@ -15,6 +15,9 @@ public:
 		const Shader& shader, const Camera& camera, const glm::vec4& lightColor,
 		const glm::vec3& lightPos, const glm::vec4& worldColor);
 
+	void drawWithUnlitTexture(const Mesh& mesh, const std::vector<Texture>& material,
+		const Shader& shader, const Camera& camera);
+
 	void drawAsColor(const Mesh& mesh,const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	

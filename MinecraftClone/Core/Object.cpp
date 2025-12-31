@@ -14,6 +14,14 @@ void Object::drawWithMaterial(const Mesh& mesh, const std::vector<Texture>& mate
 	mesh.drawTexture(shader, camera, pos, rotation, scale, lightPos, lightColor, worldColor, material);
 }
 
+void Object::drawWithUnlitTexture(const Mesh& mesh, const std::vector<Texture>& material, const Shader& shader, const Camera& camera) {
+	if (!visible)
+		return;
+
+	glm::quat rotation = calculateQuat();
+	mesh.drawUnlitTexture(shader, camera, pos, rotation, scale, material);
+}
+
 void Object::drawAsColor(const Mesh& mesh, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	if (!visible)

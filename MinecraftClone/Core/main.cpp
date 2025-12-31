@@ -112,7 +112,7 @@ int main() {
 		// UPDATE. ===
 		game.update(deltaTime, hasFocus, window, pool, scrollInput);
 
-		// FIXED UPDATE.
+		// FIXED UPDATE. ===
 		timer += deltaTime;
 		while (timer >= tickInterval) {
 			timer -= tickInterval;
