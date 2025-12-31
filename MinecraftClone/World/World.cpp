@@ -12,10 +12,7 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 
-	/*reloadChunkInterval = 0.035f;
-	updateChunksInterval = 0.2f;*/
-
-	reloadChunkInterval = 0.04f;
+	reloadChunkInterval = 0.03f;
 	updateChunksInterval = 0.25f;
 }
 
@@ -80,7 +77,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
 				if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
-					changedChunkPositions.insert(chunkPos);
+					notifyChunkChange(chunkPos); // changedChunkPositions.insert(chunkPos);
 			}
 		}
 	}
