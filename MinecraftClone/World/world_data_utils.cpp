@@ -1,7 +1,7 @@
 #include "world_data_utils.h"
 
 std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, const int chunkX, const int chunkZ, const int chunkSize) {
-	std::vector<int> result{ chunkSize * chunkSize };
+	std::vector<int> result(chunkSize * chunkSize);
 	auto xOffset = chunkX * chunkSize;
 	auto zOffset = chunkZ * chunkSize;
 
