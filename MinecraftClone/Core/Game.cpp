@@ -72,8 +72,8 @@ void Game::setup(GLFWwindow* window) {
 
 	atlas = generateAtlas();
 	const auto chunkSize = 16;
-	const auto maxRenderDistance = 3;
-	world = { chunkSize, maxRenderDistance };
+	const auto renderDistance = 3;
+	world = { chunkSize, renderDistance };
 
 	//setCubeFacesAsBlockType(cubeVerts, atlas, blockSelector.getBlockType());
 	//heldCubeMesh = { cubeVerts, cubeTris, cubeMatrix };

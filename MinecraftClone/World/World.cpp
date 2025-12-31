@@ -1,8 +1,12 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const int chunkSize, const int maxRenderDistance)
-	: chunkSize{ chunkSize }, maxRenderDistance{ maxRenderDistance } { 
+World::World(const int chunkSize, const int renderDistance)
+	: chunkSize{ chunkSize }, renderDistance{ renderDistance } { 
+
+	maxRenderDistance = renderDistance + 1;
+	minRenderDistance = renderDistance - 1;
+
 	noise.SetFractalOctaves(3);
 	noise.SetFractalLacunarity(4.0f);
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
@@ -66,30 +70,50 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	const auto height = 25.0f;
 	
-	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
-		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
-			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
+	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
+	for (int x = -renderDistance; x < renderDistance; ++x) {
+		for (int z = -renderDistance; z < renderDistance; ++z) {
+			const auto chunkPos = glm::ivec3{ x, 0, z } + playerChunkPos;
+			if (chunks.contains(chunkPos))
+				continue;
+			
+			heightMaps[chunkPos] = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
 
-			maxRenderDistance--;
-			for (int y = -maxRenderDistance; y < maxRenderDistance; ++y) {
-				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
-				if (chunks.contains(chunkPos))
-					continue;
+			//std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
 
-				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
-					notifyChunkChange(chunkPos);
-					//changedChunkPositions.insert(chunkPos);
-			}
+			//for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
+			//	const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
+			//	if (chunks.contains(chunkPos))
+			//		continue;
 
-			maxRenderDistance++;
+			//	if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
+			//		notifyChunkChange(chunkPos);
+			//		//changedChunkPositions.insert(chunkPos);
+			//}
 		}
+	}
+
+	auto it = heightMaps.begin();
+	while (it != heightMaps.end()) {
+		const auto& heightMap = it->second;
+		auto chunkPos = it->first;
+
+		for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
+			chunkPos.y = y + playerChunkPos.y;
+			if (chunks.contains(chunkPos))
+				continue;
+
+			if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
+				notifyChunkChange(chunkPos);
+		}
+
+		++it;
 	}
 }
 
 void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 
-	maxRenderDistance++;
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		const auto chunkPos = it->first;
@@ -99,8 +123,6 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 			chunkPos.z < playerChunkPos.z - maxRenderDistance ||
 			chunkPos.y > playerChunkPos.y + maxRenderDistance ||
 			chunkPos.y < playerChunkPos.y - maxRenderDistance) {
-			// WE NEED TO DELETE THIS CHUNK.
-			// IT IS OUT OF BOUNDS.
 			delete it->second;
 			it = chunks.erase(it);
 		}
@@ -108,8 +130,6 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 			++it;
 		}
 	}
-
-	maxRenderDistance--;
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
