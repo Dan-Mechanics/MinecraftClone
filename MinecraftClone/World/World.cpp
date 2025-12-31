@@ -47,12 +47,12 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 		return;
 	}
 
-	if (!changedChunkPositions.empty())
-		return;
+	/*if (!changedChunkPositions.empty())
+		return;*/
 
-	removeOutsideRenderDistance(pool, playerPos);
-	addInsideRenderDistance(pool, playerPos);
-	/*if (updateChunksTimer >= updateChunksInterval) {
+	/*removeOutsideRenderDistance(pool, playerPos);
+	addInsideRenderDistance(pool, playerPos);*/
+	if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
 
 		if (addOrRemoveToggle) {
@@ -63,7 +63,7 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 		}
 
 		addOrRemoveToggle = !addOrRemoveToggle;
-	}*/
+	}
 }
 
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
@@ -83,7 +83,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
 			 	if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
-					notifyChunkChange(chunkPos);
+					changedChunkPositions.insert(chunkPos);
 			}
 		}
 	}
