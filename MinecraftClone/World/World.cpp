@@ -69,45 +69,20 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	const auto height = 25.0f;
-	
-	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	for (int x = -renderDistance; x < renderDistance; ++x) {
-		for (int z = -renderDistance; z < renderDistance; ++z) {
-			const auto chunkPos = glm::ivec3{ x, 0, z } + playerChunkPos;
-			if (chunks.contains(chunkPos))
-				continue;
-			
-			heightMaps[chunkPos] = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
 
-			//std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
+	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
+		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
+			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
 
-			//for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
-			//	const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
-			//	if (chunks.contains(chunkPos))
-			//		continue;
+			for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
+				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
+				if (chunks.contains(chunkPos))
+					continue;
 
-			//	if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
-			//		notifyChunkChange(chunkPos);
-			//		//changedChunkPositions.insert(chunkPos);
-			//}
+				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
+					changedChunkPositions.insert(chunkPos);
+			}
 		}
-	}
-
-	auto it = heightMaps.begin();
-	while (it != heightMaps.end()) {
-		const auto& heightMap = it->second;
-		auto chunkPos = it->first;
-
-		for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
-			chunkPos.y = y + playerChunkPos.y;
-			if (chunks.contains(chunkPos))
-				continue;
-
-			if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
-				notifyChunkChange(chunkPos);
-		}
-
-		++it;
 	}
 }
 
