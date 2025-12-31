@@ -70,20 +70,17 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	const auto height = 25.0f;
 
-	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	for (int x = -maxRenderDistance; x < maxRenderDistance; ++x) {
 		for (int z = -maxRenderDistance; z < maxRenderDistance; ++z) {
+			std::vector<int> heightMap = getHeightMap(noise, height, x + playerChunkPos.x, z + playerChunkPos.z, chunkSize);
+
 			for (int y = -minRenderDistance; y < minRenderDistance; ++y) {
 				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
 				if (chunks.contains(chunkPos))
 					continue;
 
-				const auto heightMapPos = glm::ivec3{ chunkPos.x, 0, chunkPos.z };
-				if(!heightMaps.contains(heightMapPos))
-					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
-
-			 	if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
-					notifyChunkChange(chunkPos);
+				if (fillChunk(chunkPos, chunkSize, heightMap, chunks))
+					changedChunkPositions.insert(chunkPos);
 			}
 		}
 	}
