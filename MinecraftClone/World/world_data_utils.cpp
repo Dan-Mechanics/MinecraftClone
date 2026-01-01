@@ -46,3 +46,23 @@ std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const 
 
 	return std::nullopt;
 }
+
+Stamp makeTreeStamp() {
+	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
+	
+	const auto height = 14;
+	for (int i = 0; i < height; ++i) {
+		blocks[{ 0, i, 0 }] = BlockType::ASH_LOG;
+	}
+
+	const auto size = 1;
+	for (int x = -size; x <= size; ++x) {
+		for (int y = -size; y <= size; ++y) {
+			for (int z = -size; z <= size; ++z) {
+				blocks[{ x, height + y, z }] = BlockType::GLOW_BERRIES;
+			}
+		}
+	}
+
+	return { blocks };
+}

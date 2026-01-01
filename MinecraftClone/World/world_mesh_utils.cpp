@@ -173,11 +173,11 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::LOG].faces[Direction::UP] = tilePositionToUVs(3, 1);
 	atlas.maps[BlockType::LOG].faces[Direction::DOWN] = tilePositionToUVs(3, 1);
 
-	// GHOST LOG. ===
-	atlas.maps[BlockType::GHOST_LOG] = generateEmptyMap();
-	setEquatorUVs(atlas.maps[BlockType::GHOST_LOG], tilePositionToUVs(4, 0));
-	atlas.maps[BlockType::GHOST_LOG].faces[Direction::UP] = tilePositionToUVs(4, 1);
-	atlas.maps[BlockType::GHOST_LOG].faces[Direction::DOWN] = tilePositionToUVs(4, 1);
+	// ASH LOG. ===
+	atlas.maps[BlockType::ASH_LOG] = generateEmptyMap();
+	setEquatorUVs(atlas.maps[BlockType::ASH_LOG], tilePositionToUVs(4, 0));
+	atlas.maps[BlockType::ASH_LOG].faces[Direction::UP] = tilePositionToUVs(4, 1);
+	atlas.maps[BlockType::ASH_LOG].faces[Direction::DOWN] = tilePositionToUVs(4, 1);
 
 	// ===
 	atlas.maps[BlockType::DIRT] = generateUniformMap(tilePositionToUVs(0, 1));
@@ -185,6 +185,7 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::SAPPHIRE] = generateUniformMap(tilePositionToUVs(0, 2));
 	atlas.maps[BlockType::DIAMOND] = generateUniformMap(tilePositionToUVs(1, 2));
 	atlas.maps[BlockType::REACTOR] = generateUniformMap(tilePositionToUVs(2, 0));
+	atlas.maps[BlockType::GLOW_BERRIES] = generateUniformMap(tilePositionToUVs(2, 1));
 
 	return atlas;
 }

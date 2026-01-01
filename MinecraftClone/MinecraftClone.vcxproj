@@ -173,6 +173,7 @@
     <ClCompile Include="Rendering\vbo.cpp" />
     <ClCompile Include="World\Chunk.cpp" />
     <ClCompile Include="World\ChunkMesh.cpp" />
+    <ClCompile Include="World\Stamp.cpp" />
     <ClCompile Include="World\World.cpp" />
     <ClCompile Include="World\world_data_utils.cpp" />
     <ClCompile Include="World\world_mesh_utils.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="World\Direction.h" />
     <ClInclude Include="World\FastNoiseLite.h" />
     <ClInclude Include="World\hashing_utils.h" />
+    <ClInclude Include="World\Stamp.h" />
     <ClInclude Include="World\World.h" />
     <ClInclude Include="World\world_data_utils.h" />
     <ClInclude Include="World\world_mesh_utils.h" />

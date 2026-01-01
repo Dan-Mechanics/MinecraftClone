@@ -12,8 +12,11 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 	height = 25.0f;
 
-	reloadChunkInterval = 0.025f;
-	updateChunksInterval = 0.25f;
+	reloadChunkInterval = 0.03f;
+	updateChunksInterval = 0.125f;
+
+	tree = makeTreeStamp();
+	std::cout << tree.blocks.size() << std::endl;
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -93,6 +96,8 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = std::move(blocks);
 
+		// applyStamp(tree, chunkPos * chunkSize);
+
 		changedChunkPositions.insert(chunkPos);
 	}
 }
@@ -121,15 +126,20 @@ void World::removeOldChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 
-	if (!chunks.contains(chunkPos))
+	// THIS IS A RARE, BUT MUST BE ACCOUNTED FOR.
+	if (!chunks.contains(chunkPos)) {
 		chunks[chunkPos] = new Chunk{};
+		chunks[chunkPos]->blocks = 
+			fillChunkAsync(chunkPos, chunkSize, getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize));
+	}
+
+	notifyBlockChange(chunkPos, blockPos);
 
 	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
 	if (chunks[chunkPos]->blocks.contains(blockPos))
 		return;
 	
 	chunks[chunkPos]->blocks[blockPos] = blockType;
-	notifyBlockChange(chunkPos, blockPos);
 }
 
 void World::remove(const glm::ivec3& blockPos) {
@@ -208,6 +218,17 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 	}
 
 	return false;
+}
+
+void World::applyStamp(const Stamp& stamp, const glm::ivec3& origin) {
+	if (stamp.blocks.empty())
+		return;
+
+	auto it = stamp.blocks.begin();
+	while (it != stamp.blocks.end()) {
+		add(it->first + origin, it->second);
+		++it;
+	}
 }
 
 void World::free() {

@@ -107,6 +107,9 @@
     <ClCompile Include="Rendering\Camera.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="World\Stamp.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\AxisPlane.h">
@@ -206,6 +209,9 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="World\FastNoiseLite.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="World\Stamp.h">
       <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>

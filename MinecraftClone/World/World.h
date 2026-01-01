@@ -40,6 +40,7 @@ public:
 	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
 	bool raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const;
+	void applyStamp(const Stamp& stamp, const glm::ivec3& origin);
 ;	void free();
 
 private:
@@ -56,6 +57,8 @@ private:
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool toggle{};
+
+	Stamp tree{};
 
 	void addNewChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
 	void removeOldChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
