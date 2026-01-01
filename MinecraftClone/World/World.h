@@ -49,22 +49,22 @@ private:
 	int largeRenderDistance{};
 	int smallRenderDistance{};
 	FastNoiseLite noise{};
+	float height{};
 	int chunkSize{};
+	float reloadChunkInterval{};
+	float updateChunksInterval{};
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool toggle{};
 
-	float reloadChunkInterval{};
-	float updateChunksInterval{};
+	void addNewChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
+	void removeOldChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
 
 	/// <summary>
 	/// Update all surrounding chunks too.
 	/// </summary>
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
-	void addInsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
-	void addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3 & playerPos);
-	void removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
 	/// <summary>
 	/// Only update the surroundng chunks if
 	/// the block is on the border of the chunk.

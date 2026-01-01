@@ -3,7 +3,6 @@
 World::World() = default;
 World::World(const int chunkSize, const int renderDistance)
 	: chunkSize{ chunkSize }, renderDistance{ renderDistance } { 
-
 	largeRenderDistance = renderDistance + 1;
 	smallRenderDistance = renderDistance - 1;
 
@@ -11,6 +10,7 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetFractalLacunarity(4.0f);
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+	height = 25.0f;
 
 	reloadChunkInterval = 0.02f;
 	updateChunksInterval = 0.25f;
@@ -50,43 +50,19 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 	if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
 		if (toggle) {
-			addInsideRenderDistanceAsync(pool, playerPos);
+			addNewChunksAsync(pool, playerPos);
 		}
 		else {
-			removeOutsideRenderDistance(pool, playerPos);
+			removeOldChunksAsync(pool, playerPos);
 		}
 
 		toggle = !toggle;
 	}
 }
 
-void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	const auto height = 25.0f;
-
-	for (int x = -renderDistance; x < renderDistance; ++x) {
-		for (int z = -renderDistance; z < renderDistance; ++z) {
-			for (int y = -smallRenderDistance; y < smallRenderDistance; ++y) {
-				const auto chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
-				if (chunks.contains(chunkPos))
-					continue;
-
-				const auto heightMapPos = glm::ivec3{ chunkPos.x, 0, chunkPos.z };
-				if (!heightMaps.contains(heightMapPos))
-					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
-
-				if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
-					notifyChunkChange(chunkPos);
-			}
-		}
-	}
-}
-
-void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& playerPos) {
-	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
-	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	const auto height = 25.0f;
 
 	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
 	std::vector<glm::ivec3> positions{};
@@ -94,7 +70,7 @@ void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& play
 	for (int x = -renderDistance; x < renderDistance; ++x) {
 		for (int z = -renderDistance; z < renderDistance; ++z) {
 			for (int y = -smallRenderDistance; y < smallRenderDistance; ++y) {
-				const glm::ivec3 chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
+				const glm::ivec3 chunkPos = glm::ivec3{ x + playerChunkPos.x, y + playerChunkPos.y, z + playerChunkPos.z };
 				if (chunks.contains(chunkPos))
 					continue;
 
@@ -121,7 +97,7 @@ void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& play
 	}
 }
 
-void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::removeOldChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
 	futures.reserve(chunks.size());

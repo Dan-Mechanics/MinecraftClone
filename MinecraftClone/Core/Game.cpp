@@ -11,10 +11,16 @@ void Game::setup(GLFWwindow* window) {
 		(float)255 / 255, 1.0f
 	};
 
-	ambientColor = glm::vec4 {
+	/*ambientColor = glm::vec4 {
 		(float)90 / 255,
 		(float)110 / 255,
 		(float)194 / 255, 1.0f
+	};*/
+
+	ambientColor = glm::vec4 {
+		(float)100 / 255,
+		(float)145 / 255,
+		(float)190 / 255, 1.0f
 	};
 
 	// ===
@@ -74,9 +80,6 @@ void Game::setup(GLFWwindow* window) {
 	const auto chunkSize = 16;
 	const auto renderDistance = 3;
 	world = { chunkSize, renderDistance };
-
-	//setCubeFacesAsBlockType(cubeVerts, atlas, blockSelector.getBlockType());
-	//heldCubeMesh = { cubeVerts, cubeTris, cubeMatrix };
 
 	for (int i = 0; i < BlockType::END; ++i) {
 		setCubeFacesAsBlockType(cubeVerts, atlas, static_cast<BlockType>(i));
