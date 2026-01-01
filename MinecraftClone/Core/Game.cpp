@@ -11,17 +11,17 @@ void Game::setup(GLFWwindow* window) {
 		(float)255 / 255, 1.0f
 	};
 
-	/*ambientColor = glm::vec4 {
+	ambientColor = glm::vec4 {
 		(float)90 / 255,
 		(float)110 / 255,
 		(float)194 / 255, 1.0f
-	};*/
+	};
 
-	ambientColor = glm::vec4 {
+	/*ambientColor = glm::vec4 {
 		(float)100 / 255,
 		(float)145 / 255,
 		(float)190 / 255, 1.0f
-	};
+	};*/
 
 	// ===
 

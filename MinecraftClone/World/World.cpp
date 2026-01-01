@@ -12,7 +12,7 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 	height = 25.0f;
 
-	reloadChunkInterval = 0.02f;
+	reloadChunkInterval = 0.025f;
 	updateChunksInterval = 0.25f;
 }
 
