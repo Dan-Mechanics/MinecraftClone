@@ -50,7 +50,7 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 	if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
 		if (toggle) {
-			addInsideRenderDistance(pool, playerPos);
+			addInsideRenderDistanceAsync(pool, playerPos);
 		}
 		else {
 			removeOutsideRenderDistance(pool, playerPos);
@@ -83,6 +83,53 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 	}
 }
 
+void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& playerPos) {
+	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
+	const auto height = 25.0f;
+
+	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
+	std::vector<glm::ivec3> positions{};
+
+	for (int x = -renderDistance; x < renderDistance; ++x) {
+		for (int z = -renderDistance; z < renderDistance; ++z) {
+			for (int y = -smallRenderDistance; y < smallRenderDistance; ++y) {
+				const glm::ivec3 chunkPos = glm::ivec3{ x, y, z } + playerChunkPos;
+				if (chunks.contains(chunkPos))
+					continue;
+
+				const auto heightMapPos = flatten(chunkPos);
+				if (!heightMaps.contains(heightMapPos))
+					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
+
+				/*const auto& blocks = fillChunkAsync(chunkPos, chunkSize, heightMaps);
+				if (blocks.empty())
+					continue;
+
+				chunks[chunkPos] = new Chunk{};
+				chunks[chunkPos]->blocks = blocks;
+				notifyChunkChange(chunkPos);*/
+
+				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, std::ref(heightMaps[heightMapPos])));
+				positions.emplace_back(chunkPos);
+			}
+		}
+	}
+
+	for (int i = 0; i < futures.size(); ++i) {
+		auto blocks = futures[i].get();
+		if (blocks.empty())
+			continue;
+
+		const auto& chunkPos = positions[i];
+		chunks[chunkPos] = new Chunk{};
+		chunks[chunkPos]->blocks = std::move(blocks);
+
+		// notifyChunkChange(chunkPos);
+		changedChunkPositions.insert(chunkPos);
+	}
+}
+
 void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
@@ -95,7 +142,7 @@ void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playe
 	}
 
 	for (int i = 0; i < futures.size(); ++i) {
-		const auto opt = futures[i].get();
+		const auto& opt = futures[i].get();
 		if (!opt.has_value())
 			continue;
 		

@@ -20,3 +20,4 @@ void bindMaterial(std::vector<Texture>& material, const Shader& shader);
 Direction getDirectionFromVector(const glm::vec3& vec);
 glm::ivec3 directionToIvec3(const Direction dir);
 bool validPositionsToBlockPos(const glm::vec3& a, const glm::vec3& b, glm::ivec3& blockPos);
+glm::ivec3 flatten(glm::ivec3 pos);

@@ -95,3 +95,8 @@ bool validPositionsToBlockPos(const glm::vec3& a, const glm::vec3& b, glm::ivec3
 	blockPos = glm::floor((a + b) / 2.0f);
 	return true;
 }
+
+glm::ivec3 flatten(glm::ivec3 pos) {
+	pos.y = 0;
+	return pos;
+}

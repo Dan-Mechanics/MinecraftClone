@@ -63,6 +63,7 @@ private:
 	void notifyChunkChange(const glm::ivec3& chunkPos);
 
 	void addInsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
+	void addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3 & playerPos);
 	void removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3 & playerPos);
 	/// <summary>
 	/// Only update the surroundng chunks if

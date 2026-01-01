@@ -30,14 +30,30 @@ bool fillChunk(const glm::ivec3& chunkPos, const int chunkSize, const std::vecto
 					chunks[chunkPos] = new Chunk{};
 
 				chunks[chunkPos]->blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
-				//chunks[chunkPos]->blocks[blockPos] = BlockType::NYCELIUM;
-
 				allocated = true;
 			}
 		}
 	}
 
 	return allocated;
+}
+
+std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::ivec3 chunkPos, const int chunkSize, const std::vector<int>& heightMap) {
+	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
+	for (int x = 0; x < chunkSize; ++x) {
+		for (int y = 0; y < chunkSize; ++y) {
+			for (int z = 0; z < chunkSize; ++z) {
+				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
+				int height = heightMap[z + x * chunkSize];
+				if (blockPos.y > height)
+					continue;
+
+				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
+			}
+		}
+	}
+
+	return blocks;
 }
 
 std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int renderDistance) {
