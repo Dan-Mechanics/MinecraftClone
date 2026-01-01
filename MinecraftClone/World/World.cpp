@@ -12,7 +12,7 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 
-	reloadChunkInterval = 0.03f;
+	reloadChunkInterval = 0.02f;
 	updateChunksInterval = 0.25f;
 }
 
@@ -86,6 +86,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 void World::removeOutsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
+	futures.reserve(chunks.size());
 
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
