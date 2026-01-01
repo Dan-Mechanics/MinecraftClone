@@ -77,7 +77,7 @@ void World::addInsideRenderDistance(ThreadPool& pool, const glm::vec3& playerPos
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
 				if (fillChunk(chunkPos, chunkSize, heightMaps[heightMapPos], chunks))
-					notifyChunkChange(chunkPos); // changedChunkPositions.insert(chunkPos);
+					notifyChunkChange(chunkPos);
 			}
 		}
 	}
@@ -102,14 +102,6 @@ void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& play
 				if (!heightMaps.contains(heightMapPos))
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
-				/*const auto& blocks = fillChunkAsync(chunkPos, chunkSize, heightMaps);
-				if (blocks.empty())
-					continue;
-
-				chunks[chunkPos] = new Chunk{};
-				chunks[chunkPos]->blocks = blocks;
-				notifyChunkChange(chunkPos);*/
-
 				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, std::ref(heightMaps[heightMapPos])));
 				positions.emplace_back(chunkPos);
 			}
@@ -125,7 +117,6 @@ void World::addInsideRenderDistanceAsync(ThreadPool& pool, const glm::vec3& play
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = std::move(blocks);
 
-		// notifyChunkChange(chunkPos);
 		changedChunkPositions.insert(chunkPos);
 	}
 }
