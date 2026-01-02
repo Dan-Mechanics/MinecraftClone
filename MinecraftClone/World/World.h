@@ -57,8 +57,8 @@ private:
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool toggle{};
-	//std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	Stamp tree{};
+	Stamp blueTree{};
+	Stamp ashTree{};
 
 	void addNewChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
 	void removeOldChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);

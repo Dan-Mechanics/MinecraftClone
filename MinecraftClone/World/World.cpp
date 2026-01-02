@@ -15,7 +15,8 @@ World::World(const int chunkSize, const int renderDistance)
 	reloadChunkInterval = 0.025f;
 	updateChunksInterval = 0.125f;
 
-	tree = makeTreeStamp();
+	blueTree = makeTreeStamp(14, 4, BlockType::LOG, BlockType::LEAVES);
+	ashTree = makeTreeStamp(14, 4, BlockType::ASH_LOG, BlockType::GLOW_BERRIES);
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -104,7 +105,8 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 
 	for (int i = 0; i < relevantChunkIndices.size(); ++i) {
 		const auto& chunkPos = chunkPosCache[relevantChunkIndices[i]];
-		applyStamp(tree, tree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
+		applyStamp(blueTree, blueTree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
+		applyStamp(ashTree, ashTree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
 
 		changedChunkPositions.insert(chunkPos);
 	}

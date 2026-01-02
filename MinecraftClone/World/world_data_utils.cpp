@@ -25,8 +25,8 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::i
 				if (blockPos.y > height)
 					continue;
 
-				//blocks[blockPos] = BlockType::DIRT;
-				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
+				blocks[blockPos] = BlockType::DIRT;
+				//blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
 			}
 		}
 	}
@@ -47,55 +47,53 @@ std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const 
 	return std::nullopt;
 }
 
-Stamp makeTreeStamp() {
+Stamp makeTreeStamp(const int height, const int probability, BlockType log, BlockType leaves) {
 	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
-	
-	const auto height = 14;
 	for (int i = 0; i < height; ++i) {
-		blocks[{ 0, i, 0 }] = BlockType::ASH_LOG;
+		blocks[{ 0, i, 0 }] = log;
 	}
 
 	for (int i = height; i < height + 3; ++i) {
-		blocks[{ 0, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, 0 }] = leaves;
 	}
 
 	for (int i = height - 3; i < height; ++i) {
-		blocks[{ 1, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, 1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -1, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, -1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 1, i, 0 }] =  leaves;
+		blocks[{ 0, i, 1 }] =  leaves;
+		blocks[{ -1, i, 0 }] = leaves;
+		blocks[{ 0, i, -1 }] = leaves;
 	}
 
 	for (int i = height - 6; i < height - 3; ++i) {
-		blocks[{ 2, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, 2 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -2, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, -2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 2, i, 0 }] =  leaves;
+		blocks[{ 0, i, 2 }] =  leaves;
+		blocks[{ -2, i, 0 }] = leaves;
+		blocks[{ 0, i, -2 }] = leaves;
 
-		blocks[{ 1, i, 1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -1, i, 1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 1, i, -1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -1, i, -1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 1, i, 1 }] =   leaves;
+		blocks[{ -1, i, 1 }] =  leaves;
+		blocks[{ 1, i, -1 }] =  leaves;
+		blocks[{ -1, i, -1 }] = leaves;
 	}
 
 	for (int i = height - 11; i < height - 6; ++i) {
-		blocks[{ 2, i, -1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -1, i, 2 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -2, i, -1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -1, i, -2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 2, i, -1 }] =  leaves;
+		blocks[{ -1, i, 2 }] =  leaves;
+		blocks[{ -2, i, -1 }] = leaves;
+		blocks[{ -1, i, -2 }] = leaves;
 
-		blocks[{ 2, i, 1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 1, i, 2 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -2, i, 1 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 1, i, -2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 2, i, 1 }] =  leaves;
+		blocks[{ 1, i, 2 }] =  leaves;
+		blocks[{ -2, i, 1 }] = leaves;
+		blocks[{ 1, i, -2 }] = leaves;
 	}
 
 	for (int i = height - 8; i < height - 6; ++i) {
-		blocks[{ 2, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, 2 }] = BlockType::GLOW_BERRIES;
-		blocks[{ -2, i, 0 }] = BlockType::GLOW_BERRIES;
-		blocks[{ 0, i, -2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 2, i, 0 }] =  leaves;
+		blocks[{ 0, i, 2 }] =  leaves;
+		blocks[{ -2, i, 0 }] = leaves;
+		blocks[{ 0, i, -2 }] = leaves;
 	}
 
-	return { 2, blocks };
+	return { probability, blocks };
 }
