@@ -25,8 +25,8 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::i
 				if (blockPos.y > height)
 					continue;
 
-				blocks[blockPos] = BlockType::DIRT;
-				//blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
+				//blocks[blockPos] = BlockType::DIRT;
+				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
 			}
 		}
 	}
