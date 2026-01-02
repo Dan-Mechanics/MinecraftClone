@@ -12,11 +12,10 @@ World::World(const int chunkSize, const int renderDistance)
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 	height = 25.0f;
 
-	reloadChunkInterval = 0.03f;
+	reloadChunkInterval = 0.025f;
 	updateChunksInterval = 0.125f;
 
 	tree = makeTreeStamp();
-	std::cout << tree.blocks.size() << std::endl;
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -64,11 +63,10 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 }
 
 void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
+	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-
-	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
-	std::vector<glm::ivec3> positions{};
+	std::vector<int> relevantChunkIndices{};
 
 	for (int x = -renderDistance; x < renderDistance; ++x) {
 		for (int z = -renderDistance; z < renderDistance; ++z) {
@@ -82,7 +80,12 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
 				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, std::ref(heightMaps[heightMapPos])));
-				positions.emplace_back(chunkPos);
+				if (chunkPosCache.size() < futures.size()) {
+					chunkPosCache.emplace_back(chunkPos);
+				}
+				else {
+					chunkPosCache[futures.size() - 1] = chunkPos;
+				}
 			}
 		}
 	}
@@ -92,11 +95,16 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 		if (blocks.empty())
 			continue;
 
-		const auto& chunkPos = positions[i];
+		const auto& chunkPos = chunkPosCache[i];
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = std::move(blocks);
 
-		// applyStamp(tree, chunkPos * chunkSize);
+		relevantChunkIndices.push_back(i);
+	}
+
+	for (int i = 0; i < relevantChunkIndices.size(); ++i) {
+		const auto& chunkPos = chunkPosCache[relevantChunkIndices[i]];
+		applyStamp(tree, tree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
 
 		changedChunkPositions.insert(chunkPos);
 	}
@@ -222,6 +230,9 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 
 void World::applyStamp(const Stamp& stamp, const glm::ivec3& origin) {
 	if (stamp.blocks.empty())
+		return;
+
+	if (randomInclusive(0, stamp.probability) != 0)
 		return;
 
 	auto it = stamp.blocks.begin();

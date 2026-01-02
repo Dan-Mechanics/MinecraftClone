@@ -25,7 +25,7 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::i
 				if (blockPos.y > height)
 					continue;
 
-				// blocks[blockPos] = BlockType::NYCELIUM;
+				//blocks[blockPos] = BlockType::DIRT;
 				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::END);
 			}
 		}
@@ -55,14 +55,47 @@ Stamp makeTreeStamp() {
 		blocks[{ 0, i, 0 }] = BlockType::ASH_LOG;
 	}
 
-	const auto size = 1;
-	for (int x = -size; x <= size; ++x) {
-		for (int y = -size; y <= size; ++y) {
-			for (int z = -size; z <= size; ++z) {
-				blocks[{ x, height + y, z }] = BlockType::GLOW_BERRIES;
-			}
-		}
+	for (int i = height; i < height + 3; ++i) {
+		blocks[{ 0, i, 0 }] = BlockType::GLOW_BERRIES;
 	}
 
-	return { blocks };
+	for (int i = height - 3; i < height; ++i) {
+		blocks[{ 1, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, 1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -1, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, -1 }] = BlockType::GLOW_BERRIES;
+	}
+
+	for (int i = height - 6; i < height - 3; ++i) {
+		blocks[{ 2, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, 2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -2, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, -2 }] = BlockType::GLOW_BERRIES;
+
+		blocks[{ 1, i, 1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -1, i, 1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 1, i, -1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -1, i, -1 }] = BlockType::GLOW_BERRIES;
+	}
+
+	for (int i = height - 11; i < height - 6; ++i) {
+		blocks[{ 2, i, -1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -1, i, 2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -2, i, -1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -1, i, -2 }] = BlockType::GLOW_BERRIES;
+
+		blocks[{ 2, i, 1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 1, i, 2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -2, i, 1 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 1, i, -2 }] = BlockType::GLOW_BERRIES;
+	}
+
+	for (int i = height - 8; i < height - 6; ++i) {
+		blocks[{ 2, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, 2 }] = BlockType::GLOW_BERRIES;
+		blocks[{ -2, i, 0 }] = BlockType::GLOW_BERRIES;
+		blocks[{ 0, i, -2 }] = BlockType::GLOW_BERRIES;
+	}
+
+	return { 2, blocks };
 }

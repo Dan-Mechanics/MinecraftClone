@@ -11,5 +11,7 @@ enum BlockType {
     LOG = 7,
     ASH_LOG = 8,
     GLOW_BERRIES = 9,
-    END = 10 // NOT ACTUALLY A BLOCK.
+    LEAVES = 10,
+    STEEL = 11,
+    END = 12 // NOT ACTUALLY A BLOCK.
 };

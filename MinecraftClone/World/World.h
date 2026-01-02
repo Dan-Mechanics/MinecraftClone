@@ -5,7 +5,6 @@
 #include "world_data_utils.h"
 #include "../Core/ThreadPool.h"
 #include "../Core/AxisPlane.h"
-#include "../Core/utils.h"
 #include "../Core/Raycast.h"
 
 class World {
@@ -46,6 +45,7 @@ public:
 private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
+	std::vector<glm::ivec3> chunkPosCache{};
 	int renderDistance{};
 	int largeRenderDistance{};
 	int smallRenderDistance{};
@@ -57,7 +57,7 @@ private:
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool toggle{};
-
+	//std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	Stamp tree{};
 
 	void addNewChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
