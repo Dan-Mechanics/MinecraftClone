@@ -6,6 +6,9 @@ World::World(const int chunkSize, const int renderDistance)
 	largeRenderDistance = renderDistance + 1;
 	smallRenderDistance = renderDistance - 1;
 
+	// TODO: MOVE THIS INTO WORLDGENERATIONSETTINGS STRUCT OR SOMETHING.
+	waterHeight = -7;
+
 	noise.SetFractalOctaves(3);
 	noise.SetFractalLacunarity(4.0f);
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
@@ -15,8 +18,8 @@ World::World(const int chunkSize, const int renderDistance)
 	reloadChunkInterval = 0.025f;
 	updateChunksInterval = 0.125f;
 
-	blueTree = makeTreeStamp(14, 4, BlockType::LOG, BlockType::LEAVES);
-	ashTree = makeTreeStamp(14, 4, BlockType::ASH_LOG, BlockType::GLOW_BERRIES);
+	blueTree = makeTreeStamp(14, 9, BlockType::LOG, BlockType::LEAVES);
+	ashTree = makeTreeStamp(14, 9, BlockType::ASH_LOG, BlockType::GLOW_BERRIES);
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -80,7 +83,7 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 				if (!heightMaps.contains(heightMapPos))
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
-				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, std::ref(heightMaps[heightMapPos])));
+				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, waterHeight, std::ref(heightMaps[heightMapPos])));
 				if (chunkPosCache.size() < futures.size()) {
 					chunkPosCache.emplace_back(chunkPos);
 				}
@@ -100,13 +103,14 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = std::move(blocks);
 
+		changedChunkPositions.insert(chunkPos);
 		relevantChunkIndices.push_back(i);
 	}
 
 	for (int i = 0; i < relevantChunkIndices.size(); ++i) {
 		const auto& chunkPos = chunkPosCache[relevantChunkIndices[i]];
-		applyStamp(blueTree, blueTree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
-		applyStamp(ashTree, ashTree.getStandardOrigin(chunkPos, chunkSize, heightMaps));
+		applyStamp(blueTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
+		applyStamp(ashTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
 
 		changedChunkPositions.insert(chunkPos);
 	}
@@ -135,12 +139,10 @@ void World::removeOldChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-
-	// THIS IS A RARE, BUT MUST BE ACCOUNTED FOR.
 	if (!chunks.contains(chunkPos)) {
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = 
-			fillChunkAsync(chunkPos, chunkSize, getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize));
+			fillChunkAsync(chunkPos, chunkSize, waterHeight, getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize));
 	}
 
 	notifyBlockChange(chunkPos, blockPos);
@@ -232,6 +234,9 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 
 void World::applyStamp(const Stamp& stamp, const glm::ivec3& origin) {
 	if (stamp.blocks.empty())
+		return;
+
+	if (!stamp.spawnInWater && origin.y <= waterHeight)
 		return;
 
 	if (randomInclusive(0, stamp.probability) != 0)

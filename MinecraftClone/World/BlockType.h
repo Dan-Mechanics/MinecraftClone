@@ -13,5 +13,6 @@ enum BlockType {
     GLOW_BERRIES = 9,
     LEAVES = 10,
     STEEL = 11,
-    END = 12 // NOT ACTUALLY A BLOCK.
+    WATER = 12,
+    END = 13 // NOT ACTUALLY A BLOCK.
 };

@@ -188,6 +188,7 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::DIAMOND] = generateUniformMap(tilePositionToUVs(1, 2));
 	atlas.maps[BlockType::REACTOR] = generateUniformMap(tilePositionToUVs(4, 0));
 	atlas.maps[BlockType::STEEL] = generateUniformMap(tilePositionToUVs(4, 1));
+	atlas.maps[BlockType::WATER] = generateUniformMap(tilePositionToUVs(4, 2));
 
 	return atlas;
 }

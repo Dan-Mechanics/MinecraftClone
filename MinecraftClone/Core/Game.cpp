@@ -25,7 +25,7 @@ void Game::setup(GLFWwindow* window) {
 
 	// ===
 
-	sun.setPos(glm::vec3{ 0.5f, 1.125f, 0.5f } * 20.0f);
+	sun.setPos(glm::vec3{ 0.5f, 1.125f, 0.65f } * 20.0f);
 	sun.setColor(sunColor);
 
 	centerLine.setScale(glm::vec3{ 0.2f, 100.0f, 0.02f });

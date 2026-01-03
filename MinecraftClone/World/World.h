@@ -57,6 +57,7 @@ private:
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool toggle{};
+	int waterHeight{};
 	Stamp blueTree{};
 	Stamp ashTree{};
 

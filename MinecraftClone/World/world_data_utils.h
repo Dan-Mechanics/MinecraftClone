@@ -15,7 +15,10 @@
 /// </summary>
 std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, const int chunkX, const int chunkZ, const int chunkSize);
 std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::ivec3 chunkPos,
-	const int chunkSize, const std::vector<int>& heightMap);
+	const int chunkSize, const int waterHeight, const std::vector<int>& heightMap);
 
 std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int renderDistance);
 Stamp makeTreeStamp(const int height, const int probability, BlockType log, BlockType leaves);
+
+glm::ivec3 getStandardStampOrigin(const glm::ivec3& chunkPos, const int chunkSize,
+	const std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash>& heightMaps);
