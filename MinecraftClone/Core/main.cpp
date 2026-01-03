@@ -110,7 +110,7 @@ int main() {
 		glfwSetWindowTitle(window, title.c_str());
 
 		// UPDATE. ===
-		game.update(deltaTime, hasFocus, window, pool, scrollInput);
+		game.update(deltaTime, hasFocus, scrollInput, window, pool);
 
 		// FIXED UPDATE. ===
 		timer += deltaTime;
@@ -132,7 +132,7 @@ int main() {
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 
-		game.draw(deltaTime, hasFocus, window);
+		game.draw();
 
 		// UI. ===
 		glDisable(GL_DEPTH_TEST);

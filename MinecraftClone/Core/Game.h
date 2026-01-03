@@ -17,11 +17,11 @@ public:
 	Game(const unsigned int width, const unsigned int height);
 
 	void setup(GLFWwindow* window);
-	void update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput);
-	void draw(const float deltaTime, const bool hasFocus, GLFWwindow* window);
+	void update(const float deltaTime, const bool hasFocus, int& scrollInput, GLFWwindow* window, ThreadPool& pool);
+	void draw();
 	void drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window);
 	void drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window);
-	void drawTranslucent(const float deltaTime, const bool hasFocus, GLFWwindow* window);
+	void drawTranslucent();
 	void tick(const float interval, ThreadPool& pool, GLFWwindow* window);
 
 	glm::vec4 getClearColor() const;
@@ -64,11 +64,11 @@ private:
 	Shader materialShader{};
 	Shader simpleMaterialShader{};
 	Shader unlitShader{};
+
+	Shader chunkShader{};
+	Shader chunkShadowShader{};
+
 	Shader shadowMapShader{};
-
-	Shader chunkMaterialShader{};
-	Shader chunkShadowMapShader{};
-
 	ShadowMapFBO shadowMap{};
 
 	std::vector<Texture> woodMaterial{};

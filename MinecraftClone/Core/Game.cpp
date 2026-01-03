@@ -90,10 +90,10 @@ void Game::setup(GLFWwindow* window) {
 
 	materialShader = { "default.vert", "material.frag" };
 	simpleMaterialShader = { "default.vert", "simple_material.frag" };
-	unlitShader = { "default.vert", "unlit_color.frag" };
+	unlitShader = { "default.vert", "unlit.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
-	chunkMaterialShader = { "chunk.vert", "chunk.frag" };
-	chunkShadowMapShader = { "chunk_shadow.vert", "shadow_map.frag" };
+	chunkShader = { "chunk.vert", "chunk.frag" };
+	chunkShadowShader = { "chunk_shadow.vert", "shadow_map.frag" };
 	
 	shadowMap = { 2048, 2048, 50.0f };
 
@@ -110,7 +110,7 @@ void Game::setup(GLFWwindow* window) {
 	};
 }
 
-void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window, ThreadPool& pool, int& scrollInput) {
+void Game::update(const float deltaTime, const bool hasFocus, int& scrollInput, GLFWwindow* window, ThreadPool& pool) {
 	mouseLook.update(window, width, height, hasFocus);
 	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus);
 	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
@@ -140,8 +140,8 @@ void Game::draw() {
 
 	// MAKE IT SO WE DON'T HAVE TO BIND
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
-	bindMaterial(atlasMaterial, chunkMaterialShader);
-	world.draw(atlasMaterial, chunkMaterialShader, camera, sun.color, sun.pos, ambientColor);
+	bindMaterial(atlasMaterial, chunkShader);
+	world.draw(atlasMaterial, chunkShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
@@ -168,15 +168,15 @@ void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window
 
 void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
 	shadowMap.activate(camera, sun);
-	shadowMap.bind(chunkShadowMapShader);
+	shadowMap.bind(chunkShadowShader);
 
-	world.drawShadows(chunkShadowMapShader, camera);
-	shadowMap.sendToShader(chunkMaterialShader);
-	shadowMap.sendToShader(materialShader);
+	world.drawShadows(chunkShadowShader, camera);
+	shadowMap.sendToShader(chunkShader);
+	//shadowMap.sendToShader(materialShader);
 }
 
-void Game::drawTranslucent(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
-	world.drawTranslucent()
+void Game::drawTranslucent() {
+	world.drawTranslucent(atlasMaterial, chunkShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
