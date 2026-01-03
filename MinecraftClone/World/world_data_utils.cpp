@@ -110,5 +110,6 @@ glm::ivec3 getStandardStampOrigin(const glm::ivec3& chunkPos, const int chunkSiz
 	const auto z = randomInclusive(0, chunkSize - 1);
 	origin += glm::ivec3{ x, 0, z };
 	origin.y = heightMaps.at(flatten(chunkPos))[z + x * chunkSize] + 1;
+
 	return origin;
 }

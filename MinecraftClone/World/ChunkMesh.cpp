@@ -16,6 +16,8 @@ ChunkMesh::ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector
 	vao.unbind();
 	vbo.unbind();
 	ebo.unbind();
+
+	hasData = true;
 }
 
 void ChunkMesh::drawShadows(const Shader& shader, const Camera& camera) const {
@@ -42,8 +44,13 @@ void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void ChunkMesh::free() const {
+void ChunkMesh::free() {
+	if (!hasData)
+		return;
+
 	vao.free();
 	vbo.free();
 	ebo.free();
+
+	hasData = false;
 }

@@ -25,8 +25,19 @@ World::World(const int chunkSize, const int renderDistance)
 void World::drawShadows(const Shader& shader, const Camera& camera) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		if (it->second->hasMesh)
-			it->second->chunkMesh.drawShadows(shader, camera);
+		if (it->second->mesh.hasData)
+			it->second->mesh.drawShadows(shader, camera);
+
+		++it;
+	}
+}
+
+void World::drawTranslucent(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
+	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
+	auto it = chunks.begin();
+	while (it != chunks.end()) {
+		if (it->second->translucentMesh.hasData)
+			it->second->translucentMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
 
 		++it;
 	}
@@ -36,8 +47,8 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		if (it->second->hasMesh)
-			it->second->chunkMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
+		if (it->second->mesh.hasData)
+			it->second->mesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
 
 		++it;
 	}
@@ -182,8 +193,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	}
 
 	Chunk& chunk = *chunks[chunkPos];
-	if (chunk.hasMesh)
-		chunk.chunkMesh.free();
+	chunk.mesh.free();
 
 	std::vector<ChunkVertex> verts{};
 	std::vector<GLuint> tris{};
@@ -192,8 +202,7 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 
 	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
 
-	chunk.chunkMesh = { verts, tris };
-	chunk.hasMesh = true;
+	chunk.mesh = { verts, tris };
 }
 
 int World::getChunkSize() const {

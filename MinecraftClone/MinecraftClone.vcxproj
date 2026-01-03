@@ -231,6 +231,7 @@
     <None Include="Resources\Shaders\shadow_map.frag" />
     <None Include="Resources\Shaders\shadow_map.vert" />
     <None Include="Resources\Shaders\simple_material.frag" />
+    <None Include="Resources\Shaders\translucent_chunk.frag" />
     <None Include="Resources\Shaders\unlit_color.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

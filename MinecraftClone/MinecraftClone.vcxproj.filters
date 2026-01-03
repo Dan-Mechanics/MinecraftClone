@@ -263,5 +263,8 @@
     <None Include="Resources\Shaders\simple_material.frag">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\translucent_chunk.frag">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

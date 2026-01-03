@@ -16,9 +16,11 @@ public:
 	/// </summary>
 	World(const int chunkSize, const int renderDistance);
 
-	// FUTURE: ADD DRAW OPAQUE AND TRANSPARENT HERE.
-
 	void drawShadows(const Shader& shader, const Camera& camera);
+
+	void drawTranslucent(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
+		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
+
 	void draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 	

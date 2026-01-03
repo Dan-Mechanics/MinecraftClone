@@ -130,7 +130,7 @@ void Game::update(const float deltaTime, const bool hasFocus, GLFWwindow* window
 	terraformer.update(window, raycast, world, pool, atlas, posToBlockPos(playerMovement.pos));
 }
 
-void Game::draw(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+void Game::draw() {
 	centerLine.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	forward.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
@@ -173,6 +173,10 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 	world.drawShadows(chunkShadowMapShader, camera);
 	shadowMap.sendToShader(chunkMaterialShader);
 	shadowMap.sendToShader(materialShader);
+}
+
+void Game::drawTranslucent(const float deltaTime, const bool hasFocus, GLFWwindow* window) {
+	world.drawTranslucent()
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {

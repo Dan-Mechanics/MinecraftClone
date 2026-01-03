@@ -13,6 +13,7 @@ public:
 	vao vao{};
 	ebo ebo{};
 	vbo vbo{};
+	bool hasData{};
 
 	ChunkMesh();
 	ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector<GLuint>& indices);
@@ -23,6 +24,6 @@ public:
 		const glm::vec3& lightPos, const glm::vec4& lightColor,
 		const glm::vec4& worldColor, const std::vector<Texture>& material) const;
 
-	void free() const;
+	void free();
 
 };
