@@ -93,6 +93,7 @@ void Game::setup(GLFWwindow* window) {
 	unlitShader = { "default.vert", "unlit.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
 	chunkShader = { "chunk.vert", "chunk.frag" };
+	translucentChunkShader = { "chunk.vert", "translucent_chunk.frag" };
 	chunkShadowShader = { "chunk_shadow.vert", "shadow_map.frag" };
 	
 	shadowMap = { 2048, 2048, 50.0f };
@@ -162,7 +163,9 @@ void Game::drawUI(const float deltaTime, const bool hasFocus, GLFWwindow* window
 		slot.pos -= worldLeft;
 	}
 
-	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()], atlasMaterial, simpleMaterialShader, uiCamera, sun.color, sun.pos, ambientColor);
+	heldBlock.drawWithMaterial(singleBlockMeshes[blockSelector.getBlockType()],
+		atlasMaterial, simpleMaterialShader, uiCamera, sun.color, sun.pos, ambientColor);
+
 	crosshair.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
 }
 
@@ -176,7 +179,7 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 }
 
 void Game::drawTranslucent() {
-	world.drawTranslucent(atlasMaterial, chunkShader, camera, sun.color, sun.pos, ambientColor);
+	world.drawTranslucent(atlasMaterial, translucentChunkShader, camera, sun.color, sun.pos, ambientColor);
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {

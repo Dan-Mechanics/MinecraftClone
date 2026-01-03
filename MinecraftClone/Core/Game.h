@@ -66,6 +66,7 @@ private:
 	Shader unlitShader{};
 
 	Shader chunkShader{};
+	Shader translucentChunkShader{};
 	Shader chunkShadowShader{};
 
 	Shader shadowMapShader{};

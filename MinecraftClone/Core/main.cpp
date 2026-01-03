@@ -131,8 +131,14 @@ int main() {
 		// RENDER. ===
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
-
 		game.draw();
+
+		// https://github.com/VictorGordan/opengl-tutorials/blob/main/YoutubeOpenGL%2017%20-%20Transparency%20%26%20Blending/Main.cpp
+		glDisable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		game.drawTranslucent();
+		glDisable(GL_BLEND);
+		glEnable(GL_CULL_FACE);
 
 		// UI. ===
 		glDisable(GL_DEPTH_TEST);

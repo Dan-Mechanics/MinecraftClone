@@ -242,7 +242,7 @@
     <None Include="Resources\Shaders\default.vert">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\lit_color.frag">
+    <None Include="Resources\Shaders\lit.frag">
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\material.frag">
@@ -257,7 +257,7 @@
     <None Include="Resources\Shaders\shadow_map.vert">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\unlit_color.frag">
+    <None Include="Resources\Shaders\unlit.frag">
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\simple_material.frag">
