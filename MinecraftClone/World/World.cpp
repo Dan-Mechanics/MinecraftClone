@@ -54,9 +54,9 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	}
 }
 
-void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos) {
-	updateChunksTimer += dt;
-	reloadChunkTimer += dt;
+void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos) {
+	updateChunksTimer += deltaTime;
+	reloadChunkTimer += deltaTime;
 
 	if (reloadChunkTimer >= reloadChunkInterval) {
 		reloadChunkTimer = 0.0f;

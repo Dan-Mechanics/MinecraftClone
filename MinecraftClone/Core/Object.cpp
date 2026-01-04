@@ -39,12 +39,12 @@ void Object::drawAsUnlitColor(const Mesh& mesh, const Shader& shader, const Came
 	mesh.drawUnlit(shader, camera, pos, rotation, scale, color);
 }
 
-void Object::moveOverTime(const glm::vec3& vel, const float dt) {
-	pos += vel * dt;
+void Object::moveOverTime(const glm::vec3& vel, const float deltaTime) {
+	pos += vel * deltaTime;
 }
 
-void Object::rotateOverTime(const glm::vec3& angVel, const float dt) {
-	rot += angVel * dt;
+void Object::rotateOverTime(const glm::vec3& angVel, const float deltaTime) {
+	rot += angVel * deltaTime;
 }
 
 void Object::setPos(const glm::vec3& to) {

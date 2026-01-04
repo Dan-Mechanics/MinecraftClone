@@ -23,8 +23,8 @@ public:
 	
 	void drawAsUnlitColor(const Mesh& mesh, const Shader& shader, const Camera& camera);
 
-	void moveOverTime(const glm::vec3& vel, const float dt);
-	void rotateOverTime(const glm::vec3 & angVel, const float dt);
+	void moveOverTime(const glm::vec3& vel, const float deltaTime);
+	void rotateOverTime(const glm::vec3 & angVel, const float deltaTime);
 
 	void setPos(const glm::vec3& to);
 	void setRot(const glm::vec3& to);
