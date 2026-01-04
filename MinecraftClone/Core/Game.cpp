@@ -6,9 +6,9 @@ Game::Game(const unsigned int width, const unsigned int height)
 
 void Game::setup(GLFWwindow* window) {
 	sunColor = glm::vec4 {
-		(float)255 / 255,
-		(float)255 / 255,
-		(float)255 / 255, 1.0f
+		(float)200 / 255,
+		(float)200 / 255,
+		(float)200 / 255, 1.0f
 	};
 
 	ambientColor = glm::vec4 {
