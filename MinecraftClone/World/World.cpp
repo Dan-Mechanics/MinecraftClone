@@ -66,22 +66,22 @@ void World::update(const float dt, const Atlas& atlas, ThreadPool& pool, const g
 
 	if (updateChunksTimer >= updateChunksInterval) {
 		updateChunksTimer = 0.0f;
-		if (toggle) {
-			addNewChunksAsync(pool, playerPos);
+		if (addNewChunksMode) {
+			addNewChunks(pool, playerPos);
 		}
 		else {
-			removeOldChunksAsync(pool, playerPos);
+			removeOldChunks(pool, playerPos);
 		}
 
-		toggle = !toggle;
+		addNewChunksMode = !addNewChunksMode;
 	}
 }
 
-void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
-	std::vector<int> relevantChunkIndices{};
+	std::vector<int> newChunkPosIndices{};
 
 	for (int x = -renderDistance; x < renderDistance; ++x) {
 		for (int z = -renderDistance; z < renderDistance; ++z) {
@@ -94,7 +94,9 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 				if (!heightMaps.contains(heightMapPos))
 					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
 
-				futures.emplace_back(pool.submit(fillChunkAsync, chunkPos, chunkSize, waterHeight, std::ref(heightMaps[heightMapPos])));
+				futures.emplace_back(pool.submit(fillChunk,
+					chunkPos, chunkSize, waterHeight, std::ref(heightMaps[heightMapPos])));
+
 				if (chunkPosCache.size() < futures.size()) {
 					chunkPosCache.emplace_back(chunkPos);
 				}
@@ -107,19 +109,29 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 
 	for (int i = 0; i < futures.size(); ++i) {
 		auto blocks = futures[i].get();
+
+		const auto& chunkPos = chunkPosCache[i];
+		if (pending.contains(chunkPos)) {
+			const auto& pendingBlocks = pending[chunkPos];
+			for (int i = 0; i < pendingBlocks.size(); ++i) {
+				blocks[pendingBlocks[i].first] = pendingBlocks[i].second;
+			}
+		}
+
 		if (blocks.empty())
 			continue;
 
-		const auto& chunkPos = chunkPosCache[i];
 		chunks[chunkPos] = new Chunk{};
 		chunks[chunkPos]->blocks = std::move(blocks);
 
+		pending.erase(chunkPos);
+
 		changedChunkPositions.insert(chunkPos);
-		relevantChunkIndices.push_back(i);
+		newChunkPosIndices.push_back(i);
 	}
 
-	for (int i = 0; i < relevantChunkIndices.size(); ++i) {
-		const auto& chunkPos = chunkPosCache[relevantChunkIndices[i]];
+	for (int i = 0; i < newChunkPosIndices.size(); ++i) {
+		const auto& chunkPos = chunkPosCache[newChunkPosIndices[i]];
 		applyStamp(blueTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
 		applyStamp(ashTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
 
@@ -127,7 +139,7 @@ void World::addNewChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 	}
 }
 
-void World::removeOldChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
+void World::removeOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
 	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
 	futures.reserve(chunks.size());
@@ -145,15 +157,19 @@ void World::removeOldChunksAsync(ThreadPool& pool, const glm::vec3& playerPos) {
 		
 		delete chunks[opt.value()];
 		chunks.erase(opt.value());
+
+		pending.erase(opt.value());
 	}
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos)) {
-		chunks[chunkPos] = new Chunk{};
-		chunks[chunkPos]->blocks = 
-			fillChunkAsync(chunkPos, chunkSize, waterHeight, getHeightMap(noise, height, chunkPos.x, chunkPos.z, chunkSize));
+		if (!pending.contains(chunkPos))
+			pending[chunkPos] = {};
+
+		pending[chunkPos].emplace_back(blockPos, blockType);
+		return;
 	}
 
 	notifyBlockChange(chunkPos, blockPos);

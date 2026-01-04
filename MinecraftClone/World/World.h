@@ -26,10 +26,6 @@ public:
 	
 	void update(const float dt, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos);
 
-	/// <summary>
-	/// Manage adding and removing chunks on
-	/// the heap based on player positon.
-	/// </summary>
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas);
@@ -45,6 +41,9 @@ public:
 ;	void free();
 
 private:
+	std::unordered_map<glm::ivec3,
+		std::vector<std::pair<glm::ivec3, BlockType>>, ivec3hash> pending{};
+
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	std::vector<glm::ivec3> chunkPosCache{};
@@ -58,13 +57,13 @@ private:
 	float updateChunksInterval{};
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
-	bool toggle{};
+	bool addNewChunksMode{};
 	int waterHeight{};
 	Stamp blueTree{};
 	Stamp ashTree{};
 
-	void addNewChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
-	void removeOldChunksAsync(ThreadPool& pool, const glm::vec3 & playerPos);
+	void addNewChunks(ThreadPool& pool, const glm::vec3 & playerPos);
+	void removeOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 
 	/// <summary>
 	/// Update all surrounding chunks too.

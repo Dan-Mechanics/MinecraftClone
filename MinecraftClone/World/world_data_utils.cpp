@@ -15,7 +15,7 @@ std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, co
 	return result;
 }
 
-std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::ivec3 chunkPos,
+std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunk(const glm::ivec3 chunkPos,
 	const int chunkSize, const int waterHeight, const std::vector<int>& heightMap) {
 	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
 	for (int x = 0; x < chunkSize; ++x) {
@@ -24,14 +24,14 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunkAsync(const glm::i
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
 				int height = heightMap[z + x * chunkSize];
 
-				if (blockPos.y <= waterHeight) 
+				if (blockPos.y <= waterHeight)
 					blocks[blockPos] = BlockType::WATER;
 
 				if (blockPos.y > height)
 					continue;
 
-				//blocks[blockPos] = BlockType::DIRT;
-				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::WATER);
+				blocks[blockPos] = BlockType::DIRT;
+				//blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::WATER);
 			}
 		}
 	}
