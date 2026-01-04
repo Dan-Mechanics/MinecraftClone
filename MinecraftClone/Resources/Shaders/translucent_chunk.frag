@@ -53,7 +53,7 @@ float logisticDepth(float depth, float steepness, float offset)
 	return (1 / (1 + exp(-steepness * (zVal - offset))));
 }
 
-void main() 
+void main()
 {
 	 vec4 color = texture(diffuse0, texCoord);
 	 color.a = 0.75f;
