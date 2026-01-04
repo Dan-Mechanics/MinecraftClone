@@ -12,6 +12,10 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
 	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 
+void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
+	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+
 void setCubeFacesAsBlockType(std::vector<Vertex>& verts, const Atlas& atlas, const BlockType blockType);
 
 /// <summary>
@@ -55,4 +59,5 @@ bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*
 /// Assume there is a chunk
 /// when the data hasn't loaded in yet.
 /// </summary>
+bool solidAssumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
 bool assumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);

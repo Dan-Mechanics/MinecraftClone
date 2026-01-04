@@ -201,8 +201,12 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	tris.reserve(3000);
 
 	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
-
 	chunk.mesh = { verts, tris };
+
+	verts.clear();
+	tris.clear();
+	generateTranslucentChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
+	chunk.translucentMesh = { verts, tris };
 }
 
 int World::getChunkSize() const {
