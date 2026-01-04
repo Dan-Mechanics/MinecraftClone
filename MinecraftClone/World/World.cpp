@@ -110,6 +110,7 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	for (int i = 0; i < futures.size(); ++i) {
 		auto blocks = futures[i].get();
 
+		// ADD PENDING. ===
 		const auto& chunkPos = chunkPosCache[i];
 		if (pending.contains(chunkPos)) {
 			const auto& pendingBlocks = pending[chunkPos];
@@ -157,7 +158,6 @@ void World::removeOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 		
 		delete chunks[opt.value()];
 		chunks.erase(opt.value());
-
 		pending.erase(opt.value());
 	}
 }

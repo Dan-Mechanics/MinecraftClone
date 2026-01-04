@@ -47,21 +47,32 @@ private:
 	std::unordered_set<glm::ivec3, ivec3hash> changedChunkPositions{};
 	std::unordered_map<glm::ivec3, Chunk*, ivec3hash> chunks{};
 	std::vector<glm::ivec3> chunkPosCache{};
+
+	// WORLDSETTINGS
 	int renderDistance{};
 	int largeRenderDistance{};
 	int smallRenderDistance{};
-	FastNoiseLite noise{};
-	float height{};
 	int chunkSize{};
+
+	// TIMER
 	float reloadChunkInterval{};
 	float updateChunksInterval{};
+
+	// TIMER
 	float reloadChunkTimer{};
 	float updateChunksTimer{};
 	bool addNewChunksMode{};
+
+	// WORLDGENERATIONSETTINGS
+	FastNoiseLite noise{};
+	float height{};
 	int waterHeight{};
 	Stamp blueTree{};
 	Stamp ashTree{};
 
+	/// <summary>
+	/// Todo: make this method smaller.
+	/// </summary>
 	void addNewChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void removeOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 

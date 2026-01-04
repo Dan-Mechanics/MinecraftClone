@@ -11,7 +11,6 @@ uniform sampler2D shadowMap;
 uniform vec4 lightColor;
 uniform vec4 worldColor;
 uniform vec3 lightPos;
-uniform vec3 camPos;
 
 vec4 directionalLight() {
 	vec3 normal = normalize(Normal);
@@ -56,6 +55,6 @@ float logisticDepth(float depth, float steepness, float offset)
 
 void main() 
 {
-	float depth = logisticDepth(gl_FragCoord.z, 0.1f, 75.0f);
-	FragColor = directionalLight() * (1.0f - depth) + depth * worldColor;
+	 float depth = logisticDepth(gl_FragCoord.z, 0.22f, 78.0f);
+	 FragColor = directionalLight() * (1.0f - depth) + depth * worldColor;
 }

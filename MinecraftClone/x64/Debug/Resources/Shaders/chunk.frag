@@ -11,7 +11,6 @@ uniform sampler2D shadowMap;
 uniform vec4 lightColor;
 uniform vec4 worldColor;
 uniform vec3 lightPos;
-uniform vec3 camPos;
 
 vec4 directionalLight() {
 	vec3 normal = normalize(Normal);
@@ -40,6 +39,22 @@ vec4 directionalLight() {
 	return texture(diffuse0, texCoord) * light;
 }
 
-void main() {
-	FragColor = directionalLight();
+float near = 0.1f;
+float far = 100.0f;
+
+float linearizeDepth(float depth)
+{
+	return (2.0 * near * far) / (far + near - (depth * 2.0 - 1.0) * (far - near));
+}
+
+float logisticDepth(float depth, float steepness, float offset)
+{
+	float zVal = linearizeDepth(depth);
+	return (1 / (1 + exp(-steepness * (zVal - offset))));
+}
+
+void main() 
+{
+	 float depth = logisticDepth(gl_FragCoord.z, 0.22f, 78.0f);
+	 FragColor = directionalLight() * (1.0f - depth) + depth * worldColor;
 }
