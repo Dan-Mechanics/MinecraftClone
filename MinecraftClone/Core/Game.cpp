@@ -6,9 +6,9 @@ Game::Game(const unsigned int width, const unsigned int height)
 
 void Game::setup(GLFWwindow* window) {
 	sunColor = glm::vec4 {
-		(float)200 / 255,
-		(float)200 / 255,
-		(float)200 / 255, 1.0f
+		(float)255 / 255,
+		(float)255 / 255,
+		(float)255 / 255, 1.0f
 	};
 
 	ambientColor = glm::vec4 {
@@ -113,7 +113,7 @@ void Game::setup(GLFWwindow* window) {
 
 void Game::update(const float deltaTime, const bool hasFocus, int& scrollInput, GLFWwindow* window, ThreadPool& pool) {
 	mouseLook.update(window, width, height, hasFocus);
-	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime, hasFocus);
+	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime);
 	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
@@ -175,7 +175,7 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 	world.drawShadows(chunkShadowShader, camera);
 	shadowMap.sendToShader(chunkShader);
-	//shadowMap.sendToShader(materialShader);
+	shadowMap.sendToShader(translucentChunkShader);
 }
 
 void Game::drawTranslucent() {

@@ -5,10 +5,7 @@ PlayerMovement::PlayerMovement(const float standardSpeed, const glm::vec3& pos)
 	: standardSpeed{ standardSpeed }, pos{ pos } { }
 
 void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward,
-	const float deltaTime, const bool hasFocus) {
-	if (!hasFocus)
-		return;
-
+	const float deltaTime) {
 	vel.y -= 10.0f * deltaTime;
 
 	glm::vec3 movement{};

@@ -9,7 +9,7 @@ public:
 	PlayerMovement(const float standardSpeed, const glm::vec3& pos);
 
 	void move(GLFWwindow* window, const glm::vec3& bodyRight,
-		const glm::vec3& bodyForward, const float deltaTime, const bool hasFocus);
+		const glm::vec3& bodyForward, const float deltaTime);
 
 	void collideWithWorld(const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
 
