@@ -12,7 +12,8 @@ uniform vec4 lightColor;
 uniform vec4 worldColor;
 uniform vec3 lightPos;
 
-vec4 directionalLight() {
+vec4 directionalLight() 
+{
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);

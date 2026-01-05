@@ -157,6 +157,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Core\Raycast.cpp" />
     <ClCompile Include="Core\stb.cpp" />
+    <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="Core\utils.cpp" />
     <ClCompile Include="Player\BlockSelector.cpp" />
     <ClCompile Include="Player\MouseLook.cpp" />
@@ -175,6 +176,8 @@
     <ClCompile Include="World\ChunkMesh.cpp" />
     <ClCompile Include="World\Stamp.cpp" />
     <ClCompile Include="World\World.cpp" />
+    <ClCompile Include="World\WorldGenerationSettings.cpp" />
+    <ClCompile Include="World\WorldSettings.cpp" />
     <ClCompile Include="World\world_data_utils.cpp" />
     <ClCompile Include="World\world_mesh_utils.cpp" />
   </ItemGroup>
@@ -186,6 +189,7 @@
     <ClInclude Include="Core\Raycast.h" />
     <ClInclude Include="Core\SafeQueue.h" />
     <ClInclude Include="Core\ThreadPool.h" />
+    <ClInclude Include="Core\Timer.h" />
     <ClInclude Include="Core\utils.h" />
     <ClInclude Include="Player\BlockSelector.h" />
     <ClInclude Include="Player\MouseLook.h" />
@@ -211,6 +215,8 @@
     <ClInclude Include="World\hashing_utils.h" />
     <ClInclude Include="World\Stamp.h" />
     <ClInclude Include="World\World.h" />
+    <ClInclude Include="World\WorldGenerationSettings.h" />
+    <ClInclude Include="World\WorldSettings.h" />
     <ClInclude Include="World\world_data_utils.h" />
     <ClInclude Include="World\world_mesh_utils.h" />
   </ItemGroup>

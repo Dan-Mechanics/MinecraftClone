@@ -1,25 +1,9 @@
 #include "World.h"
 
 World::World() = default;
-World::World(const int chunkSize, const int renderDistance)
-	: chunkSize{ chunkSize }, renderDistance{ renderDistance } { 
-	largeRenderDistance = renderDistance + 1;
-	smallRenderDistance = renderDistance - 1;
-
-	// TODO: MOVE THIS INTO WORLDGENERATIONSETTINGS STRUCT OR SOMETHING.
-	waterHeight = -7;
-
-	noise.SetFractalOctaves(3);
-	noise.SetFractalLacunarity(4.0f);
-	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
-	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
-	height = 25.0f;
-
-	reloadChunkInterval = 0.025f;
-	updateChunksInterval = 0.125f;
-
-	blueTree = makeTreeStamp(14, 9, BlockType::LOG, BlockType::LEAVES);
-	ashTree = makeTreeStamp(14, 9, BlockType::ASH_LOG, BlockType::GLOW_BERRIES);
+World::World(const WorldSettings& worldSettings) : settings{ worldSettings } {
+	reloadChunkMeshTimer = { 0.025f };
+	updateRendDistTimer = { 0.125f };
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -55,17 +39,12 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 }
 
 void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos) {
-	updateChunksTimer += deltaTime;
-	reloadChunkTimer += deltaTime;
-
-	if (reloadChunkTimer >= reloadChunkInterval) {
-		reloadChunkTimer = 0.0f;
-		reloadSingleChunkMesh(pool, atlas);
+	if (reloadChunkMeshTimer.tick(deltaTime)) {
+		reloadChunkMesh(pool, atlas);
 		return;
 	}
 
-	if (updateChunksTimer >= updateChunksInterval) {
-		updateChunksTimer = 0.0f;
+	if (updateRendDistTimer.tick(deltaTime)) {
 		if (addNewChunksMode) {
 			addNewChunks(pool, playerPos);
 		}
@@ -79,23 +58,23 @@ void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, 
 
 void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
-	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), settings.chunkSize);
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	std::vector<int> newChunkPosIndices{};
 
-	for (int x = -renderDistance; x < renderDistance; ++x) {
-		for (int z = -renderDistance; z < renderDistance; ++z) {
-			for (int y = -smallRenderDistance; y < smallRenderDistance; ++y) {
+	for (int x = -settings.rendDist; x < settings.rendDist; ++x) {
+		for (int z = -settings.rendDist; z < settings.rendDist; ++z) {
+			for (int y = -settings.smallRendDist; y < settings.smallRendDist; ++y) {
 				const glm::ivec3 chunkPos = glm::ivec3{ x + playerChunkPos.x, y + playerChunkPos.y, z + playerChunkPos.z };
 				if (chunks.contains(chunkPos))
 					continue;
 
 				const auto heightMapPos = flatten(chunkPos);
 				if (!heightMaps.contains(heightMapPos))
-					heightMaps[heightMapPos] = getHeightMap(noise, height, heightMapPos.x, heightMapPos.z, chunkSize);
+					heightMaps[heightMapPos] = getHeightMap(worldGen.noise, worldGen.height, heightMapPos.x, heightMapPos.z, settings.chunkSize);
 
 				futures.emplace_back(pool.submit(fillChunk,
-					chunkPos, chunkSize, waterHeight, std::ref(heightMaps[heightMapPos])));
+					chunkPos, settings.chunkSize, worldGen.waterHeight, std::ref(heightMaps[heightMapPos])));
 
 				if (chunkPosCache.size() < futures.size()) {
 					chunkPosCache.emplace_back(chunkPos);
@@ -133,21 +112,21 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 
 	for (int i = 0; i < newChunkPosIndices.size(); ++i) {
 		const auto& chunkPos = chunkPosCache[newChunkPosIndices[i]];
-		applyStamp(blueTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
-		applyStamp(ashTree, getStandardStampOrigin(chunkPos, chunkSize, heightMaps));
+		applyStamp(worldGen.blueTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
+		applyStamp(worldGen.ashTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
 
 		changedChunkPositions.insert(chunkPos);
 	}
 }
 
 void World::removeOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
-	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), chunkSize);
+	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), settings.chunkSize);
 	std::vector<std::future<std::optional<glm::ivec3>>> futures{};
 	futures.reserve(chunks.size());
 
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
-		futures.emplace_back(pool.submit(checkKeepChunkLoaded, it->first, std::ref(playerChunkPos), largeRenderDistance));
+		futures.emplace_back(pool.submit(checkKeepChunkLoaded, it->first, std::ref(playerChunkPos), settings.largeRendDist));
 		++it;
 	}
 
@@ -163,7 +142,7 @@ void World::removeOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 }
 
 void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
-	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, settings.chunkSize);
 	if (!chunks.contains(chunkPos)) {
 		if (!pending.contains(chunkPos))
 			pending[chunkPos] = {};
@@ -182,7 +161,7 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 }
 
 void World::remove(const glm::ivec3& blockPos) {
-	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	const glm::ivec3 chunkPos = blockPosToChunkPos(blockPos, settings.chunkSize);
 	if (!chunks.contains(chunkPos) || !chunks[chunkPos]->blocks.contains(blockPos))
 		return;
 
@@ -190,7 +169,7 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyBlockChange(chunkPos, blockPos);
 }
 
-void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
+void World::reloadChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	auto it = changedChunkPositions.begin();
 	if (it == changedChunkPositions.end())
 		return;
@@ -216,17 +195,17 @@ void World::reloadSingleChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	verts.reserve(2000);
 	tris.reserve(3000);
 
-	generateChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
+	generateChunkMesh(verts, tris, settings.chunkSize, atlas, chunkPos, chunks);
 	chunk.mesh = { verts, tris };
 
 	verts.clear();
 	tris.clear();
-	generateTranslucentChunkMesh(verts, tris, chunkSize, atlas, chunkPos, chunks);
+	generateTranslucentChunkMesh(verts, tris, settings.chunkSize, atlas, chunkPos, chunks);
 	chunk.translucentMesh = { verts, tris };
 }
 
 int World::getChunkSize() const {
-	return chunkSize;
+	return settings.chunkSize;
 }
 
 std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& World::getChunks() {
@@ -245,7 +224,7 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 	glm::vec3 pointB = raycast.origin;
 
 	while (planes[0].distance <= raycast.range) {
-		if (validPositionsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, chunkSize)) {
+		if (validPositionsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, settings.chunkSize)) {
 			if (validPositionsToBlockPos(pointA, pointB, normal))
 				normal -= blockPos;
 
@@ -265,7 +244,7 @@ void World::applyStamp(const Stamp& stamp, const glm::ivec3& origin) {
 	if (stamp.blocks.empty())
 		return;
 
-	if (!stamp.spawnInWater && origin.y <= waterHeight)
+	if (!stamp.spawnInWater && origin.y <= worldGen.waterHeight)
 		return;
 
 	if (randomInclusive(0, stamp.probability) != 0)
@@ -300,23 +279,23 @@ void World::notifyChunkChange(const glm::ivec3& chunkPos) {
 
 void World::notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3 blockPos) {
 	changedChunkPositions.insert(chunkPos);
-	blockPos -= chunkPos * chunkSize;
+	blockPos -= chunkPos * settings.chunkSize;
 
 	if (blockPos.x <= 0)
 		changedChunkPositions.insert(chunkPos + left);
 
-	if (blockPos.x >= chunkSize - 1)
+	if (blockPos.x >= settings.chunkSize - 1)
 		changedChunkPositions.insert(chunkPos + right);
 
 	if (blockPos.y <= 0)
 		changedChunkPositions.insert(chunkPos + down);
 
-	if (blockPos.y >= chunkSize - 1)
+	if (blockPos.y >= settings.chunkSize - 1)
 		changedChunkPositions.insert(chunkPos + up);
 
 	if (blockPos.z <= 0)
 		changedChunkPositions.insert(chunkPos + back);
 
-	if (blockPos.z >= chunkSize - 1)
+	if (blockPos.z >= settings.chunkSize - 1)
 		changedChunkPositions.insert(chunkPos + forward);
 }

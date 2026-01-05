@@ -39,13 +39,13 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunk(const glm::ivec3 
 	return blocks;
 }
 
-std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int renderDistance) {
-	if (chunkPos.x > playerChunkPos.x + renderDistance ||
-		chunkPos.x < playerChunkPos.x - renderDistance ||
-		chunkPos.z > playerChunkPos.z + renderDistance ||
-		chunkPos.z < playerChunkPos.z - renderDistance ||
-		chunkPos.y > playerChunkPos.y + renderDistance ||
-		chunkPos.y < playerChunkPos.y - renderDistance) {
+std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int rendDist) {
+	if (chunkPos.x > playerChunkPos.x + rendDist ||
+		chunkPos.x < playerChunkPos.x - rendDist ||
+		chunkPos.z > playerChunkPos.z + rendDist ||
+		chunkPos.z < playerChunkPos.z - rendDist ||
+		chunkPos.y > playerChunkPos.y + rendDist ||
+		chunkPos.y < playerChunkPos.y - rendDist) {
 		return std::optional<glm::ivec3>{ chunkPos };
 	}
 

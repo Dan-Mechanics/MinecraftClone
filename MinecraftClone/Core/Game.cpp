@@ -77,9 +77,12 @@ void Game::setup(GLFWwindow* window) {
 	// ===
 
 	atlas = generateAtlas();
+
 	const auto chunkSize = 16;
-	const auto renderDistance = 3;
-	world = { chunkSize, renderDistance };
+	const auto rendDist = 3;
+	WorldSettings settings{ chunkSize, rendDist };
+
+	world = { settings };
 
 	for (int i = 0; i < BlockType::END; ++i) {
 		setCubeFacesAsBlockType(cubeVerts, atlas, static_cast<BlockType>(i));

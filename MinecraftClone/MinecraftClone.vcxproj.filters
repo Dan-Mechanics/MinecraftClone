@@ -110,6 +110,15 @@
     <ClCompile Include="World\Stamp.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="World\WorldGenerationSettings.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="World\WorldSettings.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\AxisPlane.h">
@@ -212,6 +221,15 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="World\Stamp.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="World\WorldGenerationSettings.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="World\WorldSettings.h">
       <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>
