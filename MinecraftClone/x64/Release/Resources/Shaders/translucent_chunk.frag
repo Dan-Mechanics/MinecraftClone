@@ -12,7 +12,8 @@ uniform vec4 lightColor;
 uniform vec4 worldColor;
 uniform vec3 lightPos;
 
-vec4 directionalLight() {
+vec4 directionalLight() 
+{
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
@@ -36,7 +37,7 @@ vec4 directionalLight() {
 	light.y = min(light.y, 1.0f);
 	light.z = min(light.z, 1.0f);
 
-	return worldColor;
+	return light;
 }
 
 float near = 0.1f;
@@ -56,14 +57,10 @@ float logisticDepth(float depth, float steepness, float offset)
 void main()
 {
 	 vec4 color = texture(diffuse0, texCoord);
-	 color.a = 0.7f;
-	 if (color.a < 0.1f)
-		discard;
-	 
-	 color *= worldColor;
+	 color *= directionalLight();
 	 float depth = logisticDepth(gl_FragCoord.z, 0.22f, 78.0f);
 	 color = color * (1.0f - depth) + depth * worldColor;
-	 //color.a = 0.5f;
+	 color.a = 0.6f;
 
 	 FragColor = color;
 }

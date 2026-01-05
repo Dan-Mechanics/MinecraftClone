@@ -2,8 +2,8 @@
 
 World::World() = default;
 World::World(const WorldSettings& worldSettings) : settings{ worldSettings } {
-	reloadChunkMeshTimer = { 0.025f };
-	updateRendDistTimer = { 0.125f };
+	reloadChunkMeshTimer = { 0.015f };
+	updateRendDistTimer = { 0.12f };
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -170,11 +170,10 @@ void World::remove(const glm::ivec3& blockPos) {
 }
 
 void World::reloadChunkMesh(ThreadPool& pool, const Atlas& atlas) {
-	auto it = changedChunkPositions.begin();
-	if (it == changedChunkPositions.end())
+	if (changedChunkPositions.empty())
 		return;
 
-	const glm::ivec3 chunkPos = *it;
+	const glm::ivec3 chunkPos = *changedChunkPositions.begin();
 	changedChunkPositions.erase(chunkPos);
 
 	if (!chunks.contains(chunkPos))
