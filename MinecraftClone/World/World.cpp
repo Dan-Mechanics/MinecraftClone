@@ -226,7 +226,7 @@ bool World::raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& no
 	glm::vec3 pointB = raycast.origin;
 
 	while (planes[0].distance <= raycast.range) {
-		if (validPositionsToBlockPos(planes[0].point, pointB, blockPos) && has(blockPos, chunks, settings.chunkSize)) {
+		if (validPositionsToBlockPos(planes[0].point, pointB, blockPos) && isSolid(blockPos, false, settings.chunkSize, chunks)) {
 			if (validPositionsToBlockPos(pointA, pointB, normal))
 				normal -= blockPos;
 

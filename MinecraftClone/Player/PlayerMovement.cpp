@@ -55,46 +55,46 @@ glm::vec3 PlayerMovement::constrain(glm::vec3 pos, glm::ivec3& collisionOutput,
 
 	// CENTER. ===
 	const auto centerBlockPos = posToBlockPos(pos);
-	if (has(posToBlockPos(pos), chunks, chunkSize)) {
+	if (isSolid(posToBlockPos(pos), false, chunkSize, chunks)) {
 		pos.y = centerBlockPos.y + halfExtents.y + blockSize;
 		collisionOutput.y++;
 	}
 
 	// UP DOWN. ===
 	const auto upBlockPos = posToBlockPos(pos + glm::vec3{ 0.0f, halfExtents.y, 0.0f });
-	if (has(upBlockPos, chunks, chunkSize)) {
+	if (isSolid(upBlockPos, false, chunkSize, chunks)) {
 		pos.y = upBlockPos.y - halfExtents.y;
 		collisionOutput.y++;
 	}
 
 	const auto downBlockPos = posToBlockPos(pos - glm::vec3{ 0.0f, halfExtents.y, 0.0f });
-	if (has(downBlockPos, chunks, chunkSize)) {
+	if (isSolid(downBlockPos, false, chunkSize, chunks)) {
 		pos.y = downBlockPos.y + halfExtents.y + blockSize;
 		collisionOutput.y++;
 	}
 
 	// FORWARD BACK. ===
 	const auto forwardBlockPos = posToBlockPos(pos + glm::vec3{ 0.0f, 0.0f, halfExtents.z });
-	if (has(forwardBlockPos, chunks, chunkSize)) {
+	if (isSolid(forwardBlockPos, false, chunkSize, chunks)) {
 		pos.z = forwardBlockPos.z - halfExtents.z;
 		collisionOutput.z++;
 	}
 
 	const auto backBlockPos = posToBlockPos(pos - glm::vec3{ 0.0f, 0.0f, halfExtents.z });
-	if (has(backBlockPos, chunks, chunkSize)) {
+	if (isSolid(backBlockPos, false, chunkSize, chunks)) {
 		pos.z = backBlockPos.z + halfExtents.z + blockSize;
 		collisionOutput.z++;
 	}
 
 	// LEFT RIGHT. ===
 	const auto rightBlockPos = posToBlockPos(pos + glm::vec3{ halfExtents.x, 0.0f, 0.0f });
-	if (has(rightBlockPos, chunks, chunkSize)) {
+	if (isSolid(rightBlockPos, false, chunkSize, chunks)) {
 		pos.x = rightBlockPos.x - halfExtents.x;
 		collisionOutput.x++;
 	}
 
 	const auto leftBlockPos = posToBlockPos(pos - glm::vec3{ halfExtents.x, 0.0f, 0.0f });
-	if (has(leftBlockPos, chunks, chunkSize)) {
+	if (isSolid(leftBlockPos, false, chunkSize, chunks)) {
 		pos.x = leftBlockPos.x + halfExtents.x + blockSize;
 		collisionOutput.x++;
 	}

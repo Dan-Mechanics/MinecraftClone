@@ -50,14 +50,5 @@ glm::ivec3 posToBlockPos(const glm::vec3& pos);
 /// </summary>
 glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize);
 
-/// <summary>
-/// Does any chunk contain this block position?
-/// </summary>
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
-
-/// <summary>
-/// Assume there is a chunk
-/// when the data hasn't loaded in yet.
-/// </summary>
-bool solidAssumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
-bool assumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize);
+bool isSolid(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+bool has(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);

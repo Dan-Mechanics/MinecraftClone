@@ -21,7 +21,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		const auto& blockType = it->second;
 
 		// UP. ===
-		if (!solidAssumptiveHas(blockPos + up, chunks, chunkSize)) {
+		if (!isSolid(blockPos + up, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
@@ -32,7 +32,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// DOWN. ===
-		if (!solidAssumptiveHas(blockPos + down, chunks, chunkSize)) {
+		if (!isSolid(blockPos + down, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, down);
@@ -43,7 +43,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// FORWARD. ===
-		if (!solidAssumptiveHas(blockPos + forward, chunks, chunkSize)) {
+		if (!isSolid(blockPos + forward, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
@@ -54,7 +54,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// RIGHT. ===
-		if (!solidAssumptiveHas(blockPos + right, chunks, chunkSize)) {
+		if (!isSolid(blockPos + right, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
@@ -65,7 +65,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// BACK. ===
-		if (!solidAssumptiveHas(blockPos + back, chunks, chunkSize)) {
+		if (!isSolid(blockPos + back, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
@@ -76,7 +76,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// LEFT. ===
-		if (!solidAssumptiveHas(blockPos + left, chunks, chunkSize)) {
+		if (!isSolid(blockPos + left, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
@@ -121,7 +121,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		const auto& blockType = it->second;
 
 		// UP. ===
-		if (!assumptiveHas(blockPos + up, chunks, chunkSize)) {
+		if (!has(blockPos + up, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
@@ -132,7 +132,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// DOWN. ===
-		if (!assumptiveHas(blockPos + down, chunks, chunkSize)) {
+		if (!has(blockPos + down, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, down);
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, down);
@@ -143,7 +143,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// FORWARD. ===
-		if (!assumptiveHas(blockPos + forward, chunks, chunkSize)) {
+		if (!has(blockPos + forward, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
@@ -154,7 +154,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// RIGHT. ===
-		if (!assumptiveHas(blockPos + right, chunks, chunkSize)) {
+		if (!has(blockPos + right, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
@@ -165,7 +165,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// BACK. ===
-		if (!assumptiveHas(blockPos + back, chunks, chunkSize)) {
+		if (!has(blockPos + back, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
@@ -176,7 +176,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// LEFT. ===
-		if (!assumptiveHas(blockPos + left, chunks, chunkSize)) {
+		if (!has(blockPos + left, true, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
@@ -340,27 +340,21 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize) {
 	};
 }
 
-bool has(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+bool isSolid(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize,
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
-		return false;
-
-	return chunks.at(chunkPos)->blocks.contains(blockPos);
-}
-
-bool solidAssumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
-	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
-	if (!chunks.contains(chunkPos))
-		return true;
+		return chunkNotFoundFallback;
 
 	const auto& blocks = chunks.at(chunkPos)->blocks;
 	return blocks.contains(blockPos) && blocks.at(blockPos) != BlockType::WATER;
 }
 
-bool assumptiveHas(const glm::ivec3& blockPos, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
+bool has(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize,
+	const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
 	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
 	if (!chunks.contains(chunkPos))
-		return true;
+		return chunkNotFoundFallback;
 	
 	return chunks.at(chunkPos)->blocks.contains(blockPos);
 }
