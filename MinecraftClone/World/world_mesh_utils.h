@@ -52,3 +52,4 @@ glm::ivec3 blockPosToChunkPos(const glm::ivec3& blockPos, const int chunkSize);
 
 bool isSolid(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
 bool has(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);
+bool isBlock(const glm::ivec3& blockPos, const BlockType blockType, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks);

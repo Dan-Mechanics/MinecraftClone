@@ -46,6 +46,8 @@ void PlayerMovement::collideWithWorld(const std::unordered_map<glm::ivec3, Chunk
 
 	if (collisionOutput.y > 0)
 		stopVerticalVelocity();
+
+	waterlogged = isBlock(posToBlockPos(pos), BlockType::WATER, chunkSize, chunks);
 }
 
 glm::vec3 PlayerMovement::constrain(glm::vec3 pos, glm::ivec3& collisionOutput,

@@ -4,10 +4,11 @@
 class PlayerMovement {
 public:
 	glm::vec3 pos{};
+	bool waterlogged{};
 
 	PlayerMovement();
 	PlayerMovement(const float standardSpeed, const glm::vec3& pos);
-
+	
 	void move(GLFWwindow* window, const glm::vec3& bodyRight,
 		const glm::vec3& bodyForward, const float deltaTime);
 

@@ -63,6 +63,13 @@ void Object::setColor(const glm::vec4& to) {
 	color = to;
 }
 
+void Object::setColorRGB(const int r, const int g, const int b) {
+	setColor(glm::vec4 {
+		(float)r / 255,
+		(float)g / 255,
+		(float)b / 255, 1.0f });
+}
+
 void Object::setVisible(const bool to) {
 	visible = to;
 }

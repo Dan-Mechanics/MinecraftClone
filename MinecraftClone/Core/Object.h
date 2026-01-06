@@ -30,6 +30,7 @@ public:
 	void setRot(const glm::vec3& to);
 	void setScale(const glm::vec3& to);
 	void setColor(const glm::vec4& to);
+	void setColorRGB(const int r, const int g, const int b);
 	void setVisible(const bool to);
 
 	void setAs(const Object& other);

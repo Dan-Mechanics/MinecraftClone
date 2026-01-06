@@ -154,13 +154,8 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 		return;
 	}
 
-	notifyBlockChange(chunkPos, blockPos);
-
-	// YOU CAN'T PLACE A BLOCK HERE, SPACE ALREADY TAKEN.
-	if (chunks[chunkPos]->blocks.contains(blockPos))
-		return;
-	
 	chunks[chunkPos]->blocks[blockPos] = blockType;
+	notifyBlockChange(chunkPos, blockPos);
 }
 
 void World::remove(const glm::ivec3& blockPos) {

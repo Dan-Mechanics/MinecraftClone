@@ -44,6 +44,7 @@ private:
 	Object ground{};
 
 	Object faceHighlight{};
+	Object waterScreen{};
 
 	Object crosshair{};
 	Object heldBlock{};

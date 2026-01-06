@@ -52,6 +52,11 @@ void Game::setup(GLFWwindow* window) {
 
 	faceHighlight.setColor({ 1.0f, 1.0f, 1.0f, 0.5f });
 
+	waterScreen.setColorRGB(29, 53, 170);
+	waterScreen.color.a = 0.75f;
+	waterScreen.setPos(worldForward * 3.0f);
+	waterScreen.setScale(glm::vec3{ 20.0f, 10.0f, 0.5f });
+
 	hotbarRotation = -10.0f;
 	slot.setScale(glm::vec3{ 0.375f });
 	heldBlock.setPos (
@@ -181,8 +186,19 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 }
 
 void Game::drawTranslucent() {
-	world.drawTranslucent(atlasMaterial, translucentChunkShader, camera, sun.color, sun.pos, ambientColor);
-	faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+	if (playerMovement.waterlogged) {
+		glDisable(GL_DEPTH_TEST);
+		waterScreen.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
+		faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		glEnable(GL_DEPTH_TEST);
+	}
+	else {
+		world.drawTranslucent(atlasMaterial, translucentChunkShader, camera, sun.color, sun.pos, ambientColor);
+
+		glDisable(GL_DEPTH_TEST);
+		faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		glEnable(GL_DEPTH_TEST);
+	}
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {

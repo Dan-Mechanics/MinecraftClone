@@ -358,3 +358,12 @@ bool has(const glm::ivec3& blockPos, const bool chunkNotFoundFallback, const int
 	
 	return chunks.at(chunkPos)->blocks.contains(blockPos);
 }
+
+bool isBlock(const glm::ivec3& blockPos, const BlockType blockType, const int chunkSize, const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks) {
+	const auto chunkPos = blockPosToChunkPos(blockPos, chunkSize);
+	if (!chunks.contains(chunkPos))
+		return false;
+
+	const auto& blocks = chunks.at(chunkPos)->blocks;
+	return blocks.contains(blockPos) && blocks.at(blockPos) == blockType;
+}
