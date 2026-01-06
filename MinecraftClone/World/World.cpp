@@ -18,10 +18,13 @@ void World::drawShadows(const Shader& shader, const Camera& camera) {
 
 void World::drawTranslucent(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
+	glm::mat4 modelMatrix = glm::identity<glm::mat4>();
+	modelMatrix = glm::translate(modelMatrix, { 0.0f, -0.2f, 0.0f });
+
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->translucentMesh.hasData)
-			it->second->translucentMesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
+			it->second->translucentMesh.drawWithOffset(shader, camera, lightPos, lightColor, worldColor, material, modelMatrix);
 
 		++it;
 	}

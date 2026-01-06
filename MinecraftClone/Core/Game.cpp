@@ -96,7 +96,7 @@ void Game::setup(GLFWwindow* window) {
 	unlitShader = { "default.vert", "unlit.frag" };
 	shadowMapShader = { "shadow_map.vert", "shadow_map.frag" };
 	chunkShader = { "chunk.vert", "chunk.frag" };
-	translucentChunkShader = { "chunk.vert", "translucent_chunk.frag" };
+	translucentChunkShader = { "translucent_chunk.vert", "translucent_chunk.frag" };
 	chunkShadowShader = { "chunk_shadow.vert", "shadow_map.frag" };
 	
 	shadowMap = { 2048, 2048, 50.0f };
