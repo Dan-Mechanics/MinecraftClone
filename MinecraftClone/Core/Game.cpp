@@ -50,7 +50,7 @@ void Game::setup(GLFWwindow* window) {
 	crosshair.setColor(glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	crosshair.setScale(glm::vec3{ 0.05f });
 
-	faceHighlight.setColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	faceHighlight.setColor({ 1.0f, 1.0f, 1.0f, 0.5f });
 
 	hotbarRotation = -10.0f;
 	slot.setScale(glm::vec3{ 0.375f });
@@ -140,7 +140,6 @@ void Game::draw() {
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-	faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 
 	// MAKE IT SO WE DON'T HAVE TO BIND
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
@@ -183,6 +182,7 @@ void Game::drawShadows(const float deltaTime, const bool hasFocus, GLFWwindow* w
 
 void Game::drawTranslucent() {
 	world.drawTranslucent(atlasMaterial, translucentChunkShader, camera, sun.color, sun.pos, ambientColor);
+	faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
