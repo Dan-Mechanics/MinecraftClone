@@ -2,8 +2,8 @@
 
 World::World() = default;
 World::World(const WorldSettings& worldSettings) : settings{ worldSettings } {
-	reloadChunkMeshTimer = { 0.015f };
-	updateRendDistTimer = { 0.12f };
+	reloadChunkMeshTimer = { 0.0125f };
+	updateRendDistTimer = { 0.125f };
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -109,7 +109,8 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 
 		pending.erase(chunkPos);
 
-		changedChunkPositions.insert(chunkPos);
+		// changedChunkPositions.insert(chunkPos);
+		notifyChunkChange(chunkPos);
 		newChunkPosIndices.push_back(i);
 	}
 
@@ -118,7 +119,7 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 		applyStamp(worldGen.blueTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
 		applyStamp(worldGen.ashTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
 
-		changedChunkPositions.insert(chunkPos);
+		//changedChunkPositions.insert(chunkPos);
 	}
 }
 

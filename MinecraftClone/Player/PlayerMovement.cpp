@@ -4,8 +4,16 @@ PlayerMovement::PlayerMovement() = default;
 PlayerMovement::PlayerMovement(const float standardSpeed, const glm::vec3& pos)
 	: standardSpeed{ standardSpeed }, pos{ pos } { }
 
-void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward,
-	const float deltaTime) {
+void PlayerMovement::update(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward, const float deltaTime) {
+	if (!waterlogged) {
+		move(window, bodyRight, bodyForward, deltaTime);
+	}
+	else {
+		moveInWater(window, bodyRight, bodyForward, deltaTime);
+	}
+}
+
+void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward, const float deltaTime) {
 	vel.y -= 10.0f * deltaTime;
 
 	glm::vec3 movement{};
@@ -31,15 +39,43 @@ void PlayerMovement::move(GLFWwindow* window, const glm::vec3& bodyRight, const 
 	previousSpacePressed = spacePressed;
 	auto currentSpeed = standardSpeed;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		currentSpeed *= 3.0f;
+		currentSpeed *= 2.0f;
 
 	movement *= currentSpeed * deltaTime;
 	movement += vel * deltaTime;
 	pos += movement;
 }
 
-void PlayerMovement::collideWithWorld(const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks,
-	const int chunkSize) {
+void PlayerMovement::moveInWater(GLFWwindow* window, const glm::vec3& bodyRight, const glm::vec3& bodyForward, const float deltaTime) {
+	glm::vec3 movement{};
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		movement += bodyForward;
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		movement -= bodyRight;
+
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		movement -= bodyForward;
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		movement += bodyRight;
+
+	if (glm::length(movement) > 0.0f)
+		movement = glm::normalize(movement);
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		vel.y = 5.0f;
+	}
+	else {
+		vel.y = -4.0f;
+	}
+
+	movement *= standardSpeed * deltaTime;
+	movement += vel * deltaTime;
+	pos += movement;
+}
+
+void PlayerMovement::collideWithWorld(const std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& chunks, const int chunkSize) {
 	glm::ivec3 collisionOutput{};
 	pos = constrain(pos - worldUp, collisionOutput, chunks, chunkSize) + worldUp;
 	pos = constrain(pos, collisionOutput, chunks, chunkSize);

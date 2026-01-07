@@ -76,7 +76,7 @@ void Game::setup(GLFWwindow* window) {
 	// ===
 
 	const glm::vec3 playerSpawnPos{ 0.0f, 30.0f, 0.0f };
-	playerMovement = { 10.0f, playerSpawnPos };
+	playerMovement = { 6.0f, playerSpawnPos };
 	mouseLook = { window, width, height, 0.1f };
 
 	// ===
@@ -121,8 +121,8 @@ void Game::setup(GLFWwindow* window) {
 
 void Game::update(const float deltaTime, const bool hasFocus, int& scrollInput, GLFWwindow* window, ThreadPool& pool) {
 	mouseLook.update(window, width, height, hasFocus);
-	playerMovement.move(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime);
-	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
+	playerMovement.update(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime);
+	// playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
 	uiCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);

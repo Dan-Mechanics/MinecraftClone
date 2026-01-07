@@ -21,7 +21,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		const auto& blockType = it->second;
 
 		// UP. ===
-		if (!isSolid(blockPos + up, true, chunkSize, chunks)) {
+		if (!isSolid(blockPos + up, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
@@ -43,7 +43,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// FORWARD. ===
-		if (!isSolid(blockPos + forward, true, chunkSize, chunks)) {
+		if (!isSolid(blockPos + forward, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
@@ -54,7 +54,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// RIGHT. ===
-		if (!isSolid(blockPos + right, true, chunkSize, chunks)) {
+		if (!isSolid(blockPos + right, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
@@ -65,7 +65,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// BACK. ===
-		if (!isSolid(blockPos + back, true, chunkSize, chunks)) {
+		if (!isSolid(blockPos + back, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
@@ -76,7 +76,7 @@ void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tri
 		}
 
 		// LEFT. ===
-		if (!isSolid(blockPos + left, true, chunkSize, chunks)) {
+		if (!isSolid(blockPos + left, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
@@ -121,7 +121,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		const auto& blockType = it->second;
 
 		// UP. ===
-		if (!has(blockPos + up, true, chunkSize, chunks)) {
+		if (!has(blockPos + up, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, up);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, up);
@@ -143,7 +143,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// FORWARD. ===
-		if (!has(blockPos + forward, true, chunkSize, chunks)) {
+		if (!has(blockPos + forward, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, forward);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, forward);
@@ -154,7 +154,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// RIGHT. ===
-		if (!has(blockPos + right, true, chunkSize, chunks)) {
+		if (!has(blockPos + right, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ high, low, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, right);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, high }, right);
@@ -165,7 +165,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// BACK. ===
-		if (!has(blockPos + back, true, chunkSize, chunks)) {
+		if (!has(blockPos + back, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, back);
 			verts.emplace_back(blockPos + glm::ivec3{ high, high, low }, back);
@@ -176,7 +176,7 @@ void generateTranslucentChunkMesh(std::vector<ChunkVertex>& verts, std::vector<G
 		}
 
 		// LEFT. ===
-		if (!has(blockPos + left, true, chunkSize, chunks)) {
+		if (!has(blockPos + left, false, chunkSize, chunks)) {
 			verts.emplace_back(blockPos + glm::ivec3{ low, low, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, high }, left);
 			verts.emplace_back(blockPos + glm::ivec3{ low, high, low }, left);
