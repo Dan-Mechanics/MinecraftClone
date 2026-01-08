@@ -11,4 +11,5 @@ WorldGenerationSettings::WorldGenerationSettings() {
 
 	blueTree = makeTreeStamp(14, 9, BlockType::LOG, BlockType::LEAVES);
 	ashTree = makeTreeStamp(14, 9, BlockType::ASH_LOG, BlockType::GLOW_BERRIES);
+	steelCore = makeCoreStamp(BlockType::STEEL);
 }

@@ -157,6 +157,9 @@ void World::add(const glm::ivec3& blockPos, const BlockType& blockType) {
 
 	chunks[chunkPos]->blocks[blockPos] = blockType;
 	notifyBlockChange(chunkPos, blockPos);
+
+	if (blockType == BlockType::REACTOR)
+		checkStructure(blockPos, worldGen.steelCore);
 }
 
 void World::remove(const glm::ivec3& blockPos) {
@@ -273,6 +276,33 @@ void World::notifyChunkChange(const glm::ivec3& chunkPos) {
 	changedChunkPositions.insert(chunkPos + right);
 	changedChunkPositions.insert(chunkPos + forward);
 	changedChunkPositions.insert(chunkPos + back);
+}
+
+void World::checkStructure(const glm::ivec3& origin, const Stamp& stamp) {
+	auto passed = true;
+	auto it = stamp.blocks.begin();
+	while (it != stamp.blocks.end()) {
+		if (!isBlock(it->first + origin, it->second, settings.chunkSize, chunks)) {
+			passed = false;
+			break;
+		}
+
+		++it;
+	}
+
+	if (!passed)
+		return;
+
+	// REMOVE THE STAMP.
+	it = stamp.blocks.begin();
+	while (it != stamp.blocks.end()) {
+		remove(it->first + origin);
+		++it;
+	}
+
+	// REMOVE THE REACTOR BLOCK.
+	remove(origin);
+	pendingStructures.emplace(origin);
 }
 
 void World::notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3 blockPos) {

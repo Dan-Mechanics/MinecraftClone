@@ -64,6 +64,8 @@ void Game::setup(GLFWwindow* window) {
 		worldLeft - worldUp
 	);
 
+	particleRotation = -125.0f;
+
 	// ===
 
 	std::vector<Vertex> cubeVerts{};
@@ -120,9 +122,11 @@ void Game::setup(GLFWwindow* window) {
 }
 
 void Game::update(const float deltaTime, const bool hasFocus, int& scrollInput, GLFWwindow* window, ThreadPool& pool) {
+	time += deltaTime;
+	
 	mouseLook.update(window, width, height, hasFocus);
 	playerMovement.update(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime);
-	// playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
+	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
 	uiCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
@@ -145,6 +149,12 @@ void Game::draw() {
 	center.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	right.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 	up.drawAsUnlitColor(cubeMesh, unlitShader, camera);
+
+	auto it = particles.begin();
+	while (it != particles.end()) {
+		it->drawAsUnlitColor(cubeMesh, unlitShader, camera);
+		++it;
+	}
 
 	// MAKE IT SO WE DON'T HAVE TO BIND
 	// A TEXTURE FOR EACH SEPARATE CHUNK.
@@ -211,6 +221,28 @@ void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
 	if (faceHighlight.visible) {
 		faceHighlight.setPos(pos);
 		faceHighlight.setScale(scale);
+	}
+
+	if (!world.pendingStructures.empty()) {
+		Object particle{};
+		particle.setColorRGB(155, 155, 155);
+		particle.setPos((glm::vec3)world.pendingStructures.front() + glm::vec3{ 0.5f });
+
+		particles.emplace_back(particle);
+		particleDieTimes.emplace_back(time + 3.0f);
+
+		world.pendingStructures.pop();
+	}
+
+	for (int i = particles.size() - 1; i >= 0; i--) {
+		if (particleDieTimes[i] <= time) {
+			particleDieTimes.erase(particleDieTimes.begin() + i);
+			particles.erase(particles.begin() + i);
+			continue;
+		}
+
+		particles[i].rotateOverTime(worldUp * particleRotation, interval);
+		particles[i].moveOverTime(worldUp, interval);
 	}
 }
 

@@ -7,12 +7,13 @@ enum BlockType {
     DYCELIUM = 3,
     GRAVEL = 4,
     DIAMOND = 5,
-    REACTOR = 6,
-    LOG = 7,
-    ASH_LOG = 8,
-    GLOW_BERRIES = 9,
-    LEAVES = 10,
-    STEEL = 11,
-    WATER = 12,
-    END = 13 // NOT ACTUALLY A BLOCK.
+    LOG = 6,
+    ASH_LOG = 7,
+    GLOW_BERRIES = 8,
+    LEAVES = 9,
+    STEEL = 10,
+    SEDIMENT = 11,
+    REACTOR = 12,
+    WATER = 13,
+    END = 14 // NOT ACTUALLY A BLOCK.
 };

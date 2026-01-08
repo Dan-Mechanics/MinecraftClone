@@ -10,6 +10,7 @@ public:
 	int waterHeight{};
 	Stamp blueTree{};
 	Stamp ashTree{};
+	Stamp steelCore{};
 
 	/// <summary>
 	/// https://github.com/Isti01/glCraft/blob/main/src/World/WorldGenerator.cpp

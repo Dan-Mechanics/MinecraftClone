@@ -31,9 +31,14 @@ private:
 	unsigned int width{};
 	unsigned int height{};
 	float hotbarRotation{};
+	float particleRotation{};
+	float time{};
 
 	glm::vec4 ambientColor{};
 	glm::vec4 sunColor{};
+
+	std::vector<Object> particles{};
+	std::vector<float> particleDieTimes{};
 
 	Object sun{};
 	Object centerLine{};

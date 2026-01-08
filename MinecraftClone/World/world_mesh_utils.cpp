@@ -294,6 +294,7 @@ Atlas generateAtlas() {
 	atlas.maps[BlockType::REACTOR] = generateUniformMap(tilePositionToUVs(4, 0));
 	atlas.maps[BlockType::STEEL] = generateUniformMap(tilePositionToUVs(4, 1));
 	atlas.maps[BlockType::WATER] = generateUniformMap(tilePositionToUVs(4, 2));
+	atlas.maps[BlockType::SEDIMENT] = generateUniformMap(tilePositionToUVs(4, 3));
 
 	return atlas;
 }

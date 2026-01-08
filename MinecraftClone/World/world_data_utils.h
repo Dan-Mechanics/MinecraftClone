@@ -20,6 +20,7 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunk(const glm::ivec3 
 
 std::optional<glm::ivec3> checkKeepChunkLoaded(const glm::ivec3 chunkPos, const glm::ivec3& playerChunkPos, const int rendDist);
 Stamp makeTreeStamp(const int height, const int probability, BlockType log, BlockType leaves);
+Stamp makeCoreStamp(BlockType blockType);
 
 glm::ivec3 getStandardStampOrigin(const glm::ivec3& chunkPos, const int chunkSize,
 	const std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash>& heightMaps);

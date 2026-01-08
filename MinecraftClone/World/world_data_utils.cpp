@@ -31,7 +31,7 @@ std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunk(const glm::ivec3 
 					continue;
 
 				// blocks[blockPos] = BlockType::DIRT;
-				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::WATER);
+				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::REACTOR);
 			}
 		}
 	}
@@ -101,6 +101,25 @@ Stamp makeTreeStamp(const int height, const int probability, BlockType log, Bloc
 	}
 
 	return { probability, false, blocks };
+}
+
+Stamp makeCoreStamp(BlockType blockType) {
+	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) {
+			for (int z = -1; z <= 1; z++) {
+				if (x == 0 && y == 0 && z == 0)
+					continue;
+
+				if (x == 0 && y == 1 && z == 0)
+					continue;
+
+				blocks[{x, y, z}] = blockType;
+			}
+		}
+	}
+
+	return { 0, true, blocks };
 }
 
 glm::ivec3 getStandardStampOrigin(const glm::ivec3& chunkPos, const int chunkSize,

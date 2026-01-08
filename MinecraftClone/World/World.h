@@ -15,6 +15,8 @@ public:
 	World();
 	World(const WorldSettings& worldSettings);
 
+	std::queue<glm::ivec3> pendingStructures{};
+
 	// ===
 
 	void update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos);
@@ -61,5 +63,6 @@ private:
 	void removeOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3  blockPos);
 	void notifyChunkChange(const glm::ivec3& chunkPos);
+	void checkStructure(const glm::ivec3 & origin, const Stamp& stamp);
 
 };
