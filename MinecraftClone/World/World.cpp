@@ -109,7 +109,6 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 
 		pending.erase(chunkPos);
 
-		// changedChunkPositions.insert(chunkPos);
 		notifyChunkChange(chunkPos);
 		newChunkPosIndices.push_back(i);
 	}
@@ -118,8 +117,6 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 		const auto& chunkPos = chunkPosCache[newChunkPosIndices[i]];
 		applyStamp(worldGen.blueTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
 		applyStamp(worldGen.ashTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
-
-		//changedChunkPositions.insert(chunkPos);
 	}
 }
 
