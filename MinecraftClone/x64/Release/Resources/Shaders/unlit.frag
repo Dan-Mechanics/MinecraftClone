@@ -29,6 +29,9 @@ uniform vec3 camPos;
 
 void main()
 {
+	if (selfColor.a < 0.1)
+		discard;
+
 	// outputs final color
 	FragColor = selfColor;
 }
