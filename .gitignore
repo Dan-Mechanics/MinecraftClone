@@ -1,3 +1,9 @@
-/MinecraftClone/.vs
-/MinecraftClone/MinecraftClone
-/MinecraftClone/x64
+MinecraftClone/.vs
+MinecraftClone/MinecraftClone
+*.pdb
+*.exe
+*.ini
+*.log
+*.obj
+*.tlog
+*.idb
