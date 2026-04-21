@@ -5,20 +5,22 @@
 #include <iostream>
 #include "../World/FastNoiseLite.h"
 
-const unsigned int width = 1920;
-const unsigned int height = 1080;
-bool hasFocus = true;
+const auto width = 1920u;
+const auto height = 1080u;
+
+const auto framerateLimit = 300;
+const auto tickrate = 50;
+const auto maxFrameInterval = 1.0 / framerateLimit;
+const auto minTickInterval = 1.0f / tickrate;
+
+auto hasFocus = true;
 auto scrollInput = 0;
 
-const auto maxFps = 300.0f;
-const auto frameInterval = 1.0f / maxFps;
-const auto tickInterval = 0.02f;
-
-static void focusCallback(GLFWwindow* window, int focus) {
+void focusCallback(GLFWwindow* window, int focus) {
 	hasFocus = focus;
 }
 
-static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
 	if (yOffset > 0) {
 		scrollInput++;
 	}
@@ -30,11 +32,11 @@ static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
 /// <summary>
 /// https://www.glfw.org/docs/latest/quick.html
 /// </summary>
-static void errorCallback(int error, const char* description) {
+void errorCallback(int error, const char* description) {
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
@@ -42,7 +44,6 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 /// <summary>
 /// https://stackoverflow.com/questions/57800608/how-to-render-at-a-fixed-fps-in-a-glfw-window
 /// </summary>
-/// <returns></returns>
 int main() {
 	glfwSetErrorCallback(errorCallback);
 	if (!glfwInit())
@@ -97,18 +98,25 @@ int main() {
 	glFrontFace(GL_CCW);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	auto previous = glfwGetTime();
+	auto lastUpdateTime = glfwGetTime();
+	auto updateTimer = 0.0;
+	auto tickTimer = 0.0f;
+
 	glfwSwapInterval(0);
-	auto previous = 0.0f;
-	auto timer = 0.0f;
-
 	while (!glfwWindowShouldClose(window)) {
-		const auto current = (float)glfwGetTime();
-		const auto deltaTime = std::max(current - previous, 0.0f);
+		const auto current = glfwGetTime();
+		updateTimer += current - previous;
+		previous = current;
 
-		if (deltaTime < frameInterval)
+		glfwPollEvents();
+		if (updateTimer < maxFrameInterval)
 			continue;
 
-		previous = current;
+		const auto deltaTime = current - lastUpdateTime;
+		lastUpdateTime = current;
+		updateTimer = 0.0f;
+
 		const auto title = "fps: " + std::to_string(round(1.0f / deltaTime));
 		glfwSetWindowTitle(window, title.c_str());
 
@@ -116,10 +124,10 @@ int main() {
 		game.update(deltaTime, hasFocus, scrollInput, window, pool);
 
 		// FIXED UPDATE. ===
-		timer += deltaTime;
-		while (timer >= tickInterval) {
-			timer -= tickInterval;
-			game.tick(tickInterval, pool, window);
+		tickTimer += deltaTime;
+		while (tickTimer >= minTickInterval) {
+			tickTimer -= minTickInterval;
+			game.tick(minTickInterval, pool, window);
 		}
 
 		// RENDER SHADOWS. ===
@@ -146,7 +154,6 @@ int main() {
 		game.drawUI(deltaTime, hasFocus, window);
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 
 	game.free();
