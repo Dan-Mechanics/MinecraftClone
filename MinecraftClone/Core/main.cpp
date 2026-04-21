@@ -39,6 +39,10 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+/// <summary>
+/// https://stackoverflow.com/questions/57800608/how-to-render-at-a-fixed-fps-in-a-glfw-window
+/// </summary>
+/// <returns></returns>
 int main() {
 	glfwSetErrorCallback(errorCallback);
 	if (!glfwInit())
