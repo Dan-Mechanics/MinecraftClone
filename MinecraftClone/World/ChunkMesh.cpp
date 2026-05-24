@@ -20,43 +20,8 @@ ChunkMesh::ChunkMesh(const std::vector<ChunkVertex>& vertices, const std::vector
 	hasData = true;
 }
 
-void ChunkMesh::drawShadows(const Shader& shader, const Camera& camera) const {
-	shader.activate();
+void ChunkMesh::draw() const {
 	vao.bind();
-
-	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-	camera.sendMatrixToShader(shader, "camMatrix");
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-}
-
-void ChunkMesh::draw(const Shader& shader, const Camera& camera, const glm::vec3& lightPos, const glm::vec4& lightColor,
-	const glm::vec4& worldColor, const std::vector<Texture>& material) const {
-	shader.activate();
-	vao.bind();
-
-	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-	camera.sendMatrixToShader(shader, "camMatrix");
-
-	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
-
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-}
-
-void ChunkMesh::drawWithOffset(const Shader& shader, const Camera& camera, const glm::vec3& lightPos,
-	const glm::vec4& lightColor, const glm::vec4& worldColor, const std::vector<Texture>& material, const glm::mat4& modelMatrix) const {
-	shader.activate();
-	vao.bind();
-
-	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
-	camera.sendMatrixToShader(shader, "camMatrix");
-
-	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
-
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 

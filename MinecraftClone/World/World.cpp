@@ -7,10 +7,14 @@ World::World(const WorldSettings& worldSettings) : settings{ worldSettings } {
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
+	shader.activate();
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+	
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->mesh.hasData)
-			it->second->mesh.drawShadows(shader, camera);
+			it->second->mesh.draw();
 
 		++it;
 	}
@@ -21,10 +25,21 @@ void World::drawTranslucent(const std::vector<Texture>& material, const Shader& 
 	glm::mat4 modelMatrix = glm::identity<glm::mat4>();
 	modelMatrix = glm::translate(modelMatrix, { 0.0f, -0.2f, 0.0f });
 
+	shader.activate();
+	// vao.bind();
+
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+
+	glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
+
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->translucentMesh.hasData)
-			it->second->translucentMesh.drawWithOffset(shader, camera, lightPos, lightColor, worldColor, material, modelMatrix);
+			it->second->translucentMesh.draw();
 
 		++it;
 	}
@@ -32,10 +47,22 @@ void World::drawTranslucent(const std::vector<Texture>& material, const Shader& 
 
 void World::draw(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
+
+	shader.activate();
+	//vao.bind();
+
+	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
+	camera.sendMatrixToShader(shader, "camMatrix");
+
+	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
+
+
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
 		if (it->second->mesh.hasData)
-			it->second->mesh.draw(shader, camera, lightPos, lightColor, worldColor, material);
+			it->second->mesh.draw();
 
 		++it;
 	}
