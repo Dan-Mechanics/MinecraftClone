@@ -26,6 +26,8 @@ void World::drawTranslucent(const std::vector<Texture>& material, const Shader& 
 	modelMatrix = glm::translate(modelMatrix, { 0.0f, -0.2f, 0.0f });
 
 	shader.activate();
+	// vao.bind();
+
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 	camera.sendMatrixToShader(shader, "camMatrix");
 
@@ -47,12 +49,15 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 	const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor) {
 
 	shader.activate();
+	//vao.bind();
+
 	glUniform3f(glGetUniformLocation(shader.id, "camPos"), camera.position.x, camera.position.y, camera.position.z);
 	camera.sendMatrixToShader(shader, "camMatrix");
 
 	glUniform3f(glGetUniformLocation(shader.id, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shader.id, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shader.id, "worldColor"), worldColor.x, worldColor.y, worldColor.z, worldColor.w);
+
 
 	auto it = chunks.begin();
 	while (it != chunks.end()) {
@@ -65,7 +70,7 @@ void World::draw(const std::vector<Texture>& material, const Shader& shader, con
 
 void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos) {
 	if (reloadChunkMeshTimer.tick(deltaTime)) {
-		reloadChunkMesh(atlas);
+		reloadChunkMesh(pool, atlas);
 		return;
 	}
 
@@ -87,25 +92,27 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	std::vector<int> newChunkPosIndices{};
 
-	for (int x = -settings.rendDist; x < settings.rendDist; ++x) 
-	for (int z = -settings.rendDist; z < settings.rendDist; ++z) 
-	for (int y = -settings.smallRendDist; y < settings.smallRendDist; ++y) {
-		const glm::ivec3 chunkPos = glm::ivec3{ x + playerChunkPos.x, y + playerChunkPos.y, z + playerChunkPos.z };
-		if (chunks.contains(chunkPos))
-			continue;
+	for (int x = -settings.rendDist; x < settings.rendDist; ++x) {
+		for (int z = -settings.rendDist; z < settings.rendDist; ++z) {
+			for (int y = -settings.smallRendDist; y < settings.smallRendDist; ++y) {
+				const glm::ivec3 chunkPos = glm::ivec3{ x + playerChunkPos.x, y + playerChunkPos.y, z + playerChunkPos.z };
+				if (chunks.contains(chunkPos))
+					continue;
 
-		const auto heightMapPos = flatten(chunkPos);
-		if (!heightMaps.contains(heightMapPos))
-			heightMaps[heightMapPos] = getHeightMap(worldGen.noise, worldGen.height, heightMapPos.x, heightMapPos.z, settings.chunkSize);
+				const auto heightMapPos = flatten(chunkPos);
+				if (!heightMaps.contains(heightMapPos))
+					heightMaps[heightMapPos] = getHeightMap(worldGen.noise, worldGen.height, heightMapPos.x, heightMapPos.z, settings.chunkSize);
 
-		futures.emplace_back(pool.submit(fillChunk,
-			chunkPos, settings.chunkSize, worldGen.waterHeight, std::ref(heightMaps[heightMapPos])));
+				futures.emplace_back(pool.submit(fillChunk,
+					chunkPos, settings.chunkSize, worldGen.waterHeight, std::ref(heightMaps[heightMapPos])));
 
-		if (chunkPosCache.size() < futures.size()) {
-			chunkPosCache.emplace_back(chunkPos);
-		}
-		else {
-			chunkPosCache[futures.size() - 1] = chunkPos;
+				if (chunkPosCache.size() < futures.size()) {
+					chunkPosCache.emplace_back(chunkPos);
+				}
+				else {
+					chunkPosCache[futures.size() - 1] = chunkPos;
+				}
+			}
 		}
 	}
 
@@ -188,16 +195,13 @@ void World::remove(const glm::ivec3& blockPos) {
 	notifyBlockChange(chunkPos, blockPos);
 }
 
-void World::reloadChunkMesh(const Atlas& atlas) {
+void World::reloadChunkMesh(ThreadPool& pool, const Atlas& atlas) {
 	if (changedChunkPositions.empty())
 		return;
 
 	const glm::ivec3 chunkPos = *changedChunkPositions.begin();
-	changedChunkPositions.erase(changedChunkPositions.begin());
-	reloadChunkAtPos(chunkPos, atlas);
-}
+	changedChunkPositions.erase(chunkPos);
 
-void World::reloadChunkAtPos(const glm::ivec3 chunkPos, const Atlas& atlas) {
 	if (!chunks.contains(chunkPos))
 		return;
 
