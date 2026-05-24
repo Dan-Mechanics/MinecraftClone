@@ -48,7 +48,9 @@ void Terraformer::remove(const Raycast& raycast, World& world, ThreadPool& pool,
 		return;
 
 	world.remove(blockPos);
-	world.reloadChunkMesh(pool, atlas);
+	//world.reloadChunkMesh(atlas);
+	const auto chunkPos = blockPosToChunkPos(blockPos, world.getChunkSize());
+	world.reloadChunkAtPos(chunkPos, atlas);
 }
 
 void Terraformer::add(const Raycast& raycast, World& world, ThreadPool& pool,
@@ -63,5 +65,7 @@ void Terraformer::add(const Raycast& raycast, World& world, ThreadPool& pool,
 		return;
 
 	world.add(blockPos, blockType);
-	world.reloadChunkMesh(pool, atlas);
+	//world.reloadChunkMesh(atlas);
+	const auto chunkPos = blockPosToChunkPos(blockPos, world.getChunkSize());
+	world.reloadChunkAtPos(chunkPos, atlas);
 }
