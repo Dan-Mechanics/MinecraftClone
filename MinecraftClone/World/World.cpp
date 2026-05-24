@@ -197,7 +197,7 @@ void World::reloadChunkMesh(const Atlas& atlas) {
 	reloadChunkAtPos(chunkPos, atlas);
 }
 
-void World::reloadChunkAtPos(const glm::ivec3 chunkPos, const Atlas& atlas) {
+void World::reloadChunkAtPos(const glm::ivec3& chunkPos, const Atlas& atlas) {
 	if (!chunks.contains(chunkPos))
 		return;
 
