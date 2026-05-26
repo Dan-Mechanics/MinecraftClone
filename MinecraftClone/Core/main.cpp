@@ -9,10 +9,12 @@ constexpr auto WIDTH = 1920u;
 constexpr auto HEIGHT = 1080u;
 
 constexpr auto FRAMERATE_LIMIT = 300u;
-constexpr auto FRAME_INTERVAL = 1.0f / FRAMERATE_LIMIT;
+constexpr auto UPDATE_INTERVAL = 1.0f / FRAMERATE_LIMIT;
 
 constexpr auto TICKRATE = 50u;
 constexpr auto TICK_INTERVAL = 1.0f / TICKRATE;
+
+constexpr auto SWAP_INTERVAL = -1;
 
 auto hasFocus = true;
 void focusCallback(GLFWwindow* window, int focus) {
@@ -101,15 +103,18 @@ int main() {
 	auto updateTimer = 0.0f;
 	auto tickTimer = 0.0f;
 	 
-	// THIS WORKS ON MY LAPTOP, BUT ON MY PC IT DOESN'T MATTER
-	// glfwSwapInterval(0);
+	// | LAPTOP: -1 | PC: 0 |
+	// I THINK THIS HAS SOMETHING TO DO WITH OPENGL VERSION.
+	if (SWAP_INTERVAL > 0)
+		glfwSwapInterval(SWAP_INTERVAL);
+
 	while (!glfwWindowShouldClose(window)) {
 		const auto curr = static_cast<float>(glfwGetTime());
 		updateTimer += curr - prev;
 		prev = curr;
 
 		glfwPollEvents();
-		if (updateTimer >= FRAME_INTERVAL) {
+		if (updateTimer >= UPDATE_INTERVAL) {
 			const auto deltaTime = curr - previousUpdateTime;
 			previousUpdateTime = curr;
 			updateTimer = 0.0f;
