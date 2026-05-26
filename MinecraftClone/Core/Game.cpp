@@ -126,7 +126,7 @@ void Game::update(const float deltaTime, const bool hasFocus, int& scrollInput, 
 	
 	mouseLook.update(window, width, height, hasFocus);
 	playerMovement.update(window, mouseLook.bodyRight, mouseLook.bodyForward, deltaTime);
-	//playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
+	playerMovement.collideWithWorld(world.getChunks(), world.getChunkSize());
 
 	camera.updateMatrix(105.0f, 0.01f, 100.0f, playerMovement.pos, mouseLook.eyesForward, width, height);
 	uiCamera.updateMatrix(105.0f, 0.01f, 100.0f, worldOrigin, worldForward, width, height);
