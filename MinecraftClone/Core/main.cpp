@@ -102,7 +102,7 @@ int main() {
 	auto tickTimer = 0.0f;
 	 
 	// THIS WORKS ON MY LAPTOP, BUT ON MY PC IT DOESN'T MATTER
-	//glfwSwapInterval(0);
+	// glfwSwapInterval(0);
 	while (!glfwWindowShouldClose(window)) {
 		const auto curr = static_cast<float>(glfwGetTime());
 		updateTimer += curr - prev;
