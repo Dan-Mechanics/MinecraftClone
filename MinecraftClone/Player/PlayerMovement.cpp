@@ -145,5 +145,5 @@ void PlayerMovement::stopVerticalVelocity() {
 }
 
 void PlayerMovement::jump() {
-	vel.y = 10.0f;
+	vel.y = 5.0f;
 }
