@@ -199,16 +199,14 @@ void Game::drawTranslucent() {
 	if (playerMovement.waterlogged) {
 		glDisable(GL_DEPTH_TEST);
 		waterScreen.drawAsUnlitColor(cubeMesh, unlitShader, uiCamera);
-		faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		glEnable(GL_DEPTH_TEST);
 	}
 	else {
-		world.drawTranslucent(atlasMaterial, translucentChunkShader, camera, sun.color, sun.pos, ambientColor);
-
-		glDisable(GL_DEPTH_TEST);
-		faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
-		glEnable(GL_DEPTH_TEST);
+		world.drawTranslucent(atlasMaterial, translucentChunkShader,
+			camera, sun.color, sun.pos, ambientColor);
 	}
+
+	glEnable(GL_DEPTH_TEST);
+	faceHighlight.drawAsUnlitColor(cubeMesh, unlitShader, camera);
 }
 
 void Game::tick(const float interval, ThreadPool& pool, GLFWwindow* window) {
