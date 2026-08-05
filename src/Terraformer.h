@@ -1,5 +1,5 @@
 #pragma once
-#include "../World/World.h"
+#include "World.h"
 
 class Terraformer {
 public:

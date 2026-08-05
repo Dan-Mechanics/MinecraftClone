@@ -1,6 +1,6 @@
 #pragma once
 #include <glad/glad.h>
-#include "../Core/file_utils.h"
+#include "file_utils.h"
 
 class Shader {
 public:

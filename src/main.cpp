@@ -3,7 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-#include "../World/FastNoiseLite.h"
+#include "FastNoiseLite.h"
 
 constexpr auto WIDTH = 1920u;
 constexpr auto HEIGHT = 1080u;

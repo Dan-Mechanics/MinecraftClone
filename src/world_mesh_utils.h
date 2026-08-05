@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "../Rendering/vbo.h"
+#include "vbo.h"
 #include "BlockType.h"
 #include "Direction.h"
 #include "Atlas.h"

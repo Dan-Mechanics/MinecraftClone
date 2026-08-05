@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
-#include "../Rendering/vao.h"
-#include "../Rendering/ebo.h"
-#include "../Rendering/Camera.h"
-#include "../Rendering/Texture.h"
+#include "vao.h"
+#include "ebo.h"
+#include "Camera.h"
+#include "Texture.h"
 #include <vector>
 
 class ChunkMesh {

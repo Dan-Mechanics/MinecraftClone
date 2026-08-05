@@ -1,12 +1,12 @@
 #pragma once
-#include "../Rendering/Shader.h"
-#include "../Rendering/Camera.h"
+#include "Shader.h"
+#include "Camera.h"
 #include "world_mesh_utils.h"
 #include "world_data_utils.h"
-#include "../Core/ThreadPool.h"
-#include "../Core/AxisPlane.h"
-#include "../Core/Raycast.h"
-#include "../Core/Timer.h"
+#include "ThreadPool.h"
+#include "AxisPlane.h"
+#include "Raycast.h"
+#include "Timer.h"
 #include "WorldGenerationSettings.h"
 #include "WorldSettings.h"
 

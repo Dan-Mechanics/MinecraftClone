@@ -2,13 +2,13 @@
 #include <glm/ext/vector_float4.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include "Object.h"
-#include "../Rendering/mesh_utils.h"
-#include "../World/World.h"
-#include "../Rendering/ShadowMapFBO.h"
-#include "../Player/Terraformer.h"
-#include "../Player/BlockSelector.h"
-#include "../Player/MouseLook.h"
-#include "../Player/PlayerMovement.h"
+#include "mesh_utils.h"
+#include "World.h"
+#include "ShadowMapFBO.h"
+#include "Terraformer.h"
+#include "BlockSelector.h"
+#include "MouseLook.h"
+#include "PlayerMovement.h"
 
 class Game {
 public:

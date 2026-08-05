@@ -5,8 +5,8 @@
 #include <iostream>
 #include <cerrno>
 
-#define SHADER_PATH "Resources/Shaders/"
-#define TEXTURE_PATH "Resources/Textures/"
+#define SHADER_PATH "res/shaders/"
+#define TEXTURE_PATH "res/textures/"
 
 std::string getFileContent(const std::string& path);
 std::string getShaderCode(const std::string& shaderName);

@@ -1,6 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
-#include "../World/BlockType.h"
+#include "BlockType.h"
 
 class BlockSelector {
 public:

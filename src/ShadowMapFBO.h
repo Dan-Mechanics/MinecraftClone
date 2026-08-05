@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "Camera.h"
-#include "../Core/Object.h"
+#include "Object.h"
 
 class ShadowMapFBO {
 public:

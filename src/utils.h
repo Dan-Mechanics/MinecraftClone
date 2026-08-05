@@ -4,8 +4,8 @@
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_int3.hpp>
 #include <vector>
-#include "../World/Direction.h"
-#include "../Rendering/Texture.h"
+#include "Direction.h"
+#include "Texture.h"
 #include <string>
 #include <glm/common.hpp>
 

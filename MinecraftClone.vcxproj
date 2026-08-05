@@ -18,6 +18,78 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Atlas.h" />
+    <ClInclude Include="src\AxisPlane.h" />
+    <ClInclude Include="src\BlockSelector.h" />
+    <ClInclude Include="src\BlockType.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Chunk.h" />
+    <ClInclude Include="src\ChunkMesh.h" />
+    <ClInclude Include="src\ChunkVertex.h" />
+    <ClInclude Include="src\Direction.h" />
+    <ClInclude Include="src\ebo.h" />
+    <ClInclude Include="src\FastNoiseLite.h" />
+    <ClInclude Include="src\file_utils.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\hashing_utils.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\mesh_utils.h" />
+    <ClInclude Include="src\MouseLook.h" />
+    <ClInclude Include="src\Object.h" />
+    <ClInclude Include="src\PlayerMovement.h" />
+    <ClInclude Include="src\Raycast.h" />
+    <ClInclude Include="src\SafeQueue.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\ShadowMapFBO.h" />
+    <ClInclude Include="src\Stamp.h" />
+    <ClInclude Include="src\Terraformer.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\ThreadPool.h" />
+    <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\vao.h" />
+    <ClInclude Include="src\vbo.h" />
+    <ClInclude Include="src\Vertex.h" />
+    <ClInclude Include="src\World.h" />
+    <ClInclude Include="src\WorldGenerationSettings.h" />
+    <ClInclude Include="src\WorldSettings.h" />
+    <ClInclude Include="src\world_data_utils.h" />
+    <ClInclude Include="src\world_mesh_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AxisPlane.cpp" />
+    <ClCompile Include="src\BlockSelector.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Chunk.cpp" />
+    <ClCompile Include="src\ChunkMesh.cpp" />
+    <ClCompile Include="src\ebo.cpp" />
+    <ClCompile Include="src\file_utils.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\mesh_utils.cpp" />
+    <ClCompile Include="src\MouseLook.cpp" />
+    <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\PlayerMovement.cpp" />
+    <ClCompile Include="src\Raycast.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShadowMapFBO.cpp" />
+    <ClCompile Include="src\Stamp.cpp" />
+    <ClCompile Include="src\stb.cpp" />
+    <ClCompile Include="src\Terraformer.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\vao.cpp" />
+    <ClCompile Include="src\vbo.cpp" />
+    <ClCompile Include="src\World.cpp" />
+    <ClCompile Include="src\WorldGenerationSettings.cpp" />
+    <ClCompile Include="src\WorldSettings.cpp" />
+    <ClCompile Include="src\world_data_utils.cpp" />
+    <ClCompile Include="src\world_mesh_utils.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -158,99 +230,6 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Core\AxisPlane.cpp" />
-    <ClCompile Include="Core\file_utils.cpp" />
-    <ClCompile Include="Core\Game.cpp" />
-    <ClCompile Include="Core\glad.c" />
-    <ClCompile Include="Core\main.cpp" />
-    <ClCompile Include="Core\Object.cpp" />
-    <ClCompile Include="Core\Raycast.cpp" />
-    <ClCompile Include="Core\stb.cpp" />
-    <ClCompile Include="Core\Timer.cpp" />
-    <ClCompile Include="Core\utils.cpp" />
-    <ClCompile Include="Player\BlockSelector.cpp" />
-    <ClCompile Include="Player\MouseLook.cpp" />
-    <ClCompile Include="Player\PlayerMovement.cpp" />
-    <ClCompile Include="Player\Terraformer.cpp" />
-    <ClCompile Include="Rendering\Camera.cpp" />
-    <ClCompile Include="Rendering\ebo.cpp" />
-    <ClCompile Include="Rendering\Mesh.cpp" />
-    <ClCompile Include="Rendering\mesh_utils.cpp" />
-    <ClCompile Include="Rendering\Shader.cpp" />
-    <ClCompile Include="Rendering\ShadowMapFBO.cpp" />
-    <ClCompile Include="Rendering\Texture.cpp" />
-    <ClCompile Include="Rendering\vao.cpp" />
-    <ClCompile Include="Rendering\vbo.cpp" />
-    <ClCompile Include="World\Chunk.cpp" />
-    <ClCompile Include="World\ChunkMesh.cpp" />
-    <ClCompile Include="World\Stamp.cpp" />
-    <ClCompile Include="World\World.cpp" />
-    <ClCompile Include="World\WorldGenerationSettings.cpp" />
-    <ClCompile Include="World\WorldSettings.cpp" />
-    <ClCompile Include="World\world_data_utils.cpp" />
-    <ClCompile Include="World\world_mesh_utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Core\AxisPlane.h" />
-    <ClInclude Include="Core\file_utils.h" />
-    <ClInclude Include="Core\Game.h" />
-    <ClInclude Include="Core\Object.h" />
-    <ClInclude Include="Core\Raycast.h" />
-    <ClInclude Include="Core\SafeQueue.h" />
-    <ClInclude Include="Core\ThreadPool.h" />
-    <ClInclude Include="Core\Timer.h" />
-    <ClInclude Include="Core\utils.h" />
-    <ClInclude Include="Player\BlockSelector.h" />
-    <ClInclude Include="Player\MouseLook.h" />
-    <ClInclude Include="Player\PlayerMovement.h" />
-    <ClInclude Include="Player\Terraformer.h" />
-    <ClInclude Include="Rendering\Camera.h" />
-    <ClInclude Include="Rendering\ebo.h" />
-    <ClInclude Include="Rendering\Mesh.h" />
-    <ClInclude Include="Rendering\mesh_utils.h" />
-    <ClInclude Include="Rendering\Shader.h" />
-    <ClInclude Include="Rendering\ShadowMapFBO.h" />
-    <ClInclude Include="Rendering\Texture.h" />
-    <ClInclude Include="Rendering\vao.h" />
-    <ClInclude Include="Rendering\vbo.h" />
-    <ClInclude Include="Rendering\Vertex.h" />
-    <ClInclude Include="World\Atlas.h" />
-    <ClInclude Include="World\BlockType.h" />
-    <ClInclude Include="World\Chunk.h" />
-    <ClInclude Include="World\ChunkMesh.h" />
-    <ClInclude Include="World\ChunkVertex.h" />
-    <ClInclude Include="World\Direction.h" />
-    <ClInclude Include="World\FastNoiseLite.h" />
-    <ClInclude Include="World\hashing_utils.h" />
-    <ClInclude Include="World\Stamp.h" />
-    <ClInclude Include="World\World.h" />
-    <ClInclude Include="World\WorldGenerationSettings.h" />
-    <ClInclude Include="World\WorldSettings.h" />
-    <ClInclude Include="World\world_data_utils.h" />
-    <ClInclude Include="World\world_mesh_utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Textures\atlas.png" />
-    <Image Include="Resources\Textures\planks.png" />
-    <Image Include="Resources\Textures\planks_specular.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shaders\chunk.frag" />
-    <None Include="Resources\Shaders\chunk.vert" />
-    <None Include="Resources\Shaders\chunk_shadow.vert" />
-    <None Include="Resources\Shaders\default.frag" />
-    <None Include="Resources\Shaders\default.vert" />
-    <None Include="Resources\Shaders\lit.frag" />
-    <None Include="Resources\Shaders\material.frag" />
-    <None Include="Resources\Shaders\normals_debug.frag" />
-    <None Include="Resources\Shaders\shadow_map.frag" />
-    <None Include="Resources\Shaders\shadow_map.vert" />
-    <None Include="Resources\Shaders\simple_material.frag" />
-    <None Include="Resources\Shaders\translucent_chunk.frag" />
-    <None Include="Resources\Shaders\translucent_chunk.vert" />
-    <None Include="Resources\Shaders\unlit.frag" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
