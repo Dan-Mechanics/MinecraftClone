@@ -11,7 +11,6 @@
 
 class Game {
 public:
-
 	Game();
 	Game(const unsigned int width, const unsigned int height);
 

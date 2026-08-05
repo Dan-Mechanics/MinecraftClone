@@ -3,7 +3,7 @@
 World::World() = default;
 World::World(const WorldSettings& worldSettings) : settings{ worldSettings } {
 	reloadChunkMeshTimer = { 0.0125f };
-	updateRendDistTimer = { 0.125f };
+	changeChunksTimer = { 0.125f };
 }
 
 void World::drawShadows(const Shader& shader, const Camera& camera) {
@@ -69,16 +69,18 @@ void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, 
 		return;
 	}
 
-	if (updateRendDistTimer.tick(deltaTime)) {
-		if (addNewChunksMode) {
+	if (changeChunksTimer.tick(deltaTime)) {
+		if (changeChunksToggle) {
 			addNewChunks(pool, playerPos);
 		}
 		else {
 			removeOldChunks(pool, playerPos);
 		}
 
-		addNewChunksMode = !addNewChunksMode;
+		changeChunksToggle = !changeChunksToggle;
 	}
+
+	// std::cout << "Count: " << std::distance(chunks.begin(), chunks.end()) << std::endl;
 }
 
 void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {

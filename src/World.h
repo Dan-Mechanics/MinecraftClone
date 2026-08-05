@@ -13,13 +13,10 @@
 
 class World {
 public:
-	World();
-	World(const WorldSettings& worldSettings);
-
 	std::queue<glm::ivec3> pendingStructures{};
 
-	// ===
-
+	World();
+	World(const WorldSettings& worldSettings);
 	void update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, const glm::vec3& playerPos);
 	void drawShadows(const Shader& shader, const Camera& camera);
 
@@ -29,21 +26,18 @@ public:
 	void drawTranslucent(const std::vector<Texture>& material, const Shader& shader, const Camera& camera,
 		const glm::vec4& lightColor, const glm::vec3& lightPos, const glm::vec4& worldColor);
 
-	// ===
-
 	void add(const glm::ivec3& blockPos, const BlockType& blockType);
 	void remove(const glm::ivec3& blockPos);
 	void reloadChunkMesh(const Atlas& atlas);
 	void reloadChunkAtPos(const glm::ivec3& chunkPos, const Atlas& atlas);
 
-	int getChunkSize() const;
-	std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& getChunks();
-
 	/// <summary>
 	/// https://github.com/Isti01/glCraft/blob/main/src/Math/WorldRayCast.cpp
 	/// </summary>
 	bool raycast(const Raycast& raycast, glm::ivec3& blockPos, glm::ivec3& normal) const;
+	std::unordered_map<glm::ivec3, Chunk*, ivec3hash>& getChunks();
 	void applyStamp(const Stamp& stamp, const glm::ivec3& origin);
+	int getChunkSize() const;
 ;	void free();
 
 private:
@@ -55,8 +49,8 @@ private:
 	std::vector<glm::ivec3> chunkPosCache{};
 
 	Timer reloadChunkMeshTimer{};
-	Timer updateRendDistTimer{};
-	bool addNewChunksMode{};
+	Timer changeChunksTimer{};
+	bool changeChunksToggle{};
 
 	WorldGenerationSettings worldGen{};
 	WorldSettings settings{};
