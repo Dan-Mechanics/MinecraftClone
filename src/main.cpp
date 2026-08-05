@@ -102,7 +102,7 @@ int main() {
 	auto lastUpdateTime = glfwGetTime();
 	auto updateTimer = 0.0;
 	auto tickTimer = 0.0f;
-	 
+
 	// glfwSwapInterval(0);
 	while (!glfwWindowShouldClose(window)) {
 		const auto current = glfwGetTime();
