@@ -86,7 +86,6 @@ void World::update(const float deltaTime, const Atlas& atlas, ThreadPool& pool, 
 void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 	std::vector<std::future<std::unordered_map<glm::ivec3, BlockType, ivec3hash>>> futures{};
 	const auto playerChunkPos = blockPosToChunkPos(posToBlockPos(playerPos), settings.chunkSize);
-	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightMaps{};
 	std::vector<int> newChunkPosIndices{};
 
 	for (int x = -settings.rendDist; x < settings.rendDist; ++x) 
@@ -96,12 +95,12 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 		if (chunks.contains(chunkPos))
 			continue;
 
-		const auto heightMapPos = flatten(chunkPos);
-		if (!heightMaps.contains(heightMapPos))
-			heightMaps[heightMapPos] = getHeightMap(worldGen.noise, worldGen.height, heightMapPos.x, heightMapPos.z, settings.chunkSize);
+		const auto heightmapPos = flatten(chunkPos);
+		if (!heightmaps.contains(heightmapPos))
+			heightmaps[heightmapPos] = getHeightMap(worldGen.noise, worldGen.height, heightmapPos.x, heightmapPos.z, settings.chunkSize);
 
 		futures.emplace_back(pool.submit(fillChunk,
-			chunkPos, settings.chunkSize, worldGen.waterHeight, std::ref(heightMaps[heightMapPos])));
+			chunkPos, settings.chunkSize, worldGen.waterHeight, std::ref(heightmaps[heightmapPos])));
 
 		if (chunkPosCache.size() < futures.size()) {
 			chunkPosCache.emplace_back(chunkPos);
@@ -137,8 +136,8 @@ void World::addNewChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 
 	for (int i = 0; i < newChunkPosIndices.size(); ++i) {
 		const auto& chunkPos = chunkPosCache[newChunkPosIndices[i]];
-		applyStamp(worldGen.blueTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
-		applyStamp(worldGen.ashTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightMaps));
+		applyStamp(worldGen.blueTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightmaps));
+		applyStamp(worldGen.ashTree, getStandardStampOrigin(chunkPos, settings.chunkSize, heightmaps));
 	}
 }
 
@@ -158,9 +157,11 @@ void World::removeOldChunks(ThreadPool& pool, const glm::vec3& playerPos) {
 		if (!opt.has_value())
 			continue;
 		
-		delete chunks[opt.value()];
-		chunks.erase(opt.value());
-		pending.erase(opt.value());
+		const auto chunkPos = opt.value();
+		delete chunks[chunkPos];
+		heightmaps.erase(flatten(chunkPos));
+		chunks.erase(chunkPos);
+		pending.erase(chunkPos);
 	}
 }
 

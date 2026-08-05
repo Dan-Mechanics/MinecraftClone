@@ -16,22 +16,19 @@ std::vector<int> getHeightMap(const FastNoiseLite& noise, const float height, co
 }
 
 std::unordered_map<glm::ivec3, BlockType, ivec3hash> fillChunk(const glm::ivec3 chunkPos,
-	const int chunkSize, const int waterHeight, const std::vector<int>& heightMap) {
+	const int chunkSize, const int waterHeight, const std::vector<int>& heightmap) {
 	std::unordered_map<glm::ivec3, BlockType, ivec3hash> blocks{};
 	for (int x = 0; x < chunkSize; ++x) {
 		for (int y = 0; y < chunkSize; ++y) {
 			for (int z = 0; z < chunkSize; ++z) {
 				const glm::ivec3 blockPos = glm::ivec3{ x, y, z } + chunkPos * chunkSize;
-				int height = heightMap[z + x * chunkSize];
+				int height = heightmap[z + x * chunkSize];
 
 				if (blockPos.y <= waterHeight)
 					blocks[blockPos] = BlockType::WATER;
 
-				if (blockPos.y > height)
-					continue;
-
-				// blocks[blockPos] = BlockType::DIRT;
-				blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::REACTOR);
+				if (blockPos.y <= height)
+					blocks[blockPos] = static_cast<BlockType>(abs(y) % BlockType::REACTOR);
 			}
 		}
 	}

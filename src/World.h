@@ -55,6 +55,12 @@ private:
 	WorldGenerationSettings worldGen{};
 	WorldSettings settings{};
 
+	/// <summary>
+	/// Each chunk has different heightmap.
+	/// Vector of ints, when unpacked with chunk dimensions, gives neat block heightmap.
+	/// </summary>
+	std::unordered_map<glm::ivec3, std::vector<int>, ivec3hash> heightmaps{};
+
 	void addNewChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void removeOldChunks(ThreadPool& pool, const glm::vec3 & playerPos);
 	void notifyBlockChange(const glm::ivec3& chunkPos, glm::ivec3  blockPos);

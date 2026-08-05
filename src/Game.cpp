@@ -77,8 +77,9 @@ void Game::setup(GLFWwindow* window) {
 
 	// ===
 
+	const auto playerMovementSpeed = 6.0f;
 	const glm::vec3 playerSpawnPos{ 0.0f, 30.0f, 0.0f };
-	playerMovement = { 6.0f, playerSpawnPos };
+	playerMovement = { playerMovementSpeed, playerSpawnPos };
 	mouseLook = { window, width, height, 0.1f };
 
 	// ===
