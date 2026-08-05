@@ -21,6 +21,7 @@
 
 #include "FastNoiseLite.h"
 
+#include <chrono>
 #include <iostream>
 #include <mutex>
 #include <queue>

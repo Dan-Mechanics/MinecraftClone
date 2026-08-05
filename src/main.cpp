@@ -1,9 +1,7 @@
 #include "ThreadPool.h"
 #include "Game.h"
-#include <chrono>
-#include <thread>
-#include <iostream>
 #include "FastNoiseLite.h"
+#include "minecraft_clone.h"
 
 constexpr auto WIDTH = 1920u;
 constexpr auto HEIGHT = 1080u;
