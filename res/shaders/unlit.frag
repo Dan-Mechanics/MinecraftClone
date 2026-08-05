@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 // Outputs colors in RGBA
 out vec4 FragColor;
@@ -11,8 +11,6 @@ in vec3 Normal;
 in vec3 color;
 // Imports the texture coordinates from the Vertex Shader
 in vec2 texCoord;
-
-
 
 // Gets the Texture Units from the main function
 uniform sampler2D diffuse0;

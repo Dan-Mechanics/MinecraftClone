@@ -7,6 +7,7 @@
 
 constexpr auto WIDTH = 1920u;
 constexpr auto HEIGHT = 1080u;
+constexpr auto FULLSCREEN = false;
 
 constexpr auto FRAMERATE_LIMIT = 300u;
 constexpr auto FRAME_INTERVAL = 1.0f / FRAMERATE_LIMIT;
@@ -46,8 +47,8 @@ int main() {
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Minecraft Clone", NULL, NULL);
@@ -62,7 +63,8 @@ int main() {
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-	// glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, 144);
+	if (FULLSCREEN)
+		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, WIDTH, HEIGHT, 144);
 
 	glfwSetScrollCallback(window, scrollCallback);
 
