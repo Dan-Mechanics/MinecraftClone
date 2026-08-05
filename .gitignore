@@ -1,3 +1,7 @@
-.vs/
-/MinecraftClone/MinecraftClone
-/MinecraftClone/x64
+/bin
+/.vs
+
+# install latest drivers
+# correct vs version + modules
+# make sure project path not too long
+# proper version for everything, do your research
