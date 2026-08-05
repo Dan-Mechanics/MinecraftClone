@@ -1,10 +1,9 @@
 #pragma once
-#include <string>
+#include "minecraft_clone.h"
 #include "vao.h"
 #include "ebo.h"
 #include "Camera.h"
 #include "Texture.h"
-#include <vector>
 
 class ChunkMesh {
 public:

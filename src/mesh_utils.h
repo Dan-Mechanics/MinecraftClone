@@ -1,6 +1,5 @@
 #pragma once
-#include <stdlib.h>
-#include <vector>
+#include "minecraft_clone.h"
 #include "vbo.h"
 #include "Texture.h"
 

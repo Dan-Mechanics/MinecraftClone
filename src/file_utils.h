@@ -1,9 +1,5 @@
 #pragma once
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <cerrno>
+#include "minecraft_clone.h"
 
 #define SHADER_PATH "res/shaders/"
 #define TEXTURE_PATH "res/textures/"

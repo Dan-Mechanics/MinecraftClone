@@ -1,13 +1,10 @@
 #pragma once
-#include <vector>
+#include "minecraft_clone.h"
 #include "vbo.h"
 #include "BlockType.h"
 #include "Direction.h"
 #include "hashing_utils.h"
-#include <unordered_map>
 #include "utils.h"
-#include "FastNoiseLite.h"
-#include <optional>
 #include "Stamp.h"
 
 /// <summary>

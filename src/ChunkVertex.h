@@ -1,6 +1,5 @@
 #pragma once
-#include <glm/ext/vector_float2.hpp>
-#include <glm/ext/vector_int3.hpp>
+#include "minecraft_clone.h"
 
 struct ChunkVertex {
 public:

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\minecraft_clone.h" />
     <ClInclude Include="src\Atlas.h" />
     <ClInclude Include="src\AxisPlane.h" />
     <ClInclude Include="src\BlockSelector.h" />
@@ -58,6 +59,7 @@
     <ClInclude Include="src\world_mesh_utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\minecraft_clone.cpp" />
     <ClCompile Include="src\AxisPlane.cpp" />
     <ClCompile Include="src\BlockSelector.cpp" />
     <ClCompile Include="src\Camera.cpp" />

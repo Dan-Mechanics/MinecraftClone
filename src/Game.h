@@ -1,6 +1,5 @@
 #pragma once
-#include <glm/ext/vector_float4.hpp>
-#include <glm/ext/vector_float3.hpp>
+#include "minecraft_clone.h"
 #include "Object.h"
 #include "mesh_utils.h"
 #include "World.h"

@@ -1,13 +1,7 @@
 #pragma once
-#include <stdlib.h>
-#include <iostream>
-#include <glm/ext/vector_float3.hpp>
-#include <glm/ext/vector_int3.hpp>
-#include <vector>
+#include "minecraft_clone.h"
 #include "Direction.h"
 #include "Texture.h"
-#include <string>
-#include <glm/common.hpp>
 
 // TODO: ADD NAMESPACE HERE.
 

@@ -9,12 +9,10 @@ constexpr auto WIDTH = 1920u;
 constexpr auto HEIGHT = 1080u;
 
 constexpr auto FRAMERATE_LIMIT = 300u;
-constexpr auto MAX_FRAME_INTERVAL = 1.0f / FRAMERATE_LIMIT;
+constexpr auto FRAME_INTERVAL = 1.0f / FRAMERATE_LIMIT;
 
 constexpr auto TICKRATE = 50u;
 constexpr auto TICK_INTERVAL = 1.0f / TICKRATE;
-
-constexpr auto SWAP_INTERVAL = -1;
 
 auto hasFocus = true;
 void focusCallback(GLFWwindow* window, int focus) {
@@ -103,6 +101,7 @@ int main() {
 	auto updateTimer = 0.0;
 	auto tickTimer = 0.0f;
 
+	// THIS HAS A BIG IMPACT ON PERFORMANCE.
 	// glfwSwapInterval(0);
 	while (!glfwWindowShouldClose(window)) {
 		const auto current = glfwGetTime();
@@ -110,7 +109,7 @@ int main() {
 		previous = current;
 
 		glfwPollEvents();
-		if (updateTimer < MAX_FRAME_INTERVAL)
+		if (updateTimer < FRAME_INTERVAL)
 			continue;
 
 		const auto deltaTime = static_cast<float>(current - lastUpdateTime);

@@ -38,6 +38,7 @@
     <ClInclude Include="src\world_mesh_utils.h" />
     <ClInclude Include="src\WorldGenerationSettings.h" />
     <ClInclude Include="src\WorldSettings.h" />
+    <ClInclude Include="src\minecraft_clone.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AxisPlane.cpp" />
@@ -71,5 +72,6 @@
     <ClCompile Include="src\world_mesh_utils.cpp" />
     <ClCompile Include="src\WorldGenerationSettings.cpp" />
     <ClCompile Include="src\WorldSettings.cpp" />
+    <ClCompile Include="src\minecraft_clone.cpp" />
   </ItemGroup>
 </Project>

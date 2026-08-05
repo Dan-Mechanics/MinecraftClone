@@ -10,4 +10,3 @@ public:
 	bool tick(const float deltaTime);
 
 };
-

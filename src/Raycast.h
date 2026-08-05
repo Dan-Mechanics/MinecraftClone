@@ -1,6 +1,5 @@
 #pragma once
-#include "glm/vec3.hpp"
-#include <glm/geometric.hpp>
+#include "minecraft_clone.h"
 
 struct Raycast {
 public:

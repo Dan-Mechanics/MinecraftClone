@@ -1,6 +1,5 @@
 #pragma once
-#include <mutex>
-#include <queue>
+#include "minecraft_clone.h"
 
 /// <summary>
 /// https://github.com/mtrebi/thread-pool/blob/master/include/SafeQueue.h

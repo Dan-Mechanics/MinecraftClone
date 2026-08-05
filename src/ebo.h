@@ -1,5 +1,5 @@
 #pragma once
-#include <glad/glad.h>
+#include "minecraft_clone.h"
 #include <vector>
 
 class ebo {

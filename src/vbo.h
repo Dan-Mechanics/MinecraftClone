@@ -1,7 +1,5 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <glad/glad.h>
-#include <vector>
+#include "minecraft_clone.h"
 #include "Vertex.h"
 #include "ChunkVertex.h"
 

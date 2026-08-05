@@ -1,5 +1,5 @@
 #pragma once
-#include <GLFW/glfw3.h>
+#include "minecraft_clone.h"
 #include "BlockType.h"
 
 class BlockSelector {

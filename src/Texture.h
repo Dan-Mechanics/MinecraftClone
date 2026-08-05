@@ -1,7 +1,6 @@
 #pragma once
-#include <glad/glad.h>
+#include "minecraft_clone.h"
 #include "Shader.h"
-#include <stdexcept>
 
 class Texture {
 public:

@@ -1,8 +1,5 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <glad/glad.h>
-#include <iostream>
-#include <vector>
+#include "minecraft_clone.h"
 #include "Camera.h"
 #include "Object.h"
 

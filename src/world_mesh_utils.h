@@ -1,12 +1,11 @@
 #pragma once
-#include <vector>
+#include "minecraft_clone.h"
 #include "vbo.h"
 #include "BlockType.h"
 #include "Direction.h"
 #include "Atlas.h"
 #include "Chunk.h"
 #include "hashing_utils.h"
-#include <unordered_set>
 
 void generateChunkMesh(std::vector<ChunkVertex>& verts, std::vector<GLuint>& tris,
 	const int chunkSize, const Atlas& atlas, const glm::ivec3& chunkPos,

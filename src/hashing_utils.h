@@ -1,5 +1,5 @@
 #pragma once
-#include <glm/vec3.hpp>
+#include "minecraft_clone.h"
 
 /// <summary>
 /// https://github.com/Isti01/glCraft/blob/main/src/Util/Util.h

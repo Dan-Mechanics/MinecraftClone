@@ -1,4 +1,5 @@
 #pragma once
+#include "minecraft_clone.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "world_mesh_utils.h"
