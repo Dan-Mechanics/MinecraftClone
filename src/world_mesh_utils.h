@@ -1,6 +1,5 @@
 #pragma once
-#include "minecraft_clone.h"
-#include "vbo.h"
+#include "VBO.h"
 #include "BlockType.h"
 #include "Direction.h"
 #include "Atlas.h"

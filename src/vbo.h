@@ -1,14 +1,13 @@
 #pragma once
-#include "minecraft_clone.h"
 #include "Vertex.h"
 #include "ChunkVertex.h"
 
-class vbo {
+class VBO {
 public:
 	GLuint id{};
-	vbo();
-	vbo(const std::vector<Vertex>& vertices);
-	vbo(const std::vector<ChunkVertex>& vertices);
+	VBO();
+	VBO(const std::vector<Vertex>& vertices);
+	VBO(const std::vector<ChunkVertex>& vertices);
 
 	void bind() const;
 	void unbind() const;

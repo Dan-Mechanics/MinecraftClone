@@ -10,7 +10,7 @@
     <ClInclude Include="src\ChunkMesh.h" />
     <ClInclude Include="src\ChunkVertex.h" />
     <ClInclude Include="src\Direction.h" />
-    <ClInclude Include="src\ebo.h" />
+    <ClInclude Include="src\EBO.h" />
     <ClInclude Include="src\FastNoiseLite.h" />
     <ClInclude Include="src\file_utils.h" />
     <ClInclude Include="src\Game.h" />
@@ -30,8 +30,8 @@
     <ClInclude Include="src\ThreadPool.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\utils.h" />
-    <ClInclude Include="src\vao.h" />
-    <ClInclude Include="src\vbo.h" />
+    <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VBO.h" />
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\World.h" />
     <ClInclude Include="src\world_data_utils.h" />
@@ -46,7 +46,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\ChunkMesh.cpp" />
-    <ClCompile Include="src\ebo.cpp" />
+    <ClCompile Include="src\EBO.cpp" />
     <ClCompile Include="src\file_utils.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -65,8 +65,8 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\utils.cpp" />
-    <ClCompile Include="src\vao.cpp" />
-    <ClCompile Include="src\vbo.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VBO.cpp" />
     <ClCompile Include="src\World.cpp" />
     <ClCompile Include="src\world_data_utils.cpp" />
     <ClCompile Include="src\world_mesh_utils.cpp" />

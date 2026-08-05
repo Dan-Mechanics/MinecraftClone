@@ -1,7 +1,7 @@
 #pragma once
 #include "minecraft_clone.h"
-#include "vao.h"
-#include "ebo.h"
+#include "VAO.h"
+#include "EBO.h"
 #include "Camera.h"
 #include "Texture.h"
 
@@ -10,9 +10,9 @@ public:
 	std::vector<Vertex> vertices{};
 	std::vector<GLuint> indices{};
 	glm::mat4 modelMatrix{};
-	vao vao{};
-	ebo ebo{};
-	vbo vbo{};
+	VAO vao{};
+	EBO ebo{};
+	VBO vbo{};
 
 	Mesh();
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);

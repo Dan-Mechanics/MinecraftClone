@@ -31,8 +31,9 @@ bool Terraformer::getFaceHighlight(const Raycast& raycast, const World& world, g
 	if (!world.raycast(raycast, blockPos, normal))
 		return false;
 
+	const auto bump = 0.1f;
 	glm::vec3 absNormal = glm::abs(normal);
-	scale = glm::vec3{ 1.0f } - absNormal + absNormal * 0.1f;
+	scale = glm::vec3{ 1.0f } - absNormal + absNormal * bump;
 	pos = glm::vec3{ blockPos + normal } + glm::vec3{ 0.5f } - glm::vec3{ normal } * 0.5f;
 	return true;
 }

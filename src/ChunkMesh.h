@@ -1,7 +1,7 @@
 #pragma once
 #include "minecraft_clone.h"
-#include "vao.h"
-#include "ebo.h"
+#include "VAO.h"
+#include "EBO.h"
 #include "Camera.h"
 #include "Texture.h"
 
@@ -9,9 +9,9 @@ class ChunkMesh {
 public:
 	std::vector<ChunkVertex> vertices{};
 	std::vector<GLuint> indices{};
-	vao vao{};
-	ebo ebo{};
-	vbo vbo{};
+	VAO vao{};
+	EBO ebo{};
+	VBO vbo{};
 	bool hasData{};
 
 	ChunkMesh();
